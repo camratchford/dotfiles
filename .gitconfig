@@ -1,0 +1,41 @@
+[user]
+  name = Cam Ratchford
+  email = camratchford@gmail.com
+
+[core]
+  filemode = false
+
+[color]
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+
+[branch]
+  autosetuprebase = always
+  mergeoptions = --no-ff
+
+[pull]
+  rebase = true
+
+[merge]
+  log = true
+  tool = fugitive
+
+[mergetool "fugitive"]
+  cmd = vim -f -c \"Gdiff\" \"$MERGED\"
+
+[alias]
+  st = status
+  ci = commit
+  co = checkout
+  df = diff
+  lg = log -p
+
+[push]
+  default = simple
+
+[credential]
+    helper = store --file /home/cam/.git-credentials
+    helper = cache --timeout 30000
