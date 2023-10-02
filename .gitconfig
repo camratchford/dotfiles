@@ -37,5 +37,4 @@
   default = simple
 
 [credential]
-    helper = store --file /home/cam/.git-credentials
-    helper = cache --timeout 30000
+    helper = store

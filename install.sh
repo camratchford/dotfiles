@@ -26,11 +26,11 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Please provide your github access token:"
   read gh_token
 else
-  gh_user="${GITHUB_USER}"
+  gh_token="${GITHUB_TOKEN}"
 fi
 
 gh_cred="https://$gh_user:$gh_token@github.com"
-echo $GH_CRED > ~/.git-credentials
+echo $gh_cred > ~/.git-credentials
 
 source ~/.bashrc
 
