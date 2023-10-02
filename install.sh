@@ -15,12 +15,19 @@ for file in $files; do
     ln -fs $thisdir/$file ~/$file
 done
 
-# Create git-credentials file
-echo "Please provide your github username:"
-read gh_user
+if [[ -z "${GITHUB_USER}" ]]; then
+  echo "Please provide your github username:"
+  read gh_user
+else
+  gh_user="${GITHUB_USER}"
+fi
 
-echo "Please provide you github access token:"
-read gh_token
+if [[ -z "${GITHUB_TOKEN}" ]]; then
+  echo "Please provide your github access token:"
+  read gh_token
+else
+  gh_user="${GITHUB_USER}"
+fi
 
 gh_cred="https://$gh_user:$gh_token@github.com"
 echo $GH_CRED > ~/.git-credentials
