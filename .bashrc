@@ -117,13 +117,14 @@ if ! shopt -oq posix; then
 fi
 
 
-# Source a local file if it exists
-if [[ -f ~/.bashrc.local ]]; then
-  source ~/.bashrc.local
-fi
+# Import .bashrc.* files if they exists
+rc_files=$(/usr/bin/ls -d ~/.bashrc.*)
+for file in $rc_files; do
+  source $file
+done
 
 export EDITOR=/usr/bin/vim
-export PATH=~/bin:/usr/local/bin:~/cybera-dotfiles/bin:/snap/bin:~/.local/bin:$PATH
+export PATH=~/bin:/usr/local/bin:~/dotfiles/bin:/snap/bin:~/.local/bin:$PATH
 
 # Ignore duplicate history entries
 HISTCONTROL=ignoreboth
@@ -132,6 +133,13 @@ HISTCONTROL=ignoreboth
 alias lls="lxc ls"
 function la() {
   lxc exec $1 bash
+}
+
+alias less="/usr/share/vim/vim82/macros/less.sh"
+
+# For reckless invocations of scripts piped directly into bash
+function execurl {
+  bash <(curl -s $1)
 }
 
 function newsshhost {

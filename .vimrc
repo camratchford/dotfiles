@@ -84,7 +84,7 @@ if executable("par")
 endif
 
 " vim bundles
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <F5> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 " Syntax

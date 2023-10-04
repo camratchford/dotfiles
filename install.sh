@@ -6,15 +6,19 @@ unzip ~/exa.zip -d ~/
 rm -rf ~/man ~/completions
 rm ~/exa.zip
 
-# Deal with the git files
+# Install ansi (easy use of control characters for terminal colors/styles)
+curl -LSso ~/bin/ansi git.io/ansi
+chmod 0755 ~/bin/ansi
+
+
+# Deal with symlinking files
 thisdir=~/dotfiles
 files=$(cd $thisdir; ls -d .[a-z]* | grep -v .git$)
-
-# Create symlink for each file/folder
 for file in $files; do
     ln -fs $thisdir/$file ~/$file
 done
 
+# Export github credentials for ~/.git-credentials 'store' credential helper
 if [[ -z "${GITHUB_USER}" ]]; then
   echo "Please provide your github username:"
   read gh_user
