@@ -153,7 +153,7 @@ function newsshhost {
 
 # Set alias for ls -> exa if exa is installed
 if which exa >/dev/null; then
-  alias ls="/home/cam/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
+  alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
 fi
 
 # Set a basic prompt
