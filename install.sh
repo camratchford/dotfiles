@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install exa / create the $HOME/bin folder
-if ! [ -f ~/exa ]; then
+if ! [ -f ~/bin/exa ]; then
   curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip 2>&1 > /dev/null
   unzip ~/exa.zip -d ~/ 2>&1 > /dev/null
   rm -rf ~/man ~/completions
