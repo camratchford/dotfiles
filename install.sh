@@ -1,15 +1,18 @@
 #!/bin/bash
 
 # Install exa / create the $HOME/bin folder
-curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
-unzip ~/exa.zip -d ~/
-rm -rf ~/man ~/completions
-rm ~/exa.zip
+if ! [ -f ~/exa ]; then
+  curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
+  unzip ~/exa.zip -d ~/
+  rm -rf ~/man ~/completions
+  rm ~/exa.zip
+fi
 
 # Install ansi (easy use of control characters for terminal colors/styles)
-curl -LSso ~/bin/ansi git.io/ansi
-chmod 0755 ~/bin/ansi
-
+if ! [ -f ~/bin/ansi ]; then
+  curl -LSso ~/bin/ansi git.io/ansi
+  chmod 0755 ~/bin/ansi
+fi
 
 # Deal with symlinking files
 thisdir=~/dotfiles
