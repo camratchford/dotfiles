@@ -39,7 +39,7 @@ echo $gh_cred > ~/.git-credentials
 source ~/.bashrc
 
 # Download vimconfig
-git clone -q https://github.com/camratchford/vimconfig.git ~/ 2> /dev/null
+git clone -q https://github.com/camratchford/vimconfig.git ~/vimconfig 2> /dev/null
 ~/vimconfig/plugin.sh
 
 
