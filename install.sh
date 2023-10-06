@@ -2,10 +2,10 @@
 
 # Install exa / create the $HOME/bin folder
 if ! [ -f ~/exa ]; then
-  curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
-  unzip ~/exa.zip -d ~/
+  curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip 2>&1 > /dev/null
+  unzip ~/exa.zip -d ~/ 2>&1 > /dev/null
   rm -rf ~/man ~/completions
-  rm ~/exa.zip
+  rm -f ~/exa.zip
 fi
 
 # Install ansi (easy use of control characters for terminal colors/styles)
