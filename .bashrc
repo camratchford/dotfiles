@@ -118,10 +118,12 @@ fi
 
 
 # Import .bashrc.* files if they exists
-rc_files=$(/usr/bin/ls -d ~/.bashrc.*)
-for file in $rc_files; do
-  source $file
-done
+if [ -f ~/.bashrc.* ]; then
+  rc_files=$(/usr/bin/ls -d ~/.bashrc.*)
+  for file in $rc_files; do
+    source $file
+  done
+fi
 
 export EDITOR=/usr/bin/vim
 export PATH=~/bin:/usr/local/bin:~/dotfiles/bin:/snap/bin:~/.local/bin:$PATH
@@ -163,6 +165,8 @@ function newsshhost {
 if which exa >/dev/null; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
 fi
+
+source /opt/ansible/venv/bin/activate
 
 # Set a basic prompt
 if [ $UID -eq 0 ]; then
