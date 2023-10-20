@@ -166,7 +166,6 @@ if which exa >/dev/null; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
 fi
 
-source /opt/ansible/venv/bin/activate
 
 # Set a basic prompt
 if [ $UID -eq 0 ]; then
