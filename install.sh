@@ -12,10 +12,17 @@ if ! [ -f ~/bin/exa ]; then
   rm -f ~/exa.zip
 fi
 
+# Install fd
+if ! [ -f /usr/bin/fd ]; then
+  curl -LSso ~/fd.deb https://github.com/sharkdp/fd/releases/download/v8.7.1/fd-musl_8.7.1_amd64.deb 2>&1 > /dev/null
+  dpkg -i ~/fd.deb 2>&1 > /dev/null
+  rm ~/fd.deb 2>&1 > /dev/null
+fi
+
 # Install ansi (easy use of control characters for terminal colors/styles)
 if ! [ -f ~/bin/ansi ]; then
-  curl -LSso ~/bin/ansi git.io/ansi
-  chmod 0755 ~/bin/ansi
+  curl -LSso ~/bin/ansi git.io/ansi  2>&1 > /dev/null
+  chmod 0755 ~/bin/ansi 2>&1 > /dev/null
 fi
 
 # Deal with symlinking files
