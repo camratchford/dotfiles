@@ -29,6 +29,8 @@ set showmatch
 " show line numbers
 set nonumber
 nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+imap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>i
+vmap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>v
 
 " make tab in v mode ident code
 vmap <tab> >gv
@@ -47,7 +49,7 @@ vmap <A-Up> <Up><C-n>
 
 " paste mode - this will avoid unexpected effects when you
 " cut or copy some text from one window and paste it in Vim.
-set pastetoggle=<F5>
+set pastetoggle=<F6>
 
 " Turn plugin on
 filetype plugin indent on

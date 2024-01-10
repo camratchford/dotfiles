@@ -1,29 +1,29 @@
 #!/bin/bash
 
-if [ ! -f $(which unzip) ]; then
-  echo "WARN: Unzip is required to extract exa"
-fi
+# if [ ! -f $(which unzip) ]; then
+#   echo "WARN: Unzip is required to extract exa"
+# fi
 
-# Install exa / create the $HOME/bin folder
-if ! [ -f ~/bin/exa ]; then
-  curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip 2>&1 > /dev/null
-  unzip ~/exa.zip -d ~/ 2>&1 > /dev/null
-  rm -rf ~/man ~/completions
-  rm -f ~/exa.zip
-fi
+# # Install exa / create the $HOME/bin folder
+# if ! [ -f ~/bin/exa ]; then
+#   curl -LSso ~/exa.zip https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip 2>&1 > /dev/null
+#   unzip ~/exa.zip -d ~/ 2>&1 > /dev/null
+#   rm -rf ~/man ~/completions
+#   rm -f ~/exa.zip
+# fi
 
 # Install fd
-if ! [ -f /usr/bin/fd ]; then
-  curl -LSso ~/fd.deb https://github.com/sharkdp/fd/releases/download/v8.7.1/fd-musl_8.7.1_amd64.deb 2>&1 > /dev/null
-  dpkg -i ~/fd.deb 2>&1 > /dev/null
-  rm ~/fd.deb 2>&1 > /dev/null
-fi
+# if ! [ -f /usr/bin/fd ]; then
+#   curl -LSso ~/fd.deb https://github.com/sharkdp/fd/releases/download/v8.7.1/fd-musl_8.7.1_amd64.deb 2>&1 > /dev/null
+#   dpkg -i ~/fd.deb 2>&1 > /dev/null
+#   rm ~/fd.deb 2>&1 > /dev/null
+# fi
 
-# Install ansi (easy use of control characters for terminal colors/styles)
-if ! [ -f ~/bin/ansi ]; then
-  curl -LSso ~/bin/ansi git.io/ansi  2>&1 > /dev/null
-  chmod 0755 ~/bin/ansi 2>&1 > /dev/null
-fi
+# # Install ansi (easy use of control characters for terminal colors/styles)
+# if ! [ -f ~/bin/ansi ]; then
+#   curl -LSso ~/bin/ansi git.io/ansi  2>&1 > /dev/null
+#   chmod 0755 ~/bin/ansi 2>&1 > /dev/null
+# fi
 
 # Deal with symlinking files
 thisdir=~/dotfiles
