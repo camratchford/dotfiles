@@ -1,0 +1,10 @@
+debug: false
+external_filter_dir: /home/cam/.yam/filters
+external_var_source_dir: /home/cam/.yam/vars
+force: false
+name: Yam [/home/cam/dotfiles/bin/Yamfile.yml]
+other_log_config: {}
+style: amber
+tui_log_format: '%(message)s'
+tui_log_level: INFO
+var_sources: []

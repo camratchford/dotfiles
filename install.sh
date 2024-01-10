@@ -32,6 +32,8 @@ for file in $files; do
     ln -fs $thisdir/$file ~/$file
 done
 
+ln -fs ~/dotfiles/bin ~/bin
+
 # Export github credentials for ~/.git-credentials 'store' credential helper
 if [[ -z "${GITHUB_USER}" ]]; then
   echo "Please provide your github username:"
