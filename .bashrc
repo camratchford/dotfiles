@@ -1,6 +1,6 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+#############################################################################
+###################### Standard Ubuntu bashrc stuff #########################
+#############################################################################
 
 # If not running interactively, don't do anything
 case $- in
@@ -15,17 +15,17 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+shopt -s globstar
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -34,43 +34,6 @@ shopt -s checkwinsize
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -84,30 +47,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -117,19 +64,14 @@ if ! shopt -oq posix; then
 fi
 
 
-# Import .bashrc.* files if they exists
-if [ -f ~/.bashrc.* ]; then
-  rc_files=$(/usr/bin/ls -d ~/.bashrc.*)
-  for file in $rc_files; do
-    source $file
-  done
-fi
+##################################################################
+###################### Alias definitions #########################
+##################################################################
 
-export EDITOR=/usr/bin/vim
-export PATH=~/bin:/usr/local/bin:~/dotfiles/bin:/snap/bin:~/.local/bin:$PATH
-
-# Ignore duplicate history entries
-HISTCONTROL=ignoreboth
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 
 # LXC aliases
 alias lls="lxc ls"
@@ -137,13 +79,59 @@ function la() {
   lxc exec $1 bash
 }
 
+# Override some gnu tools with alternatives
+if which exa >/dev/null; then
+  alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
+fi
+
+if which fd >/dev/null; then
+  alias find="$HOME/bin/fd"
+fi
+
 alias less="/usr/share/vim/vim82/macros/less.sh"
+
+
+##############################################################################
+###################### dot-sourcing / sourcing files #########################
+##############################################################################
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# Import .bashrc.* files if they exists
+find -maxdepth 1 -type f,s,l -path "*.bashrc.*" -exec ls {} \;| source $(xargs $1)
+
+
+########################################################################
+###################### declare / set variables #########################
+########################################################################
+
+export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
+export EDITOR=/usr/bin/vim
+
+
+##################################################################
+###################### set prompt colors #########################
+##################################################################
+
+if [ $UID -eq 0 ]; then
+        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;196m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
+else
+        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
+fi
+
+
+######################################################################
+###################### convenience functions #########################
+######################################################################
 
 # For reckless invocations of scripts piped directly into bash
 function execurl {
   bash <(curl -s $1)
 }
 
+# For expelling the errant know_hosts file entries when you've rebuilt a host
 function newsshhost {
   ssh-keygen -f ~/.ssh/known_hosts -R $1
   ip=$(grep $1 /etc/hosts | awk '{print $1}')
@@ -161,25 +149,9 @@ function newsshhost {
   ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
 }
 
-# Set alias for ls -> exa if exa is installed
-if which exa >/dev/null; then
-  alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
-fi
-
-
-# Set a basic prompt
-if [ $UID -eq 0 ]; then
-        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;196m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
-else
-        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
-fi
-
-export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:$PATH"
-export EDITOR=vim
-
+# For easy git syncing
 function update() {
     git fetch
     git pull
 }
-
 
