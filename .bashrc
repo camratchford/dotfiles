@@ -64,6 +64,15 @@ if ! shopt -oq posix; then
 fi
 
 
+########################################################################
+###################### declare / set variables #########################
+########################################################################
+
+export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
+export EDITOR=/usr/bin/vim
+export PAGER="/usr/share/vim/vim82/macros/less.sh"
+
+
 ##################################################################
 ###################### Alias definitions #########################
 ##################################################################
@@ -99,14 +108,6 @@ fi
 
 # Import .bashrc.* files if they exists
 
-
-########################################################################
-###################### declare / set variables #########################
-########################################################################
-
-export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
-export EDITOR=/usr/bin/vim
-export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
 # Colorized manpages with bat(1)
 # if [ "`type -p bat`" ]; then
