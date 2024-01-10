@@ -87,7 +87,7 @@ if which fd 2>&1 > /dev/null; then
   alias find="$HOME/bin/fd"
 fi
 alias less="/usr/share/vim/vim82/macros/less.sh"
-
+alias python="/usr/bin/python3"
 
 ##############################################################################
 ###################### dot-sourcing / sourcing files #########################
