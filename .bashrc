@@ -83,7 +83,7 @@ alias lls="lxc ls"
 if which exa >/dev/null; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
 fi
-if which fd >/dev/null; then
+if which fd 2>&1 > /dev/null; then
   alias find="$HOME/bin/fd"
 fi
 alias less="/usr/share/vim/vim82/macros/less.sh"
@@ -98,7 +98,6 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Import .bashrc.* files if they exists
-find -maxdepth 1 -type f,s,l -path "*.bashrc.*" -exec ls {} \;| source $(xargs $1)
 
 
 ########################################################################
