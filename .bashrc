@@ -68,6 +68,9 @@ fi
 ###################### Alias definitions #########################
 ##################################################################
 
+alias http='python3 -m http.server'
+alias json='python3 -m json.tool'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -75,19 +78,14 @@ alias l='ls -CF'
 
 # LXC aliases
 alias lls="lxc ls"
-function la() {
-  lxc exec $1 bash
-}
 
 # Override some gnu tools with alternatives
 if which exa >/dev/null; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
 fi
-
 if which fd >/dev/null; then
   alias find="$HOME/bin/fd"
 fi
-
 alias less="/usr/share/vim/vim82/macros/less.sh"
 
 
@@ -109,7 +107,13 @@ find -maxdepth 1 -type f,s,l -path "*.bashrc.*" -exec ls {} \;| source $(xargs $
 
 export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
 export EDITOR=/usr/bin/vim
+export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
+# Colorized manpages with bat(1)
+# if [ "`type -p bat`" ]; then
+# 	export MANROFFOPT="-c"
+# 	export MANPAGER="bash -c 'col -bx | bat -l man -p'"
+# fi
 
 ##################################################################
 ###################### set prompt colors #########################
