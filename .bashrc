@@ -70,7 +70,7 @@ fi
 
 export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
 export EDITOR=/usr/bin/vim
-export PAGER="/usr/share/vim/vim82/macros/less.sh"
+#export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
 
 ##################################################################
@@ -95,7 +95,7 @@ fi
 if which fd 2>&1 > /dev/null; then
   alias find="$HOME/bin/fd"
 fi
-alias less="/usr/share/vim/vim82/macros/less.sh"
+#alias less="/usr/share/vim/vim82/macros/less.sh"
 alias python="/usr/bin/python3"
 
 ##############################################################################
@@ -109,11 +109,6 @@ fi
 # Import .bashrc.* files if they exists
 
 
-# Colorized manpages with bat(1)
-# if [ "`type -p bat`" ]; then
-# 	export MANROFFOPT="-c"
-# 	export MANPAGER="bash -c 'col -bx | bat -l man -p'"
-# fi
 
 ##################################################################
 ###################### set prompt colors #########################
