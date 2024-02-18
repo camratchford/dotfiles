@@ -5,10 +5,14 @@ set vb
 set incsearch
 
 " Allow hidden buffers
-set hidden
 
+set hidden
+" Mouse scroll events scroll page
+
+set mouse=a
 " syntax highlighting
 " set t_Co=256
+
 call pathogen#infect()
 " set cursorline
 
