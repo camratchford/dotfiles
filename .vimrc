@@ -7,8 +7,7 @@ set incsearch
 " Allow hidden buffers
 
 set hidden
-" Mouse scroll events scroll page
-
+" Mouse scroll events scroll page, shift-rightclick for paste
 set mouse=a
 " syntax highlighting
 " set t_Co=256

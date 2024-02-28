@@ -91,6 +91,10 @@ alias lls="lxc ls"
 # Override some gnu tools with alternatives
 if which exa >/dev/null; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
+  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
+  LS_COLORS=$(< ~/.LS_COLORS)
+  sudo touch /tmp/lscolors && sudo chmod 777 /tmp/lscolors
+  env LS_COLORS="$LS_COLORS" 2>&1 /tmp/lscolors # /dev/null doesn't work in lxd
 fi
 if which fd 2>&1 > /dev/null; then
   alias find="$HOME/bin/fd"
