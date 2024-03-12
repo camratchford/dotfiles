@@ -36,5 +36,3 @@ if ! [ -d ~/vimconfig ]; then
   ~/vimconfig/plugin.sh 2>&1 > /dev/null
 fi
 
-
-
