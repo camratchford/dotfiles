@@ -8,6 +8,11 @@ for file in $files; do
     ln -fs $thisdir/$file ~/$file
 done
 
+if [ $(which nvim) ]; then
+  mkdir -p ~/.config/nvim/
+  ln -fs $thisdir/nvim_init.vim ~/.config/nvim/init.vim
+fi
+
 ln -fs ~/dotfiles/bin ~/bin
 
 # Export github credentials for ~/.git-credentials 'store' credential helper
