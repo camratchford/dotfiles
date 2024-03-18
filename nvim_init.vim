@@ -2,21 +2,14 @@ set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 " use visual bell instead of beeping
 set vb
-
+set mouse=vn
 " incremental search
 set incsearch
 
 " Allow hidden buffers
 
 set hidden
-" Mouse scroll events scroll page, shift-rightclick for paste
-set mouse=a
-" syntax highlighting
-" set t_Co=256
-
 call pathogen#infect()
-" set cursorline
-
 packadd! everforest
 syntax on
 colorscheme everforest
@@ -126,3 +119,4 @@ autocmd BufWritePre     * :call TrimWhiteSpace()
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_python_flake8_post_args='--ignore=W504,E501'
 set number
+
