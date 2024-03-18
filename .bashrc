@@ -7,7 +7,7 @@ case $- in
     *i*) ;;
       *) return;;
 esac
-
+export TERM="xterm-256color"
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -94,6 +94,7 @@ if which exa >/dev/null; then
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export LS_COLORS="$LS_COLORS"
+  export EXA_COLORS="$LS_COLORS"
 
 fi
 if which fd 2>&1 > /dev/null; then
