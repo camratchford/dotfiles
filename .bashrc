@@ -112,7 +112,9 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Import .bashrc.* files if they exists
-
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi
 
 
 ##################################################################
