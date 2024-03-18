@@ -8,7 +8,7 @@ set incsearch
 
 set hidden
 " Mouse scroll events scroll page, shift-rightclick for paste
-set mouse=a
+set mouse=nv
 " syntax highlighting
 " set t_Co=256
 

@@ -9,7 +9,6 @@ set incsearch
 " Allow hidden buffers
 
 set hidden
-call pathogen#infect()
 packadd! everforest
 syntax on
 colorscheme everforest
@@ -90,10 +89,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 " Syntax
 au BufRead,BufNewFile *.pp              set filetype=puppet
 
-" Mouse
-"set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
 set clipboard=unnamed
 
 
@@ -116,7 +111,14 @@ autocmd FileAppendPre   * :call TrimWhiteSpace()
 autocmd FilterWritePre  * :call TrimWhiteSpace()
 autocmd BufWritePre     * :call TrimWhiteSpace()
 
+
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_python_flake8_post_args='--ignore=W504,E501'
 set number
+call plug#begin('~/.vim/plugs')
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.6' }
+call plug#end()
+
 
