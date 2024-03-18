@@ -103,6 +103,11 @@ fi
 #alias less="/usr/share/vim/vim82/macros/less.sh"
 alias python="/usr/bin/python3"
 
+if [ $(which nvim) ]; then
+  alias vi=nvim
+  export EDITOR=/usr/bin/nvim
+fi
+
 ##############################################################################
 ###################### dot-sourcing / sourcing files #########################
 ##############################################################################
