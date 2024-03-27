@@ -16,16 +16,17 @@ fi
 ln -fs ~/dotfiles/bin ~/bin
 
 # Export github credentials for ~/.git-credentials 'store' credential helper
+
 if [[ -z "${GITHUB_USER}" ]]; then
   echo "Please provide your github username:"
-  read gh_user
+  timeout 10 read gh_user
 else
   gh_user="${GITHUB_USER}"
 fi
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Please provide your github access token:"
-  read gh_token
+  timeout 10 read gh_token
 else
   gh_token="${GITHUB_TOKEN}"
 fi
@@ -35,9 +36,4 @@ echo $gh_cred > ~/.git-credentials
 
 source ~/.bashrc
 
-# Download vimconfig
-if ! [ -d ~/vimconfig ]; then
-  git clone -q https://github.com/camratchford/vimconfig.git ~/vimconfig 2>&1 > /dev/null
-  ~/vimconfig/plugin.sh 2>&1 > /dev/null
-fi
 
