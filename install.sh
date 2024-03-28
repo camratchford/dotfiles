@@ -1,5 +1,12 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(dirname $(realpath $0))"
+TIMEOUT_READ="${SCRIPT_DIR}/bin/timeout_read"
+if ! [ -f $TIMEOUT_READ ]; then
+    echo "Could not find timeout_read script"
+    exit 1
+fi
+
 
 # Deal with symlinking files
 thisdir=~/dotfiles
@@ -19,14 +26,14 @@ ln -fs ~/dotfiles/bin ~/bin
 
 if [[ -z "${GITHUB_USER}" ]]; then
   echo "Please provide your github username:"
-  timeout 10 read gh_user
+  gh_user=$($TIMEOUT_READ 10)
 else
   gh_user="${GITHUB_USER}"
 fi
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Please provide your github access token:"
-  timeout 10 read gh_token
+  gh_token=$($TIMEOUT_READ 10)
 else
   gh_token="${GITHUB_TOKEN}"
 fi
