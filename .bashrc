@@ -121,6 +121,9 @@ if [ -f ~/.bashrc.local ]; then
     . ~/.bashrc.local
 fi
 
+gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
+export GITHUB_TOKEN="${gh_token}"
+
 
 ##################################################################
 ###################### set prompt colors #########################

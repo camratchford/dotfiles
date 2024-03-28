@@ -41,6 +41,3 @@ fi
 gh_cred="https://$gh_user:$gh_token@github.com"
 echo $gh_cred > ~/.git-credentials
 
-source ~/.bashrc
-
-
