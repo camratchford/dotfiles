@@ -28,7 +28,7 @@ if [[ -z "$GITHUB_USERNAME" ]]; then
   echo "Please provide your github username:"
   gh_user=$($TIMEOUT_READ 10)
 else
-  gh_user="${GITHUB_USER}"
+  gh_user="${GITHUB_USERNAME}"
 fi
 
 if [[ -z "$GITHUB_TOKEN" ]]; then
@@ -38,6 +38,6 @@ else
   gh_token="${GITHUB_TOKEN}"
 fi
 
-gh_cred="https://$gh_user:$gh_token@github.com"
+gh_cred="https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com"
 echo $gh_cred > ~/.git-credentials
 echo complete
