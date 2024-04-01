@@ -20,7 +20,11 @@ if [ $(which nvim) ]; then
   ln -fs $thisdir/nvim_init.vim ~/.config/nvim/init.vim
 fi
 
-ln -fs $(realpath ~/dotfiles/bin) $(realpath ~/bin)
+
+
+ln -fs ~/dotfiles/bin ~/
+ln -fs ~/dotfiles/.vim realpath ~/
+
 
 # Export github credentials for ~/.git-credentials 'store' credential helper
 
