@@ -9,7 +9,7 @@ fi
 
 
 # Deal with symlinking files
-thisdir=~/dotfiles
+thisdir="$SCRIPT_DIR"
 files=$(cd $thisdir; ls -d .[a-z]* | grep -v .git$)
 for file in $files; do
     ln -fs $thisdir/$file ~/$file
@@ -20,18 +20,18 @@ if [ $(which nvim) ]; then
   ln -fs $thisdir/nvim_init.vim ~/.config/nvim/init.vim
 fi
 
-ln -fs ~/dotfiles/bin ~/bin
+ln -fs $(realpath ~/dotfiles/bin) $(realpath ~/bin)
 
 # Export github credentials for ~/.git-credentials 'store' credential helper
 
-if [[ -z "${GITHUB_USER}" ]]; then
+if [[ -z "$GITHUB_USERNAME" ]]; then
   echo "Please provide your github username:"
   gh_user=$($TIMEOUT_READ 10)
 else
   gh_user="${GITHUB_USER}"
 fi
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "$GITHUB_TOKEN" ]]; then
   echo "Please provide your github access token:"
   gh_token=$($TIMEOUT_READ 10)
 else
@@ -40,4 +40,4 @@ fi
 
 gh_cred="https://$gh_user:$gh_token@github.com"
 echo $gh_cred > ~/.git-credentials
-
+echo complete
