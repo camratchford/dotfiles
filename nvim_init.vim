@@ -8,10 +8,9 @@ set incsearch
 
 " Allow hidden buffers
 
-set hidden
 packadd! everforest
-syntax on
 colorscheme everforest
+set hidden
 
 set background=dark
 " autoindent
@@ -118,5 +117,4 @@ set number
 call plug#begin('~/.vim/plugs')
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 call plug#end()
-
 
