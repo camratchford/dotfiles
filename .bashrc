@@ -89,20 +89,19 @@ alias l='ls -CF'
 alias lls="lxc ls"
 
 # Override some gnu tools with alternatives
-if which exa >/dev/null; then
+if [ $(which exa) ]; then
   alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
-  export LS_COLORS="$LS_COLORS"
   export EXA_COLORS="$LS_COLORS"
-
 fi
-if which fd 2>&1 > /dev/null; then
+
+if [ $(which fd) ]; then
   alias find="$HOME/bin/fd"
 fi
-#alias less="/usr/share/vim/vim82/macros/less.sh"
 alias python="/usr/bin/python3"
 
+alias vi=vim
 if [ $(which nvim) ]; then
   alias vi=nvim
   export EDITOR=/usr/bin/nvim
@@ -122,7 +121,14 @@ if [ -f ~/.bashrc.local ]; then
 fi
 
 gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
-export GITHUB_TOKEN="${gh_token}"
+if [ "$gh_token" ]; then
+  export GITHUB_TOKEN="${gh_token}"
+fi
+
+gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
+if [ "$gh_username" ]; then
+  export GITHUB_USERNAME="${gh_username}"
+fi
 
 
 ##################################################################
@@ -161,11 +167,5 @@ function newsshhost {
     ssh-keygen -f ~/.ssh/known_hosts -R $ip
   fi
   ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
-}
-
-# For easy git syncing
-function update() {
-    git fetch
-    git pull
 }
 
