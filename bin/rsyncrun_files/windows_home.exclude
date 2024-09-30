@@ -1,0 +1,8 @@
+**/*.dat
+**/._*
+**/AppData
+**/ntuser*
+**/NTUSER*
+**/desktop.ini
+**/*.tmp
+**/$*
