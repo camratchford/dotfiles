@@ -115,9 +115,14 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# Import .bashrc.* files if they exists
+# Import .bashrc.local if it exists
 if [ -f ~/.bashrc.local ]; then
     . ~/.bashrc.local
+fi
+
+# Import bashrc.lib if it exists
+if [ -f ~/.bashrc.lib ]; then
+    . ~/.bashrc.lib
 fi
 
 gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
@@ -140,32 +145,4 @@ if [ $UID -eq 0 ]; then
 else
         PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
 fi
-
-
-######################################################################
-###################### convenience functions #########################
-######################################################################
-
-# For reckless invocations of scripts piped directly into bash
-function execurl {
-  bash <(curl -s $1)
-}
-
-# For expelling the errant know_hosts file entries when you've rebuilt a host
-function newsshhost {
-  ssh-keygen -f ~/.ssh/known_hosts -R $1
-  ip=$(grep $1 /etc/hosts | awk '{print $1}')
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
-  fi
-  ip=$(dig -t a +short $1)
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
-  fi
-  ip=$(dig -t aaaa +short $1)
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
-  fi
-  ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
-}
 
