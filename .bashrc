@@ -60,6 +60,8 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+    # not in original, but should be
+    run-parts $HOME/.bash_completions/
   fi
 fi
 
@@ -68,7 +70,7 @@ fi
 ###################### declare / set variables #########################
 ########################################################################
 
-export PATH="/sbin:/usr/sbin:/usr/local/bin:/$HOME/bin:~/.local/bin:/snap/bin:$PATH"
+export PATH="/sbin:/usr/sbin:/usr/local/bin:/snap/bin:$PATH"
 export EDITOR=/usr/bin/vim
 #export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
