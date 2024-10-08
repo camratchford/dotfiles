@@ -1,0 +1,13 @@
+#!/bin/bash
+DOTFILES_DIR="$(dirname $(dirname $(readlink -f $0)))"
+
+
+
+cd $DOTFILES_DIR
+git fetch --quiet
+NEEDS_UPDATE=$(git status | grep -c "Your branch is behind 'origin/master'")
+
+if [[ $NEEDS_UPDATE ]]; then
+    prompt="$DOTFILES_DIR repo has updates. Apply now?"
+    ynprompt -y "git pull" -n "exit 0" -p "$prompt"
+fi 
