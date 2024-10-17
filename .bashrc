@@ -146,39 +146,40 @@ function is_git_repo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-function _gb {
-  echo -n "$(tput setaf 130)$(git rev-parse --abbrev-ref HEAD 2> /dev/null)$(tput sgr0)"
-}
-
-function _gs {
-  local ST=$(git status --short 2> /dev/null)
-  local checkmark='\342\234\223'
-  if [ -n "$ST" ];then
-    echo -n "\[$(tput setaf 196)\]+\[$(tput sgr0)\]"
-  else
-    echo -n "\[$(tput setaf 34)\]$checkmark\[$(tput sgr0)\]"
-  fi
-}
-
-function _git_prompt {
-  if is_git_repo; then
-    echo -n " $(tput setaf 130)($(_gb) $(_gs)$(tput setaf 130))$(tput sgr0) "
-  fi
-}
-
 function set_prompt {
-  # blue(username)beige(@)green(hostname) red(:)
-  local prompt="\[$(tput setaf 6)\]\u\[$(tput setaf 222)\]@\[$(tput setaf 35)\]\h \[$(tput setaf 124)\]: "
-  # purple(shortpwd)optional(gitprompt)(uid_symbol)
-  prompt+="\[$(tput setaf 140)\]\W$(_git_prompt)"
-  local uid_symbol="\[$(tput setaf 35)\\$"
-  if [ $UID -eq 0 ]; then
-    uid_symbol=" \[$(tput setaf 124)\# "
+  local BLUE='\[$(tput setaf 6)\]'
+  local BEIGE='\[$(tput setaf 222)\]'
+  local GREEN='\[$(tput setaf 35)\]'
+  local RED='\[$(tput setaf 124)\]'
+  local PURPLE='\[$(tput setaf 140)\]'
+  local BROWN='\[$(tput setaf 130)\]'
+  local RESET='\[$(tput sgr0)\]'
+
+  local prompt="$BLUE\u$BEIGE@$GREEN\h $RED: $PURPLE\W "
+  # optional(gitprompt)(uid_symbol)
+
+  if is_git_repo; then
+    local BR="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+    prompt+=" $BROWN($BR "
+
+    local ST=$(git status --short 2> /dev/null)
+    local checkmark='\342\234\223'
+
+    if [ -n "$ST" ];then
+      prompt+="$RED+$BROWN) "
+    else
+      prompt+="$GREEN$checkmark$BROWN) "
+    fi
   fi
-  prompt+="$uid_symbol\[$(tput sgr0)\] "
+
+  if [ $UID -eq 0 ]; then
+    prompt+="$RED\# $RESET"
+  else
+    prompt+="$GREEN\\$ $RESET"
+  fi
   PS1=$prompt
 }
 
 PROMPT_COMMAND='set_prompt'
-set_prompt
+
 dotfiles-update
