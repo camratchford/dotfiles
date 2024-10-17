@@ -151,13 +151,13 @@ function _gb {
 }
 
 function _gs {
-    local ST=$(git status --short 2> /dev/null)
-    local checkmark='\342\234\223'
-    if [ -n "$ST" ];then
-      echo -n "\[$(tput setaf 196)\]+\[$(tput sgr0)\]"
-    else
-      echo -n "\[$(tput setaf 34)\]$checkmark\[$(tput sgr0)\]"
-    fi
+  local ST=$(git status --short 2> /dev/null)
+  local checkmark='\342\234\223'
+  if [ -n "$ST" ];then
+    echo -n "\[$(tput setaf 196)\]+\[$(tput sgr0)\]"
+  else
+    echo -n "\[$(tput setaf 34)\]$checkmark\[$(tput sgr0)\]"
+  fi
 }
 
 function _git_prompt {
@@ -165,12 +165,18 @@ function _git_prompt {
     echo -n " $(tput setaf 130)($(_gb) $(_gs)$(tput setaf 130))$(tput sgr0) "
   fi
 }
+
 function set_prompt {
+  # blue(username)beige(@)green(hostname) red(:)
+  local prompt="\[$(tput setaf 6)\]\u\[$(tput setaf 222)\]@\[$(tput setaf 35)\]\h \[$(tput setaf 124)\]: "
+  # purple(shortpwd)optional(gitprompt)(uid_symbol)
+  prompt+="\[$(tput setaf 140)\]\W$(_git_prompt)"
+  local uid_symbol="\[$(tput setaf 35)\\$"
   if [ $UID -eq 0 ]; then
-    PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]$(_git_prompt)\[\033[38;5;10m\]\#\[$(tput sgr0)\]] \[$(tput sgr0)\] "
-  else
-    PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]$(_git_prompt)\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
+    uid_symbol=" \[$(tput setaf 124)\# "
   fi
+  prompt+="$uid_symbol\[$(tput sgr0)\] "
+  PS1=$prompt
 }
 
 PROMPT_COMMAND='set_prompt'
