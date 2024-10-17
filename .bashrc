@@ -152,10 +152,11 @@ function _gb {
 
 function _gs {
     local ST=$(git status --short 2> /dev/null)
+    local checkmark='\342\234\223'
     if [ -n "$ST" ];then
-      echo -n "\[$(tput setaf 34)\]+\[$(tput sgr0)\]"
+      echo -n "\[$(tput setaf 196)\]+\[$(tput sgr0)\]"
     else
-      echo -n "\[$(tput setaf 196)\]-\[$(tput sgr0)\]"
+      echo -n "\[$(tput setaf 34)\]$checkmark\[$(tput sgr0)\]"
     fi
 }
 
