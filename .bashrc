@@ -142,10 +142,36 @@ fi
 ###################### set prompt colors #########################
 ##################################################################
 
-if [ $UID -eq 0 ]; then
-        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;196m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
-else
-        PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
-fi
+function is_git_repo {
+  git rev-parse --is-inside-work-tree &> /dev/null
+}
 
+function _gb {
+  echo -n "$(tput setaf 130)$(git rev-parse --abbrev-ref HEAD 2> /dev/null)$(tput sgr0)"
+}
+
+function _gs {
+    local ST=$(git status --short 2> /dev/null)
+    if [ -n "$ST" ];then
+      echo -n "\[$(tput setaf 34)\]+\[$(tput sgr0)\]"
+    else
+      echo -n "\[$(tput setaf 196)\]-\[$(tput sgr0)\]"
+    fi
+}
+
+function _git_prompt {
+  if is_git_repo; then
+    echo -n " $(tput setaf 130)($(_gb) $(_gs)$(tput setaf 130))$(tput sgr0) "
+  fi
+}
+function set_prompt {
+  if [ $UID -eq 0 ]; then
+    PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]$(_git_prompt)\[\033[38;5;10m\]\#\[$(tput sgr0)\]] \[$(tput sgr0)\] "
+  else
+    PS1="\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;79m\]\h\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;140m\]\W\[$(tput sgr0)\] \[$(tput sgr0)\]$(_git_prompt)\[\033[38;5;10m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
+  fi
+}
+
+PROMPT_COMMAND='set_prompt'
+set_prompt
 dotfiles-update
