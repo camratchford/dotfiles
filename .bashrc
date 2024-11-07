@@ -104,7 +104,7 @@ fi
 alias python="/usr/bin/python3"
 
 alias vi=vim
-if [ $(which nvim) ]; then
+if [ -f "$(which nvim)" ]; then
   alias vi=nvim
   export EDITOR=/usr/bin/nvim
 fi

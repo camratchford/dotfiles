@@ -1,3 +1,5 @@
 .idea
 .vscode
 .github
+/nvim/plugs/*
+/.vim/plugs/*
