@@ -131,4 +131,4 @@ call plug#end()
 colorscheme everforest
 " set virtualedit=all
 
-lua require("lua.init")
+lua require("init")
