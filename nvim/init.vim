@@ -9,9 +9,6 @@ set background=dark
 " autoindent
 set autoindent|set cindent
 
-" 2 space tabs
-set tabstop=2|set shiftwidth=2|set expandtab|set softtabstop=2
-
 " show matching brackets
 set showmatch
 
@@ -132,3 +129,7 @@ colorscheme everforest
 " set virtualedit=all
 
 lua require("init")
+
+
+set tabstop=4 shiftwidth=0 expandtab
+inoremap <S-Tab> <C-d>

@@ -1,6 +1,11 @@
+ require('everforest').setup {
+  background = "medium",
+  transparent_background_level = 0,
+  italics = true,
+  disable_italic_comments = true
+}
 
-
-require'nvim-treesitter.configs'.setup {
+require('nvim-treesitter.configs').setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   ensure_installed = { "c", "python", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "yaml" },
 
@@ -105,4 +110,4 @@ require("auto-save").setup({
   debug = false,
 })
 
-require('mkdnflow').setup({})
+
