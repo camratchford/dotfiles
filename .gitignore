@@ -3,3 +3,5 @@
 .github
 /nvim/plugs/*
 /.vim/plugs/*
+*.bak
+*.tmp
