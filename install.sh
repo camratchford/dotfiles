@@ -18,8 +18,7 @@ done
 if [ $(which nvim) ]; then
   mkdir -p ~/.config
   ln -fs $thisdir/nvim ~/.config
-  sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  sh -c 'curl -sfLo "$HOME/.local/share/nvim/site/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   nvim --headless +PlugInstall +qall 2> /dev/null
 fi
 
