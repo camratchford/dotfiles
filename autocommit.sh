@@ -11,7 +11,7 @@ cd "$THIS_DIR"
 
 function LogCmdExec() {
     CMD="$1"
-    ERR="$(exec $CMD 2>&1 > /dev/null)"
+    ERR="$(eval $CMD 2>&1 > /dev/null)"
     if [ $? != "0" ]; then
         /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $ERR"
         /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $CMD"
@@ -19,5 +19,5 @@ function LogCmdExec() {
 }
 
 LogCmdExec "git add -A"
-LogCmdExec 'git commit -m "Autocommit"'
+LogCmdExec 'git commit -m "Autocommit $(date)"'
 LogCmdExec "git push -f origin $DEFAULT_BRANCH"
