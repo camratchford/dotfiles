@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #
 # Bash functions to be imported via ~/.bashrc
 # They get their own file so we can track them seperately
@@ -17,6 +18,7 @@ function execurl() {
 # Args:
 #   $1 = hostname (or IP)
 #
+
 function newsshhost() {
   ssh-keygen -f ~/.ssh/known_hosts -R $1
   ip=$(grep $1 /etc/hosts | awk '{print $1}')
@@ -44,3 +46,11 @@ function err() {
   ansi --red "${err_format} $*" >&2
 }
 
+function logcmdexec() {
+    CMD="$1"
+    ERR="$(exec $CMD 2>&1 > /dev/null)"
+    if [ $? != "0" ]; then
+        /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $ERR"
+        /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $CMD"
+    fi
+}
