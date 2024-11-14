@@ -1,44 +1,36 @@
+
+
+
+" Visual bell rather than audio
 set vb
+" Mouse mode in visual and normal mode only, system mouse settings for insert mode
 set mouse=vn
+" real-time search results
 set incsearch
 
 " Theme
 set hidden
 set background=dark
 
-" autoindent
-set autoindent|set cindent
+set backup
+set history=50
+set backupdir=~/.vimbackup
+set backupext=.backup
 
-" show matching brackets
+" autoindent, highlight matching brackets
+set autoindent|set cindent
 set showmatch
 
 " show line numbers
-set nonumber
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+nmap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 imap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>i
 vmap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>v
 
-" make tab in v mode ident code
+" make tab indent, shift-tab unindent
 vmap <tab> >gv
 vmap <s-tab> <gv
-
-" make tab in normal mode ident code
 nmap <tab> I<tab><esc>
 nmap <s-tab> ^i<bs><esc>
-" https://vimawesome.com/plugin/commentary-vim
-" Map '/' to running 'gc' in visual mode, then going back into insert mode
-imap <c-_> <esc>vgci
-vmap <c-_> gc
-
-vmap <A-Down> <Down><C-n>
-vmap <A-Up> <Up><C-n>
-
-" paste mode - this will avoid unexpected effects when you
-" cut or copy some text from one window and paste it in Vim.
-set pastetoggle=<F6>
-
-" Turn plugin on
-filetype plugin indent on
 
 if executable("vi")
   set foldenable
@@ -46,23 +38,33 @@ if executable("vi")
   set foldmethod=marker
   set foldlevel=100
 endif
-set listchars=tab:>-,trail:-
-set statusline=%F%m%r%h%w\ %y\ %=[%l/%L,%04v](%p%%)
-set laststatus=2
 
 " Buffer navigation
-map <C-k> :bp<CR>
-map <C-j> :bn<CR>
-map <C-h> :tabp<CR>
-map <C-l> :tabn<CR>
+" map <C-k> :bp<CR>
+" map <C-j> :bn<CR>
+" map <C-h> :tabp<CR>
+" map <C-l> :tabn<CR>
 
-" File edit shortcuts
-let mapleader=','
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
+
+" https://github.com/mg979/vim-visual-multi/wiki/Mappings
+let map_leader='<C-A>'
+let g:VM_mouse_mappings = 1
+let g:VM_maps = {}
+let g:VM_maps["Select Cursor Down"] = '<C-A-Down>'
+let g:VM_maps["Select Cursor Up"] = '<C-A-Up>'
+let g:VM_maps["Mouse Cursor"] = '<A-LeftMouse>'
+let g:VM_maps["Visual Find"] = ''
+let g:VM_maps["Seek Next"] = ''
+let g:VM_maps["Seek Prev"] = ''
+
+" Find and Replace
+function! GetSelected()
+  normal gv"xy
+  let result = getreg("x")
+  normal gv
+  return result
+endfunc
+
 
 " Set wrapping
 set wrap
@@ -71,23 +73,10 @@ if executable("par")
     set formatprg=par\ -w80rq
 endif
 
-" vim bundles
 nnoremap <F5> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-" Syntax
-au BufRead,BufNewFile *.pp              set filetype=puppet
-
-set clipboard=unnamed
-
-
-" Shared 'buffer'
-vmap <C-c> :w! ~/.vimbuffer<CR>
-nmap <C-c> :.w! ~/vimbuffer<CR>
-" paste from buffer
-nmap <C-p> :r ~/.vimbuffer<CR>
-
-" Trailing Whitespace
+" Remove tailing whitespace when saved
 highlight default link EndOfLineSpace ErrorMsg
 match EndOfLineSpace / \+$/
 autocmd InsertEnter * hi link EndOfLineSpace Normal
@@ -95,15 +84,16 @@ autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 function! TrimWhiteSpace()
     %s/\s\+$//e
 endfunction
-autocmd FileWritePre    * :call TrimWhiteSpace()
-autocmd FileAppendPre   * :call TrimWhiteSpace()
-autocmd FilterWritePre  * :call TrimWhiteSpace()
-autocmd BufWritePre     * :call TrimWhiteSpace()
 
+function! WhenSave()
+    call TrimWhiteSpace()
+endfunction
 
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_post_args='--ignore=W504,E501'
-set number
+autocmd FileWritePre    * :call WhenSave()
+autocmd FileAppendPre   * :call WhenSave()
+autocmd FilterWritePre  * :call WhenSave()
+autocmd BufWritePre     * :call WhenSave()
+
 call plug#begin('~/.config/nvim/plugs')
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -123,6 +113,8 @@ Plug 'windwp/nvim-autopairs'
 Plug 'okuuva/auto-save.nvim', { 'tag': 'v1*' }
 Plug 'filipdutescu/renamer.nvim', { 'branch': 'master' }
 Plug 'jakewvincent/mkdnflow.nvim'
+Plug 'ziglang/zig.vim'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 
 colorscheme everforest

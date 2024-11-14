@@ -1,4 +1,4 @@
- require('everforest').setup {
+require('everforest').setup {
   background = "medium",
   transparent_background_level = 0,
   italics = true,
@@ -69,6 +69,20 @@ require('markdown-togglecheck').setup({
   remove = false,
 })
 
+require('nvim-search-and-replace').setup{
+    -- file patters to ignore
+    ignore = {'**/node_modules/**', '**/.git/**',  '**/.gitignore', '**/.gitmodules','build/**'},
+    -- save the changes after replace
+    update_changes = false,
+    -- keymap for search and replace
+    replace_keymap = '<C-F2>',
+    -- keymap for search and replace ( this does not care about ignored files )
+    replace_all_keymap = '<C-A-F2>',
+    -- keymap for search and replace
+    replace_and_save_keymap = '',
+    -- keymap for search and replace ( this does not care about ignored files )
+    replace_all_and_save_keymap = '',
+}
 
 require('nvim-ts-autotag').setup({
   opts = {
