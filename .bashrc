@@ -184,4 +184,4 @@ function set_prompt {
 
 PROMPT_COMMAND='set_prompt'
 
-dotfiles-update
+$HOME/bin/dotfiles-update
