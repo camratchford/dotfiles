@@ -74,6 +74,10 @@ export PATH="$HOME/zig:/sbin:/usr/sbin:/usr/local/bin:/snap/bin:$PATH"
 export EDITOR=/usr/bin/vim
 
 
+if [ -d "$HOME/.pulumi/bin" ]; then
+    export PATH="$HOME/.pulumi/bin:$PATH"
+fi
+
 #export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
 
@@ -185,3 +189,6 @@ function set_prompt {
 PROMPT_COMMAND='set_prompt'
 
 $HOME/bin/dotfiles-update
+
+# add Pulumi to the PATH
+export PATH=$PATH:/home/cam/.pulumi/bin
