@@ -97,8 +97,9 @@ alias l='ls -CF'
 alias lls="lxc ls"
 
 # Override some gnu tools with alternatives
-if [ $(which exa) ]; then
-  alias ls="$HOME/bin/exa --long --git --icons --group-directories-first --no-permissions --octal-permissions"
+EXA_PATH="$(which exa)"
+if [ -f "$EXA_PATH" ]; then
+  alias ls="$EXA_PATH --long --icons --group-directories-first --no-permissions --octal-permissions"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export EXA_COLORS="$LS_COLORS"
@@ -166,7 +167,7 @@ function set_prompt {
 
   if is_git_repo; then
     local BR="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
-    prompt+=" $BROWN($BR "
+    prompt+="$BROWN($BR "
 
     local ST=$(git status --short 2> /dev/null)
     local checkmark='\342\234\223'
