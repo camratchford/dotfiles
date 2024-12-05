@@ -118,7 +118,7 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 
 colorscheme everforest
-" set virtualedit=all
+set virtualedit=all
 
 lua require("init")
 
