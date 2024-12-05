@@ -17,7 +17,7 @@ require('nvim-treesitter.configs').setup {
   auto_install = true,
 
   -- List of parsers to ignore installing (or "all")
-  ignore_install = { "javascript" },
+  ignore_install = { "all"},
 
   ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
@@ -71,7 +71,15 @@ require('markdown-togglecheck').setup({
 
 require('nvim-search-and-replace').setup{
     -- file patters to ignore
-    ignore = {'**/node_modules/**', '**/.git/**',  '**/.gitignore', '**/.gitmodules','build/**'},
+    ignore = {
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/.gitignore',
+        '**/.gitmodules',
+        'build/**',
+        '**/venv/**',
+        '**/.venv/**'
+    },
     -- save the changes after replace
     update_changes = false,
     -- keymap for search and replace
@@ -95,9 +103,6 @@ require('nvim-ts-autotag').setup({
   -- Empty by default, useful if one of the "opts" global settings
   -- doesn't work well in a specific filetype
   per_filetype = {
-    ["html"] = {
-      enable_close = false
-    }
   }
 })
 
