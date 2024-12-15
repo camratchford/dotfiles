@@ -99,7 +99,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nfrid/treesitter-utils'
-Plug 'neanias/everforest-nvim', { 'branch': 'main' }
+Plug 'neanias/everforest-nvim'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 's1n7ax/nvim-search-and-replace'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
