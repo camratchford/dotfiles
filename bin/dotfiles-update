@@ -8,5 +8,5 @@ git fetch --quiet
 NEEDS_UPDATE=$(git status | grep -c "Your branch is behind 'origin/master'")
 if [[ $NEEDS_UPDATE -eq 1 ]]; then
     prompt="$DOTFILES_DIR repo has updates. Apply now?"
-    ynprompt -y "git pull" -n "exit 0" -p "$prompt"
-fi 
+    $DOTFILES_DIR/bin/ynprompt -y "git pull 2&>1 /dev/null" -n "exit 0" -p "$prompt"
+fi
