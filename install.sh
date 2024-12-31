@@ -22,10 +22,14 @@ if [ $(which nvim) ]; then
   nvim --headless +PlugInstall +qall 2> /dev/null
 fi
 
-
-
+pushd ~/dotfiles/bin 1> /dev/null 2> /dev/null
+if ! [ -f ansi ]; then
+  wget --quiet https://raw.githubusercontent.com/fidian/ansi/refs/heads/master/ansi
+  chmod +x ansi
+  popd 1> /dev/null 2> /dev/null
+fi
 ln -fs ~/dotfiles/bin ~/
-ln -fs ~/dotfiles/.vim realpath ~/
+ln -fs ~/dotfiles/.vim ~/
 
 
 # Export github credentials for ~/.git-credentials 'store' credential helper
