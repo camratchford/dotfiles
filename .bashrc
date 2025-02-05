@@ -99,7 +99,7 @@ alias lls="lxc ls"
 # Override some gnu tools with alternatives
 EXA_PATH="$(which exa)"
 if [ -f "$EXA_PATH" ]; then
-  alias ls="$EXA_PATH --long --icons --group-directories-first --no-permissions --octal-permissions"
+  alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export EXA_COLORS="$LS_COLORS"
