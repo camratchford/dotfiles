@@ -54,3 +54,7 @@ function logcmdexec() {
         /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $CMD"
     fi
 }
+
+function isInstalled {
+    dpkg-query -f='${Package}\n' -W | grep -q "$1" > /dev/null
+}

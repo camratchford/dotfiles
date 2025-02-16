@@ -51,8 +51,6 @@ fi
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # enable programmable completion features
 if ! shopt -oq posix; then
@@ -80,67 +78,37 @@ fi
 
 #export PAGER="/usr/share/vim/vim82/macros/less.sh"
 
-
-##################################################################
-###################### Alias definitions #########################
-##################################################################
-
-alias http='python3 -m http.server'
-alias json='python3 -m json.tool'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# LXC aliases
-alias lls="lxc ls"
-
-# Override some gnu tools with alternatives
-EXA_PATH="$(which exa)"
-if [ -f "$EXA_PATH" ]; then
-  alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions"
-  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
-  LS_COLORS=$(< ~/.LS_COLORS)
-  export EXA_COLORS="$LS_COLORS"
-fi
-
-if [ $(which fd) ]; then
-  alias find="$HOME/bin/fd"
-fi
-alias python="/usr/bin/python3"
-
-alias vi=vim
-if [ -f "$(which nvim)" ]; then
-  alias vi=nvim
-  export EDITOR=/usr/bin/nvim
-fi
-
 ##############################################################################
 ###################### dot-sourcing / sourcing files #########################
 ##############################################################################
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f "$HOME/.bash_aliases" ]; then
+    . "$HOME/.bash_aliases"
 fi
 
-# Import .bashrc.local if it exists
-if [ -f ~/.bashrc.local ]; then
-    . ~/.bashrc.local
+function isASCII {
+    file --mime-encoding "$1" | grep -q 'us-ascii'
+}
+
+# Import all files in ~/.local/bash-libs if the dir exists
+BASHLIBS_DIR="$HOME/.local/bash-libs"
+if [ -d "$BASHLIBS_DIR" ]; then
+    shopt -s nullglob
+    for LIBFILE in "$BASHLIBS_DIR"/*; do
+        if [[ -f "$LIBFILE" && isASCII "$LIBFILE" ]]; then
+            . "$LIBFILE"
+        fi
+    done
 fi
 
-# Import bashrc.lib if it exists
-if [ -f ~/.bashrc.lib ]; then
-    . ~/.bashrc.lib
-fi
-
+# Set env vars for ansible
 gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
-if [ "$gh_token" ]; then
+if [ -n "$gh_token" ]; then
   export GITHUB_TOKEN="${gh_token}"
 fi
 
 gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
-if [ "$gh_username" ]; then
+if [ -n "$gh_username" ]; then
   export GITHUB_USERNAME="${gh_username}"
 fi
 
@@ -149,11 +117,12 @@ fi
 ###################### set prompt colors #########################
 ##################################################################
 
-function is_git_repo {
+function isGitRepo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-function set_prompt {
+function setPS1Prompt {
+  # Checks if your PWD is a git repo, and shows the update status in PS1
   local BLUE='\[$(tput setaf 6)\]'
   local BEIGE='\[$(tput setaf 222)\]'
   local GREEN='\[$(tput setaf 35)\]'
@@ -163,9 +132,9 @@ function set_prompt {
   local RESET='\[$(tput sgr0)\]'
 
   local prompt="$BLUE\u$BEIGE@$GREEN\h $RED: $PURPLE\W "
-  # optional(gitprompt)(uid_symbol)
 
-  if is_git_repo; then
+
+  if isGitRepo; then
     local BR="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
     prompt+="$BROWN($BR "
 
@@ -187,9 +156,12 @@ function set_prompt {
   PS1=$prompt
 }
 
-PROMPT_COMMAND='set_prompt'
+PROMPT_COMMAND='setPS1Prompt'
 
-$HOME/bin/dotfiles-update
+##################################################################
+######################### Auto-update ############################
+##################################################################
 
-# add Pulumi to the PATH
-export PATH=$PATH:/home/cam/.pulumi/bin
+if [[ -f "$HOME/bin/dotfiles-update" ]]; then
+  $HOME/bin/dotfiles-update
+fi
