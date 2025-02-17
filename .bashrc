@@ -68,27 +68,32 @@ fi
 ########################################################################
 
 if [ -f "$HOME/.bash_aliases" ]; then
-    . "$HOME/.bash_aliases"
+  . "$HOME/.bash_aliases"
 fi
 
-function isASCII {
-    file --mime-encoding "$1" | grep -q 'us-ascii'
+function is-shell-script {
+  file -i "$1" | grep -q "text/x-shellscript"
 }
 
 # Import all files in ~/.local/bash-libs if the dir exists
 BASHLIBS_DIR="$HOME/.local/lib/bash-libs"
 if [ -d "$BASHLIBS_DIR" ]; then
-    shopt -s nullglob
-    for LIBFILE in "$BASHLIBS_DIR"/*; do
-        if [[ -f "$LIBFILE" ]] && isASCII "$LIBFILE"; then
-            . "$LIBFILE"
-        fi
-    done
+  shopt -s nullglob
+  for LIBFILE in "$BASHLIBS_DIR"/*; do
+    if [[ -f "$LIBFILE" ]] && is-shell-script "$LIBFILE"; then
+      . "$LIBFILE"
+    fi
+  done
 fi
 
 ########################################################################
 ###################### declare / set variables #########################
 ########################################################################
+
+EDITOR="/usr/bin/vim"
+if [[ -f "$(which nvim)" ]]; then
+  EDITOR="$(which nvim)"
+fi
 
 if [ -d "$HOME/zig" ]; then
   append-path "$HOME/zig"
@@ -98,7 +103,8 @@ if [ -d "$HOME/.pulumi/bin" ]; then
   append-path "$HOME/.pulumi/bin:$PATH"
 fi
 
-EDITOR=/usr/bin/vim
+append-path "$HOME/bin"
+append-path "$HOME/.local/bin"
 
 # Set env vars for ansible
 gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
@@ -115,11 +121,11 @@ fi
 ###################### set prompt colors #########################
 ##################################################################
 
-function isGitRepo {
+function is-git-repo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-function setPS1Prompt {
+function set-ps1-prompt {
   # Checks if your PWD is a git repo, and shows the update status in PS1
   local BLUE='\[$(tput setaf 6)\]'
   local BEIGE='\[$(tput setaf 222)\]'
@@ -132,7 +138,7 @@ function setPS1Prompt {
   local prompt="$BLUE\u$BEIGE@$GREEN\h $RED: $PURPLE\W "
 
 
-  if isGitRepo; then
+  if is-git-repo; then
     local BR="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
     prompt+="$BROWN($BR "
 
@@ -154,7 +160,7 @@ function setPS1Prompt {
   PS1=$prompt
 }
 
-PROMPT_COMMAND='setPS1Prompt'
+PROMPT_COMMAND='set-ps1-prompt'
 
 ##################################################################
 ######################### Auto-update ############################
