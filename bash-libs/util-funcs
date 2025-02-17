@@ -1,16 +1,23 @@
 #!/bin/bash
 
-#
-# Bash functions to be imported via ~/.bashrc
-# They get their own file so we can track them seperately
-#
-
 # Executes the shell code from a URL in BASH
 # Args:
 #   $1 = URL
 #
 function execurl() {
   bash <(curl -s $1)
+}
+
+# Safe append to PATH
+# Args:
+#   $1 = path that you wish to appear in PATH
+#
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+  export PATH
 }
 
 # Scrubs the ~/.ssh/known_hosts file of any fingerprints assoicated to the hostname provided
@@ -21,7 +28,7 @@ function execurl() {
 
 function newsshhost() {
   ssh-keygen -f ~/.ssh/known_hosts -R $1
-  ip=$(grep $1 /etc/hosts | awk '{print $1}')
+  local ip=$(grep $1 /etc/hosts | awk '{print $1}')
   if [[ -n $ip ]]; then
     ssh-keygen -f ~/.ssh/known_hosts -R $ip
   fi
@@ -36,25 +43,37 @@ function newsshhost() {
   ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
 }
 
-# Logs the text to stderr, formatted with the date.
+# Logs the text to STDERR in red, formatted with the date.
 # Args:
 #   $* = Error Message
 #
 
-function err() {
+function err {
   err_format="[$(date +'%Y-%m-%dT%H:%M:%S%z')]:"
   ansi --red "${err_format} $*" >&2
 }
 
+# Executes the given command and logs to syslog
+#  - Logs the successful execution of a command to syslog with the severity INFO if RC = 0
+#  - Logs the contents of STDERR with severity ERROR if RC != 0
+# Args:
+#   $1 = Command to execute
+#
 function logcmdexec() {
-    CMD="$1"
-    ERR="$(eval $CMD 2>&1 > /dev/null)"
-    if [ $? != "0" ]; then
-        /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $ERR"
-        /usr/bin/logger -t ERROR -i "$SCRIPT_NAME : $CMD"
-    fi
+  local CALLER_INFO="$(caller 0)"
+  local LINE_NO="$(echo "$CALLER_INFO" | awk '{print 1}')"
+  local FUNC_NAME="$(echo "$CALLER_INFO" | awk '{print 2}')"
+  local SCRIPT_PATH="$(realpath "$(echo "$CALLER_INFO" | awk '{print 3}')")"
+
+  local ERR="$(eval $CMD 2>&1 > /dev/null)"
+  if [ $? != "0" ]; then
+    /usr/bin/logger -t ERROR -i "$SCRIPT_PATH:$SCRIPT_NAME:$LINE_NO - $ERR"
+    exit
+  fi
+
+  /usr/bin/logger -t INFO -i "$SCRIPT_PATH:$SCRIPT_NAME:$LINE_NO - Completed successfully"
 }
 
-function isInstalled {
-    dpkg-query -f='${Package}\n' -W | grep -q "$1" > /dev/null
+function is-installed {
+  dpkg-query -f='${Package}\n' -W | grep -q "$1" > /dev/null
 }

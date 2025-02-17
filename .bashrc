@@ -63,16 +63,32 @@ if ! shopt -oq posix; then
   fi
 fi
 
+########################################################################
+################### dot-sourcing / sourcing files ######################
+########################################################################
+
+if [ -f "$HOME/.bash_aliases" ]; then
+    . "$HOME/.bash_aliases"
+fi
+
+function isASCII {
+    file --mime-encoding "$1" | grep -q 'us-ascii'
+}
+
+# Import all files in ~/.local/bash-libs if the dir exists
+BASHLIBS_DIR="$HOME/.local/lib/bash-libs"
+if [ -d "$BASHLIBS_DIR" ]; then
+    shopt -s nullglob
+    for LIBFILE in "$BASHLIBS_DIR"/*; do
+        if [[ -f "$LIBFILE" ]] && isASCII "$LIBFILE"; then
+            . "$LIBFILE"
+        fi
+    done
+fi
 
 ########################################################################
 ###################### declare / set variables #########################
 ########################################################################
-function append-path {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) PATH="$PATH:$1" ;;
-  esac
-}
 
 if [ -d "$HOME/zig" ]; then
   append-path "$HOME/zig"
@@ -93,31 +109,6 @@ fi
 gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
 if [ -n "$gh_username" ]; then
   export GITHUB_USERNAME="${gh_username}"
-fi
-
-#export PAGER="/usr/share/vim/vim82/macros/less.sh"
-
-##############################################################################
-###################### dot-sourcing / sourcing files #########################
-##############################################################################
-
-if [ -f "$HOME/.bash_aliases" ]; then
-    . "$HOME/.bash_aliases"
-fi
-
-function isASCII {
-    file --mime-encoding "$1" | grep -q 'us-ascii'
-}
-
-# Import all files in ~/.local/bash-libs if the dir exists
-BASHLIBS_DIR="$HOME/.local/bash-libs"
-if [ -d "$BASHLIBS_DIR" ]; then
-    shopt -s nullglob
-    for LIBFILE in "$BASHLIBS_DIR"/*; do
-        if [[ -f "$LIBFILE" && isASCII "$LIBFILE" ]]; then
-            . "$LIBFILE"
-        fi
-    done
 fi
 
 ##################################################################

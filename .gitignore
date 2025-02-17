@@ -1,8 +1,8 @@
 .idea
 .vscode
 .github
-/bin/ansi
-/nvim/plugs/*
-/.vim/plugs/*
+bin/ansi
+nvim/plugs/*
+.vim/plugs/*
 *.bak
 *.tmp
