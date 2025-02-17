@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function rand-b64 {
+
   local HELP=$(cat <<EOF
 Prints a random integer between a min and max integer
 
@@ -9,10 +10,10 @@ Usage:
     rand-b64 -h
 
 Options:
-    -h       Print this message and exits
+    -h       Print this message and exit
 
 Arguments:
-    SIZE_INT The bit length of the b64-encoded integer you wish to generate
+    SIZE_INT The byte length of the b64-encoded integer you wish to generate
              (Defaults to 16 if no arguments are passed)
 
 Examples:
@@ -21,29 +22,39 @@ Examples:
 
     rand-b64 64
     > 81YJCeyUYQthGARxX5EJFoNIs+pZUgvQimmyeMS5mCCqGkXZBkF38sdfsn88OtUtmev2pCcpuVrlx6J48bdi3Q
-
 EOF
 )
-
-  while getopts :h: flag
-  do
-    case "${flag}" in
-      h | *) echo $HELP; exit 0;;
+  while getopts ":h-:" opt; do
+    case "$opt" in
+      h)
+        printf "%s\n" "$HELP" && return 0
+        ;;
+      -)
+        case "${OPTARG}" in
+          help)
+            printf "%s\n" "$HELP" && return 0
+            ;;
+          *)
+            echo "Invalid option: --${OPTARG}" >&2 && return 1
+            ;;
+        esac
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2 && return 1
+        ;;
     esac
   done
+  shift $((OPTIND - 1))
 
   local NUM_LEN=$1
-  if ! [ -n "$1" ]; then
+  if [[ -z "$1" ]]; then
     NUM_LEN=16
   fi
-  local RESULT="$(dd if=/dev/urandom status=none count=1 bs=$NUM_LEN | base64 -w 0 | tr -d '=')"
+  local RESULT="$(head -c "$NUM_LEN" /dev/urandom | base64 -w 0 | tr -d '=')"
   echo "$RESULT"
-
 }
 
-
 function rand-int {
-
   local HELP=$(cat <<EOF
 Prints a random integer between a min and max integer
 
@@ -64,36 +75,65 @@ Arguments:
 
 Examples:
     # Produces a random integer in the range of 10 to 100
-    rand_int 10 101
+    rand-int 10 101
     > 28
     # Produces a random integer in the range of 0 to 9
-    rand_int 10
+    rand-int 10
     > 9
 
 EOF
 )
 
-  if [[ $# -eq 0 ]]; then
-    echo $HELP
-    exit
-  fi
-
-  while getopts :h: flag
-  do
-    case "${flag}" in
-      h | *) help; exit 0;;
+  while getopts ":h-:" opt; do
+    case "$opt" in
+      h)
+        printf "%s\n" "$HELP"
+        return 0
+        ;;
+      -)
+        case "${OPTARG}" in
+          help)
+            printf "%s\n" "$HELP"
+            return 0
+            ;;
+          *)
+            echo "Invalid option: --${OPTARG}" >&2
+            return 1
+            ;;
+        esac
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        return 1
+        ;;
     esac
   done
+  shift $((OPTIND - 1))  # Correct shift
 
-  local MIN_NUM=$1
-  local MAX_NUM=$2
-  if ! [ $2 ]; then
-    MIN_NUM=0
-    MAX_NUM=$1
+  local MIN_NUM=0
+  local MAX_NUM
+
+  if [[ -n "$2" ]]; then
+    MIN_NUM="$1"
+    MAX_NUM="$2"
+  else
+    MAX_NUM="$1"
   fi
 
-  local B64_NUM="$(rand-b64 16)"
+  # Ensure valid numeric inputs
+  if ! [[ "$MIN_NUM" =~ ^[0-9]+$ ]] || ! [[ "$MAX_NUM" =~ ^[0-9]+$ ]]; then
+    echo "Error: Arguments must be integers." >&2
+    return 1
+  fi
+  if (( MIN_NUM >= MAX_NUM )); then
+    echo "Error: MIN_INT must be less than MAX_INT." >&2
+    return 1
+  fi
 
-  local INT_NUM=$(echo $B64_NUM | hexdump -v -e '/8 "0x%04x\n"' | xargs printf "%d\n" | head -n 1)
-  echo "$MIN_NUM + $INT_NUM % ($MAX_NUM - $MIN_NUM)" | bc
+  # Generate random 64-bit integer
+  local B64_NUM="$(rand-b64 8)"
+  local INT_NUM=$(( 0x$(echo "$B64_NUM" | hexdump -v -e '/8 "%016x"') ))
+
+  echo $(( MIN_NUM + INT_NUM % (MAX_NUM - MIN_NUM) ))
 }
+

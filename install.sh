@@ -24,7 +24,7 @@ done
 if [[ -d "$HOME/.local/bash-libs" ]]; then
     rm -rf "$HOME/.local/bash-libs"
 fi
-ln -fs "$THISDIR/bash-libs" "$HOME/.local/lib/bash-libs"
+ln -fs "$THISDIR/bash-libs" "$HOME/.local/lib"
 
 if [[ -f "$(which nvim)" ]]; then
   if ! $(check-nvim-verison 2>&1 > /dev/null); then
