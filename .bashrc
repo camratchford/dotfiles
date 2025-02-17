@@ -67,13 +67,32 @@ fi
 ########################################################################
 ###################### declare / set variables #########################
 ########################################################################
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+}
 
-export PATH="$HOME/zig:/sbin:/usr/sbin:/usr/local/bin:/snap/bin:$PATH"
-export EDITOR=/usr/bin/vim
-
+if [ -d "$HOME/zig" ]; then
+  append-path "$HOME/zig"
+fi
 
 if [ -d "$HOME/.pulumi/bin" ]; then
-    export PATH="$HOME/.pulumi/bin:$PATH"
+  append-path "$HOME/.pulumi/bin:$PATH"
+fi
+
+EDITOR=/usr/bin/vim
+
+# Set env vars for ansible
+gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
+if [ -n "$gh_token" ]; then
+  export GITHUB_TOKEN="${gh_token}"
+fi
+
+gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
+if [ -n "$gh_username" ]; then
+  export GITHUB_USERNAME="${gh_username}"
 fi
 
 #export PAGER="/usr/share/vim/vim82/macros/less.sh"
@@ -100,18 +119,6 @@ if [ -d "$BASHLIBS_DIR" ]; then
         fi
     done
 fi
-
-# Set env vars for ansible
-gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
-if [ -n "$gh_token" ]; then
-  export GITHUB_TOKEN="${gh_token}"
-fi
-
-gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
-if [ -n "$gh_username" ]; then
-  export GITHUB_USERNAME="${gh_username}"
-fi
-
 
 ##################################################################
 ###################### set prompt colors #########################

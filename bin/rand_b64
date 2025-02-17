@@ -1,7 +1,0 @@
-#!/bin/bash
-num=$1
-if ! [ $1 ]; then
-  num=16
-fi
-
-dd if=/dev/urandom status=none count=1 bs=$num | base64 | tr -d '='
