@@ -1,23 +1,28 @@
 
-
+# Configure exa to replace ls and set up desired LS_COLORS
 if [[ -f "$(which exa)" ]]; then
   alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions"
-  # Set the 24bit colors I want exa to use
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export EXA_COLORS="$LS_COLORS"
 fi
+
+# Standard ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+fi
 
-# Add an "alert" alias for long running commands.  Use like so:
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# Various handy python commands
 if [[ -f "/usr/bin/python3" ]]; then
   alias python="/usr/bin/python3"
   alias http="python -m http.server"

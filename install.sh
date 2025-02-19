@@ -24,6 +24,8 @@ done
 if [[ -d "$HOME/.local/bash-libs" ]]; then
     rm -rf "$HOME/.local/bash-libs"
 fi
+
+mkdir -p "$HOME/.local/lib"
 ln -fs "$THISDIR/bash-libs" "$HOME/.local/lib"
 
 if [[ -f "$(which nvim)" ]]; then
@@ -67,7 +69,7 @@ else
   gh_token="${GITHUB_TOKEN}"
 fi
 
-if [ -L "$HOME/.git-credentials" ]; then
+if [ -f "$HOME/.git-credentials" ]; then
   rm -f "$HOME/.git-credentials"
 fi
 

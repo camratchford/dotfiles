@@ -1,12 +1,31 @@
 #!/bin/bash
 
+
+function arbcol {
+  if [ $# -gt 0 ]; then
+    ifs='-F'"$1"
+    shift || true
+  else
+    ifs="-F "
+  fi
+  b=$(basename $1)
+  awk "$ifs" '{print $'${b#col}'}' "$@"
+
+}
+
+
 # Executes the shell code from a URL in BASH
 # Args:
 #   $1 = URL
-#
-function execurl() {
+function execurl {
   bash <(curl -s $1)
 }
+
+# Executes tput commands to remove the previous row of terminal text
+function del-prev-line {
+  tput cuu1 && tput el
+}
+
 
 # Reads the first line in a file into a variable (found in /usr/lib/git-core/git-sh-prompt as '__git_eread')
 # Args:
