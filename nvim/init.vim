@@ -18,7 +18,7 @@ set backupdir=~/.vimbackup
 set backupext=.backup
 
 " autoindent, highlight matching brackets
-set autoindent|set cindent
+set cindent
 set showmatch
 
 " show line numbers
@@ -31,6 +31,12 @@ vmap <tab> >gv
 vmap <s-tab> <gv
 nmap <tab> I<tab><esc>
 nmap <s-tab> ^i<bs><esc>
+inoremap <S-Tab> <C-d>
+" Ensure that my precious tabstops are set
+autocmd FileType html setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType markdown setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType xml setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 expandtab
 
 if executable("vi")
   set foldenable
@@ -121,7 +127,3 @@ colorscheme everforest
 set virtualedit=all
 
 lua require("init")
-
-
-set tabstop=4 shiftwidth=0 expandtab
-inoremap <S-Tab> <C-d>
