@@ -25,6 +25,7 @@ if [[ -d "$HOME/.local/bash-libs" ]]; then
     rm -rf "$HOME/.local/bash-libs"
 fi
 
+mkdir -p "$HOME/.local/bin"
 mkdir -p "$HOME/.local/lib"
 ln -fs "$THISDIR/bash-libs" "$HOME/.local/lib"
 
@@ -43,9 +44,23 @@ if [[ -f "$(which nvim)" ]]; then
   nvim --headless PlugInstall +qall 2>&1 > /dev/null
 fi
 
-if ! [[ -f "$(which ansi)" ]]; then
-  curl -sfLo "$HOME/dotfiles/bin/ansi" https://raw.githubusercontent.com/fidian/ansi/refs/heads/master/ansi
-  chmod +x ansi
+if ! [[ -f "$HOME/.local/bin" ]]; then
+  curl -sfLo "$HOME/.local/bin/ansi" https://raw.githubusercontent.com/fidian/ansi/refs/heads/master/ansi
+  chmod +x "$HOME/.local/bin/ansi"
+fi
+
+if ! [ -f "$HOME/.local/bin/exa" ]; then
+  # This version supports the '--git' and '--git-ignore' flags, which are awfully handy in tree mode
+  # Alternatively, use the apt package
+  curl -sfLo "$HOME/exa" --create-directories https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-v0.10.1.zip
+  unzip -d "$HOME/exa" "$HOME/exa/exa.zip"
+  install -Dm755 "$HOME/exa/bin/exa" "$HOME/.local/bin"
+  install -Dm644 "$HOME/exa/completions/exa.bash" "$HOME/.local/share/bash-completion/completions/exa"
+  install -Dm644 "$HOME/exa/completions/exa.fish" "$HOME/.local/share/fish/completions/exa.fish"
+  install -Dm644 "$HOME/exa/completions/exa.zsh" "$HOME/.local/share/zsh/site-functions/_exa"
+  install -Dm644 "$HOME/exa/man/exa.1" "$HOME/.local/share/man/man1/exa.1"
+  install -Dm644 "$HOME/exa/man/exa_colors.5" "$HOME/.local//share/man/man5/exa_colors.5"
+  rm -rf "$HOME/exa"
 fi
 
 ln -fs "$HOME/dotfiles/bin" "$HOME/"

@@ -1,7 +1,7 @@
 
 # Configure exa to replace ls and set up desired LS_COLORS
-if [[ -f "$(which exa)" ]]; then
-  alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions"
+if [[ -f "$HOME/.local/bin/exa" ]]; then
+  alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions --git"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export EXA_COLORS="$LS_COLORS"
@@ -15,7 +15,6 @@ alias l='ls -CF'
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-  alias ls='ls --color=auto'
   alias grep='grep --color=auto'
   alias fgrep='fgrep --color=auto'
   alias egrep='egrep --color=auto'

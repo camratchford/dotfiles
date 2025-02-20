@@ -47,9 +47,36 @@ if [ -x /usr/bin/dircolors ]; then
   alias egrep='egrep --color=auto'
 fi
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+########################################################################
+################### Functions required in .bashrc ######################
+########################################################################
+
+function is-shell-script {
+  file -i "$1" | grep -q "text/x-shellscript"
+}
+
+function dotsource-parts {
+  local SOURCE_DIR="$1"
+  if [[ -d "$SOURCE_DIR" ]]; then
+    for file in "$SOURCE_DIR"/*; do
+      if [[ -f "$file" ]] && is-shell-script "$file"; then
+        . "$file"
+      fi
+    done
+  fi
+}
+
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+  export PATH
+}
+
+########################################################################
+################### dot-sourcing / sourcing files ######################
+########################################################################
 
 
 # enable programmable completion features
@@ -59,31 +86,21 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
     # not in original, but should be
-    run-parts $HOME/.bash_completions/
+    dotsource-parts "$HOME/.bash_completions"
+    dotsource-parts "$HOME/.local/share/bash-completion"
   fi
 fi
-
-########################################################################
-################### dot-sourcing / sourcing files ######################
-########################################################################
 
 if [ -f "$HOME/.bash_aliases" ]; then
   . "$HOME/.bash_aliases"
 fi
 
-function is-shell-script {
-  file -i "$1" | grep -q "text/x-shellscript"
-}
 
 # Import all files in ~/.local/bash-libs if the dir exists
 BASHLIBS_DIR="$HOME/.local/lib/bash-libs"
 if [ -d "$BASHLIBS_DIR" ]; then
   shopt -s nullglob
-  for LIBFILE in "$BASHLIBS_DIR"/*; do
-    if [[ -f "$LIBFILE" ]] && is-shell-script "$LIBFILE"; then
-      . "$LIBFILE"
-    fi
-  done
+  dotsource-parts "$BASHLIBS_DIR"
 fi
 
 ########################################################################

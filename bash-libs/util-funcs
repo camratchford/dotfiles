@@ -1,20 +1,5 @@
-#!/bin/bash
+#!/bin/bas0
 
-
-function arbcol {
-  if [ $# -gt 0 ]; then
-    ifs='-F'"$1"
-    shift || true
-  else
-    ifs="-F "
-  fi
-  b=$(basename $1)
-  awk "$ifs" '{print $'${b#col}'}' "$@"
-
-}
-
-
-# Executes the shell code from a URL in BASH
 # Args:
 #   $1 = URL
 function execurl {
@@ -34,18 +19,6 @@ function del-prev-line {
 
 function read-file-header {
   test -r "$1" && IFS=$'\r\n' read "$2" <"$1"
-}
-
-# Safe append to PATH
-# Args:
-#   $1 = path that you wish to appear in PATH
-#
-function append-path {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) PATH="$PATH:$1" ;;
-  esac
-  export PATH
 }
 
 # Scrubs the ~/.ssh/known_hosts file of any fingerprints assoicated to the hostname provided
@@ -102,6 +75,4 @@ function logcmdexec() {
   /usr/bin/logger -t INFO -i "$SCRIPT_PATH:$SCRIPT_NAME:$LINE_NO - Completed successfully"
 }
 
-function is-installed {
-  dpkg-query -f='${Package}\n' -W | grep -q "$1" > /dev/null
-}
+
