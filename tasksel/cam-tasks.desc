@@ -1,0 +1,69 @@
+Description: Cam's Tools
+ .
+Relevance: 7
+Task: cam-tools
+Section: cam-tools
+
+Task: cam-admin-tools
+Parent: cam-tools
+Section: cam-tools
+Description: Various admin tools
+ This package installs the following:
+ - ncdu
+ - net-tools
+ - jq
+ - unzip
+Test-new-install: mark show
+Key:
+ ncdu
+ net-tools
+ jq
+ unzip
+
+Task: cam-cli-tools
+Parent: cam-tools
+Section: cam-tools
+Description: Various CLI tools
+ This package installs the following:
+ - bosh
+ - bar
+Test-new-install: mark show
+Key:
+ bosh
+ bar
+
+Task: cam-clibs
+Parent: cam-tools
+Section: cam-tools
+Description: Libraries for C/C++ development
+Test-new-install: mark show
+Key:
+ make
+ cmake
+ cmake-curses-gui
+ bison
+ flex
+ gettext
+ texinfo
+ libncurses5-dev
+ libncursesw5-dev
+ xxd
+ gperf
+ automake
+ libtool
+ pkg-config
+ build-essential
+ gperf
+ genromfs
+ libgmp-dev
+ libmpc-dev
+ libmpfr-dev
+ libisl-dev
+ binutils-dev
+ libelf-dev
+ libexpat-dev
+ gcc-multilib
+ g++-multilib
+ picocom
+ u-boot-tools
+ util-linux

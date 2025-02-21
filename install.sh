@@ -21,6 +21,11 @@ for file in $DOTFILES; do
   ln -fs "$file" "$HOME/$file_name"
 done
 
+DOTDIRS=$(find "$THISDIR" -maxdepth 1 -type d -name ".*" ! -name ".git" -o -name ".git-templates")
+for dir in $DOTDIRS; do
+  ln -fs "$dir" "$HOME"
+done
+
 if [[ -d "$HOME/.local/bash-libs" ]]; then
     rm -rf "$HOME/.local/bash-libs"
 fi

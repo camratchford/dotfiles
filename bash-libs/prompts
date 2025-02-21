@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+function del-prev-line {
+  tput cuu1 && tput el
+}
+
 function prompt-yn {
   OPTIND=1
 HELP=$(cat <<EOF
@@ -32,10 +37,21 @@ Examples:
     fi
 EOF
 )
+
  HELP=$(printf "%s" "$HELP" | sed -e 's/++/\\/' )
  PROMPT=""
  YESCOMMAND=""
  NOCOMMAND=""
+ # Import ansi if it isn't already
+ if ! which ansi 2>&1 > /dev/null; then
+   LOGNAME_HOME="$(eval echo ~$(logname))"
+   if [[ -f "$LOGNAME_HOME/.local/bin/ansi" ]]; then
+     PATH="$LOGNAME_HOME/.local/bin:$PATH"
+   else
+     exit "ansi is not available at $LOGNAME_HOME/.local/bin/ansi"
+   fi
+ fi
+
 
  if [[ ! -n $1 ]]; then
    printf "%s\n" "$HELP"
@@ -91,18 +107,18 @@ EOF
     read yn
     case $yn in
       [Yy]*)
-        del-prev-line
+	del-prev-line
         $YESCOMMAND
         break
         ;;
       [Nn]*)
-        del-prev-line
+	del-prev-line
         $NOCOMMAND
         break
         ;;
       *)
-        del-prev-line
         ansi --bold --yellow "Please answer yes or no."
+	del-prev-line
         ;;
     esac
   done

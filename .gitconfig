@@ -1,3 +1,8 @@
+[init]
+  defaultBranch = main
+  templateDir = ~/.git-templates
+
+
 [user]
   name = Cam Ratchford
   email = camratchford@gmail.com
@@ -19,19 +24,12 @@
 [pull]
   rebase = true
 
+[diff]
+  tool = vimdiff
+
 [merge]
   log = true
-  tool = fugitive
-
-[mergetool "fugitive"]
-  cmd = vim -f -c \"Gdiff\" \"$MERGED\"
-
-[alias]
-  st = status
-  ci = commit
-  co = checkout
-  df = diff
-  lg = log -p
+  tool = vimdiff
 
 [push]
   default = simple
