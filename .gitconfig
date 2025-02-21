@@ -2,13 +2,13 @@
   defaultBranch = main
   templateDir = ~/.git-templates
 
-
 [user]
   name = Cam Ratchford
   email = camratchford@gmail.com
 
 [core]
   filemode = false
+  editor = vi
 
 [color]
   ui = auto
