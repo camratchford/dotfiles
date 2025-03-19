@@ -1,16 +1,13 @@
 $include /etc/Inputrc
 
-set editing-mode emacs
+set editing-mode vi
 set input-meta on
 set convert-meta off
 set output-meta on
 set completion-query-items 150
-
-
-$if Bash
-"\C-xp": "PATH=${PATH}\e\C-e\C-a\ef\C-f"
-"\C-f":"/home/cam/bin/search-history\n"
-"\C-e": edit-and-execute-command
 set bell-style none
 
+$if Bash
+"\C-f":"/home/wizard-pirate/bin/search-history\n"
+"\C-e": edit-and-execute-command
 $endif
