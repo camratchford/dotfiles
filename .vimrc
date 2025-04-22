@@ -1,114 +1,67 @@
-" use visual bell instead of beeping
+" Leader:
+let mapleader = "\\"
+
+" Visual Bell: (No beeping)
 set vb
 
-" incremental search
+" Default Settings:
 set incsearch
-
-" Allow hidden buffers
-
 set hidden
-" Mouse scroll events scroll page, shift-rightclick for paste
-set mouse=nv
-" syntax highlighting
-" set t_Co=256
+set syntax=on
 
+" Mouse: (Scrolling works, terminal copy and paste work in i mode)
+set mouse=nva
+set selectmode=mouse
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
+" Plugin Manager:
 call pathogen#infect()
-" set cursorline
 
+" Theme:
 packadd! everforest
-syntax on
 colorscheme everforest
-
 set background=dark
-" autoindent
-set autoindent|set cindent
 
-" 2 space tabs
-set tabstop=2|set shiftwidth=2|set expandtab|set softtabstop=2
-
-" show matching brackets
+" Show Matching Brackets:
 set showmatch
 
-" show line numbers
+" Show Line Numbers:
 set nonumber
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
-imap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>i
-vmap <F2> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>v
+nnoremap <F3> :set nonumber!<CR>:set foldcolumn=0<CR>
+imap <F3> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>i
+vmap <F3> <esc>:set nonumber!<CR>:set foldcolumn=0<CR>v
 
-" make tab in v mode ident code
+" Autoindent:
+set autoindent|set cindent
+" Use VSCode Hotkeys: (Tab/Shift-Tab for Indent/Unindent:)
 vmap <tab> >gv
 vmap <s-tab> <gv
-
-" make tab in normal mode ident code
 nmap <tab> I<tab><esc>
 nmap <s-tab> ^i<bs><esc>
-" https://vimawesome.com/plugin/commentary-vim
-" Map '/' to running 'gc' in visual mode, then going back into insert mode
-imap <c-_> <esc>vgci
-vmap <c-_> gc
+imap <S-Tab> <Esc>^i<BS>
 
-vmap <A-Down> <Down><C-n>
-vmap <A-Up> <Up><C-n>
+" Tabstops: (Set to 2 spaces unless otherwise stated)
+set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType python setlocal shiftwidth=4 softtabstop=4
+autocmd FileType javascript setlocal shiftwidth=4 softtabstop=4
 
-" paste mode - this will avoid unexpected effects when you
-" cut or copy some text from one window and paste it in Vim.
-set pastetoggle=<F6>
-
-" Turn plugin on
-filetype plugin indent on
-
-if executable("vi")
-  set foldenable
-  set foldmarker={,}
-  set foldmethod=marker
-  set foldlevel=100
-endif
+" Allow Plugins Incompatible With VI:
+set nocompatible
+filetype plugin on
 set listchars=tab:>-,trail:-
 set statusline=%F%m%r%h%w\ %y\ %=[%l/%L,%04v](%p%%)
 set laststatus=2
 
-" Buffer navigation
-map <C-k> :bp<CR>
-map <C-j> :bn<CR>
-map <C-h> :tabp<CR>
-map <C-l> :tabn<CR>
-
-" File edit shortcuts
-let mapleader=','
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
-
-" Set wrapping
+" Set Wrapping:
 set wrap
 set linebreak
-if executable("par")
-    set formatprg=par\ -w80rq
-endif
 
-" vim bundles
+" NerdTree: (File explorer)
 nnoremap <F5> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-" Syntax
-au BufRead,BufNewFile *.pp              set filetype=puppet
-
-" Mouse
-"set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-set clipboard=unnamed
-
-
-" Shared 'buffer'
-vmap <C-c> :w! ~/.vimbuffer<CR>
-nmap <C-c> :.w! ~/vimbuffer<CR>
-" paste from buffer
-nmap <C-p> :r ~/.vimbuffer<CR>
-
-" Trailing Whitespace
+" Trailing Whitespace: (Trimmed when saved and closed)
 highlight default link EndOfLineSpace ErrorMsg
 match EndOfLineSpace / \+$/
 autocmd InsertEnter * hi link EndOfLineSpace Normal
@@ -121,6 +74,29 @@ autocmd FileAppendPre   * :call TrimWhiteSpace()
 autocmd FilterWritePre  * :call TrimWhiteSpace()
 autocmd BufWritePre     * :call TrimWhiteSpace()
 
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_post_args='--ignore=W504,E501'
-set number
+" Multi Cursor: (https://github.com/mg979/vim-visual-multi/wiki/Quick-start)
+let g:VM_leader = '<C-A->'
+let g:VM_maps = {}
+let g:VM_maps["Add Cursor Down"] = '<C-A-Down>'      " start selecting down
+let g:VM_maps["Add Cursor Up"]   = '<C-A-Up>'        " start selecting up
+let g:VM_mouse_mappings = 1
+let g:VM_maps["Mouse Cursor"] = '<A-LeftMouse>'
+let g:VM_maps["Mouse Column"] = '<A-RightMouse>'
+let g:VM_maps["Mouse Column"] = '<C-A-LeftMouse>'
+let g:VM_maps['Find Under'] = '<C-F2>'
+
+" Use The Clipboard: (If vim is capable of using it)
+if exepath(v:progname) =~# '/usr/bin/vim.gtk3'
+  inoremap <C-v> <ESC>"+pa
+  vnoremap <C-c> "+y
+" Windows Terminal Behaviour:
+  snoremap <RightMouse> <Esc>
+  vnoremap <RightMouse> "+y`]>i
+  inoremap <RightMouse> <ESC>"+pa
+endif
+
+" Commenting Out:  ('_' is actually '/')
+vnoremap <C-_> :Commentary<CR>
+inoremap <C-_> :Commentary<CR>
+nnoremap <C-_> :Commentary<CR>
+
