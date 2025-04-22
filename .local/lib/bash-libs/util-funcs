@@ -44,16 +44,6 @@ function newsshhost() {
   ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
 }
 
-# Logs the text to STDERR in red, formatted with the date.
-# Args:
-#   $* = Error Message
-#
-
-function err {
-  err_format="[$(date +'%Y-%m-%dT%H:%M:%S%z')]:"
-  ansi --red "${err_format} $*" >&2
-}
-
 # Executes the given command and logs to syslog
 #  - Logs the successful execution of a command to syslog with the severity INFO if RC = 0
 #  - Logs the contents of STDERR with severity ERROR if RC != 0

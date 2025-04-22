@@ -7,7 +7,7 @@ set vb
 " Default Settings:
 set incsearch
 set hidden
-set syntax=on
+set spell spelllang=en_us
 
 " Mouse: (Scrolling works, terminal copy and paste work in i mode)
 set mouse=nva
@@ -17,6 +17,8 @@ map <ScrollWheelDown> <C-E>
 
 " Plugin Manager:
 call pathogen#infect()
+syntax on
+filetype plugin indent on
 
 " Theme:
 packadd! everforest
@@ -48,7 +50,6 @@ autocmd FileType javascript setlocal shiftwidth=4 softtabstop=4
 
 " Allow Plugins Incompatible With VI:
 set nocompatible
-filetype plugin on
 set listchars=tab:>-,trail:-
 set statusline=%F%m%r%h%w\ %y\ %=[%l/%L,%04v](%p%%)
 set laststatus=2

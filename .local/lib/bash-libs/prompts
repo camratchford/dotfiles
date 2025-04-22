@@ -42,15 +42,6 @@ EOF
  PROMPT=""
  YESCOMMAND=""
  NOCOMMAND=""
- # Import ansi if it isn't already
- if ! which ansi 2>&1 > /dev/null; then
-   LOGNAME_HOME="$(eval echo ~$(logname))"
-   if [[ -f "$LOGNAME_HOME/.local/bin/ansi" ]]; then
-     PATH="$LOGNAME_HOME/.local/bin:$PATH"
-   else
-     exit "ansi is not available at $LOGNAME_HOME/.local/bin/ansi"
-   fi
- fi
 
 
  if [[ ! -n $1 ]]; then
@@ -98,11 +89,11 @@ EOF
   fi
 
   if  [ ! -n "$PROMPT" ] || [ ! -n "$YESCOMMAND" ] || [ ! -n "$NOCOMMAND" ]; then
-      ansi --bold --red "You must supply all required arguments: -p/--prompt, -y/--yes, -n/--no"
+      echo "You must supply all required arguments: -p/--prompt, -y/--yes, -n/--no"
       return 2
   fi
 
-  ansi --bold --white "$PROMPT(y/n)"
+  echo "$PROMPT(y/n)"
   while true; do
     read yn
     case $yn in
@@ -117,7 +108,7 @@ EOF
         break
         ;;
       *)
-        ansi --bold --yellow "Please answer yes or no."
+        echo "Please answer yes or no."
 	del-prev-line
         ;;
     esac

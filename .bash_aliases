@@ -1,11 +1,4 @@
 
-# Configure exa to replace ls and set up desired LS_COLORS
-if [[ -f "$HOME/.local/bin/exa" ]]; then
-  alias ls="exa --long --icons --group-directories-first --no-permissions --octal-permissions --git"
-  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
-  LS_COLORS=$(< ~/.LS_COLORS)
-  export EXA_COLORS="$LS_COLORS"
-fi
 
 # Standard ls aliases
 alias ll='ls -alF'
@@ -29,11 +22,5 @@ if [[ -f "/usr/bin/python3" ]]; then
   alias venv="python -m venv"
 fi
 
-if [[ -f "$(which lxd)" ]]; then
-  alias lls="lxd ls"
-fi
-
 alias vi=vim
-if [[ -f "$(which nvim)" ]]; then
-  alias vi=nvim
-fi
+

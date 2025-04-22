@@ -6,9 +6,9 @@
 #
 function list-installed {
   local FMT='${Package}\n'
-
-  if [ "$1" == "-d" ]; then
-      FMT="$(ansi --inverse '${Package}' )\n$(ansi --reset-color '${Description}')\n\n"
+ 
+  if [ "$1" == "-d" ]; then	  
+    FMT='${Package}\n\n  ${Description}'
 
   fi
   dpkg-query -f="$FMT" -W | sed "s/^\s.//" | sed "s/^\s//"
