@@ -21,7 +21,6 @@ syntax on
 filetype plugin indent on
 
 " Theme:
-packadd! everforest
 colorscheme everforest
 set background=dark
 
