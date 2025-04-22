@@ -2,7 +2,6 @@
 .vscode
 .github
 bin/ansi
-/.config/nvim/plugs/
-.vim/plugs/*
+.vim/autoload/pathogen.vim
 *.bak
 *.tmp

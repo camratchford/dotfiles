@@ -9,10 +9,10 @@ function link-dir {
     ln -fs "$src" "$target" 2> /dev/null
 }
 
-SYMLINK_DIRS=("$THISDIR/bin:$HOME/" "$THISDIR/.vim:$HOME/" "$THISDIR/.local/lib/bash-libs:$HOME/.local/lib/" "$THISDIR/.config/nvim:$HOME/.config/")
+SYMLINK_DIRS=("$THISDIR/bin:$HOME/" "$THISDIR/.vim:$HOME/" "$THISDIR/.local/lib/bash-libs:$HOME/.local/lib/")
 
 # Deal with symlinking files
-DOTFILES=$(find "$THISDIR" -maxdepth 1 -type f -name ".*")
+DOTFILES=$(find $THISDIR -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
 for file in $DOTFILES; do
   file_name=$(echo "$file" | sed "s|^$THISDIR/||")
   ln -fs "$file" "$HOME/$file_name"
