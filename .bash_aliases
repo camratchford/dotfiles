@@ -13,7 +13,6 @@ if [ -x /usr/bin/dircolors ]; then
   alias egrep='egrep --color=auto'
 fi
 
-
 # Various handy python commands
 if [[ -f "/usr/bin/python3" ]]; then
   alias python="/usr/bin/python3"
@@ -23,4 +22,15 @@ if [[ -f "/usr/bin/python3" ]]; then
 fi
 
 alias vi=vim
+if [[ -f "$(which vim.gtk3)" ]]; then
+  # Has access to system clipboard
+  alias vi=vim.gtk3
+fi
+# if [[ -f "$(which nvim)" ]]; then
+#   # Better yet, NeoVim
+#   alias vi=nvim
+# fi
+
+# Read-only vim
+alias svim="vi -M"
 
