@@ -7,11 +7,12 @@ set vb
 " Default Settings:
 set incsearch
 set hidden
+set ignorecase
+set exrc
 set spell spelllang=en_us
 
 " Mouse: (Scrolling works, terminal copy and paste work in i mode)
-set mouse=nva
-set selectmode=mouse
+set mouse=vn
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
@@ -43,7 +44,7 @@ nmap <s-tab> ^i<bs><esc>
 imap <S-Tab> <Esc>^i<BS>
 
 " Tabstops: (Set to 2 spaces unless otherwise stated)
-set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
+"set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal shiftwidth=4 softtabstop=4
 autocmd FileType javascript setlocal shiftwidth=4 softtabstop=4
 
@@ -99,4 +100,3 @@ endif
 vnoremap <C-_> :Commentary<CR>
 inoremap <C-_> :Commentary<CR>
 nnoremap <C-_> :Commentary<CR>
-

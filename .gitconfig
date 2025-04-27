@@ -1,5 +1,6 @@
 [init]
   defaultBranch = main
+  templatesDir  = ~/.git-templates
 
 [user]
   name = Cam Ratchford

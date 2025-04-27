@@ -26,10 +26,6 @@ if [[ -f "$(which vim.gtk3)" ]]; then
   # Has access to system clipboard
   alias vi=vim.gtk3
 fi
-# if [[ -f "$(which nvim)" ]]; then
-#   # Better yet, NeoVim
-#   alias vi=nvim
-# fi
 
 # Read-only vim
 alias svim="vi -M"

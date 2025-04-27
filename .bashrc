@@ -75,6 +75,14 @@ function append-path {
 }
 
 ########################################################################
+###################### declare / set variables #########################
+########################################################################
+
+append-path "$HOME/bin"
+append-path "$HOME/.local/bin"
+append-path "$HOME/dotfiles/ansi"
+
+########################################################################
 ################### dot-sourcing / sourcing files ######################
 ########################################################################
 
@@ -85,7 +93,6 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
-    # not in original, but should be
     dotsource-parts "$HOME/.bash_completions"
     dotsource-parts "$HOME/.local/share/bash-completion"
   fi
@@ -106,13 +113,6 @@ if [ -d "$BASHLIBS_DIR" ]; then
   shopt -s nullglob
   dotsource-parts "$BASHLIBS_DIR"
 fi
-
-########################################################################
-###################### declare / set variables #########################
-########################################################################
-
-append-path "$HOME/bin"
-append-path "$HOME/.local/bin"
 
 ##################################################################
 ###################### set prompt colors #########################
