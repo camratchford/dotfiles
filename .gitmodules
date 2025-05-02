@@ -31,9 +31,6 @@
 [submodule ".vim/bundle/bundle/vim-tcpdump"]
 	path = .vim/bundle/bundle/vim-tcpdump
 	url = https://github.com/1995parham/vim-tcpdump.git
-[submodule "ansi"]
-	path = ansi
-	url = https://github.com/fidian/ansi.git
 [submodule ".vim/bundle/auto-pairs"]
 	path = .vim/bundle/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs.git
