@@ -100,3 +100,19 @@ endif
 vnoremap <C-_> :Commentary<CR>
 inoremap <C-_> :Commentary<CR>
 nnoremap <C-_> :Commentary<CR>
+<<<<<<< Updated upstream
+=======
+
+" VimWiki
+let g:vimwiki_markdown_link_ext = 1
+let kb_wiki = {}
+let kb_wiki.path = "~/kb/"
+let kb_wiki.index = "knowledge_base"
+let kb_wiki.syntax = "markdown"
+let kb_wiki.name = "Knowledge Base"
+let kb_wiki.ext = "md"
+let kb_wiki.nexted_syntaxes = {'python': 'python', 'cpp': 'cpp', 'bash': 'bash', 'shell': 'bash'}
+let g:vimwiki_list = [kb_wiki]
+
+
+>>>>>>> Stashed changes
