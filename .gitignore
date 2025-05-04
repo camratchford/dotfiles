@@ -1,8 +1,10 @@
 .idea
 .vscode
 .github
-bin/ansi
-/.config/nvim/plugs/
-.vim/plugs/*
+backup/
+uninstall.sh
+.vim/.netrwhist
+.vim/autoload/pathogen.vim
 *.bak
 *.tmp
+cron.d/crontab

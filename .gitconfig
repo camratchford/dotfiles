@@ -1,5 +1,6 @@
 [init]
   defaultBranch = main
+  templatesDir  = ~/.git-templates
 
 [user]
   name = Cam Ratchford
@@ -34,4 +35,11 @@
   default = simple
 
 [credential]
-    helper = store
+  helper = store
+
+[submodule]
+  fetchJobs = 1
+
+[protocol]
+  version = 2
+

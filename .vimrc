@@ -7,19 +7,21 @@ set vb
 " Default Settings:
 set incsearch
 set hidden
-set syntax=on
+set ignorecase
+set exrc
+set spell spelllang=en_us
 
 " Mouse: (Scrolling works, terminal copy and paste work in i mode)
-set mouse=nva
-set selectmode=mouse
+set mouse=vn
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
 " Plugin Manager:
 call pathogen#infect()
+syntax on
+filetype plugin indent on
 
 " Theme:
-packadd! everforest
 colorscheme everforest
 set background=dark
 
@@ -42,13 +44,12 @@ nmap <s-tab> ^i<bs><esc>
 imap <S-Tab> <Esc>^i<BS>
 
 " Tabstops: (Set to 2 spaces unless otherwise stated)
-set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
+"set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal shiftwidth=4 softtabstop=4
 autocmd FileType javascript setlocal shiftwidth=4 softtabstop=4
 
 " Allow Plugins Incompatible With VI:
 set nocompatible
-filetype plugin on
 set listchars=tab:>-,trail:-
 set statusline=%F%m%r%h%w\ %y\ %=[%l/%L,%04v](%p%%)
 set laststatus=2
@@ -99,4 +100,15 @@ endif
 vnoremap <C-_> :Commentary<CR>
 inoremap <C-_> :Commentary<CR>
 nnoremap <C-_> :Commentary<CR>
+
+" VimWiki
+let g:vimwiki_markdown_link_ext = 1
+let kb_wiki = {}
+let kb_wiki.path = "~/kb/"
+let kb_wiki.index = "knowledge_base"
+let kb_wiki.syntax = "markdown"
+let kb_wiki.name = "Knowledge Base"
+let kb_wiki.ext = "md"
+let kb_wiki.nexted_syntaxes = {'python': 'python', 'cpp': 'cpp', 'bash': 'bash', 'shell': 'bash'}
+let g:vimwiki_list = [kb_wiki]
 

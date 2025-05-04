@@ -1,104 +1,86 @@
 #!/bin/bash -i
 
 THISDIR="$(dirname $(realpath $0))"
+UNINSTALL_SCRIPT="$THISDIR/uninstall.sh"
 
-function check-nvim-verison  {
-   local CURVER="$(nvim -v | sed -n '1p' | awk '{print $2} ' | grep -o -P "([0-9]{1,2})")"
-   local CURVER_ARRAY=($CURVER)
 
-   local MAJOR="${CURVER_ARRAY[0]}"
-   local MINOR="${CURVER_ARRAY[1]}"
-   if [[ $MAJOR -gt 0 ]] || { [[ $MAJOR -eq 0 ]] && [[ $MINOR -ge 8 ]]; }; then
-     exit 0
-   fi
-   exit 1
-}
-
+touch $UNINSTALL_SCRIPT
+echo '#!'"/bin/bash" > $UNINSTALL_SCRIPT
+chmod +x $UNINSTALL_SCRIPT
+BACKUP_DIR="$THISDIR/backup"
+mkdir -p $BACKUP_DIR
 
 function link-dir {
-    local src="$1"
-    local target="$2"
-    mkdir -p "$(dirname "$(realpath "$target")")"
-    ln -fs "$src" "$target" 2> /dev/null
+  local src="$1"
+  local target="$2"
+  if ! [ -d "$target" ]; then
+    mkdir -p "$(dirname $target)"
+    mkdir -p "$target"
+  fi
+  ln -fs "$src" "$target" 2> /dev/null
+  echo "rm -f $target$(basename $src)" >> $UNINSTALL_SCRIPT
 }
 
-SYMLINK_DIRS=("$THISDIR/bin:$HOME/" "$THISDIR/.vim:$HOME/" "$THISDIR/.local/lib/bash-libs:$HOME/.local/lib/" "$THISDIR/.config/nvim:$HOME/.config/")
-
 # Deal with symlinking files
-DOTFILES=$(find "$THISDIR" -maxdepth 1 -type f -name ".*")
+DOTFILES=$(find $THISDIR -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
 for file in $DOTFILES; do
-  file_name=$(echo "$file" | sed "s|^$THISDIR/||")
-  ln -fs "$file" "$HOME/$file_name"
+  home_name="$HOME/$(basename $file)"
+  if [ -f $home_name ]; then
+    mv $home_name $BACKUP_DIR
+  fi
+  ln -fs "$file" $home_name
+  echo "rm -f $home_name" >> $UNINSTALL_SCRIPT
 done
 
 
-if ! [[ -f "$HOME/.local/bin" ]]; then
-  curl -sfLo "$HOME/.local/bin/ansi" https://raw.githubusercontent.com/fidian/ansi/refs/heads/master/ansi
-  chmod +x "$HOME/.local/bin/ansi"
-fi
-
-if [ "$(dpkg-query -f='${Package}\n' -W unzip 2> /dev/null;)" == "" ]; then
-    echo "Unable to install exa as unzip is not installed."
-    echo "Please run: sudo apt install -y unzip"
-else
-  if ! [ -f "$HOME/.local/bin/exa" ]; then
-    # This version supports the '--git' and '--git-ignore' flags, which are awfully handy in tree mode
-    # Alternatively, use the apt package
-    curl -sfLo "$HOME/exa/exa.zip" --create-dirs https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-v0.10.1.zip
-    unzip -d "$HOME/exa" "$HOME/exa/exa.zip"
-    install -Dm755 "$HOME/exa/bin/exa" "$HOME/.local/bin"
-    install -Dm644 "$HOME/exa/completions/exa.bash" "$HOME/.local/share/bash-completion/completions/exa"
-    install -Dm644 "$HOME/exa/completions/exa.fish" "$HOME/.local/share/fish/completions/exa.fish"
-    install -Dm644 "$HOME/exa/completions/exa.zsh" "$HOME/.local/share/zsh/site-functions/_exa"
-    install -Dm644 "$HOME/exa/man/exa.1" "$HOME/.local/share/man/man1/exa.1"
-    install -Dm644 "$HOME/exa/man/exa_colors.5" "$HOME/.local//share/man/man5/exa_colors.5"
-    rm -rf "$HOME/exa"
-  fi
-fi
-
+# Specify the exact location of the dotdirs
+SYMLINK_DIRS=(
+  "$THISDIR/.git-templates:$HOME/"
+  "$THISDIR/bin:$HOME/"
+  "$THISDIR/.vim:$HOME/"
+)
 for src_target in "${SYMLINK_DIRS[@]}"; do
   IFS=":" read -r src target <<< "$src_target"
   link-dir "$src" "$target"
 done
+for dir in $(find $THISDIR/.local -maxdepth 1 -type d -not -wholename "$THISDIR/.local"); do
+  for src in $(find $dir -maxdepth 1 -type d -not -wholename "$dir"); do
+    link-dir "$src" "$HOME/.local/$(basename $dir)/"
+  done
+done
 
-if [[ -f "$(which nvim)" ]]; then
-  if ! $(check-nvim-verison 2>&1 > /dev/null); then
-    echo "Neovim version must be at least 0.8.0 for the plugins to load correctly. Use the snap version of nvim (not apt)" 1>&2
-    exit 1
+
+# User cron directories similar to /etc/cron.${period} directories
+for period in hourly daily weekly monthly; do
+  cron_dir="$HOME/.local/share/cron.d/"
+  cron_file="$THISDIR/cronfile"
+  if ! [ -d $cron_dir ]; then
+    mkdir -p $cron_dir
   fi
-  sh -c 'curl -sfLo "$HOME/.local/share/nvim/site/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  nvim --headless PlugInstall +qall 2>&1 > /dev/null
-fi
+  echo "@$period run-parts $HOME/.local/share/cron.d/$period" >> "$cron_file"
+
+  crontab -l 2>/dev/null | cat - "$cron_file" | crontab -
+  echo 'crontab -l 2> /dev/null | '"sed -e \"/@$period run-parts ${HOME//\//\\/}\/.local\/share\/cron.d\/$period/d\" | crontab -" >> $UNINSTALL_SCRIPT
+  rm "$cron_file"
+done
+ln -fs /var/spool/cron/crontabs/$USER $HOME/.local/share/cron.d/crontab
 
 
-# Export github credentials for ~/.git-credentials 'store' credential helper
-if [[ -z "$GITHUB_USERNAME" ]]; then
-  echo -e "Please provide your GitHub username:"
-  read -t 5 gh_user && tput cuu1 && tput el
-else
-  gh_user="${GITHUB_USERNAME}"
+# Vim plugin manager
+mkdir -p ~/.vim/autoload ~/.vim/bundle
+if ! [ -f ~/.vim/autoload/pathogen.vim ]; then
+  curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+  echo "rm ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim" >> $UNINSTALL_SCRIPT
 fi
 
-if [[ -z "$GITHUB_TOKEN" ]]; then
-  echo -e "Please provide your GitHub token:"
-  stty -echo
-  read -t 5 gh_token && tput cuu1 && tput el
-  stty echo
-else
-  gh_token="${GITHUB_TOKEN}"
-fi
+git submodule init
+git submodule update --init --recursive --depth 1
+git submodule foreach 'echo rm -rf $sm_path >> $toplevel/uninstall.sh > /dev/null' > /dev/null
 
-if [ -f "$HOME/.git-credentials" ]; then
-  rm -f "$HOME/.git-credentials"
-fi
+# Install vim plugin docs
+DOCDIRS="$(find ~/.vim/bundle -path "*/doc")"
 
-if [[ -n "$gh_user" ]] && [[ -n "$gh_token" ]]; then
-  gh_cred="https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com"
-  echo $gh_cred > "$HOME/.git-credentials"
-fi
+for docdir in $DOCDIRS; do
+  exec vim -c "helptags $docdir" -c quit
+done
 
-if [[ $(stat -c "%a" "$HOME/.git-credentials") -ne 600 ]]; then
-  chmod 600 "$HOME/.git-credentials"
-fi
-. "$HOME/.bashrc"
-echo complete

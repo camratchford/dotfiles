@@ -27,8 +27,8 @@ shopt -s checkwinsize
 stty -ixon
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=2000
+HISTFILESIZE=5000
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -75,6 +75,14 @@ function append-path {
 }
 
 ########################################################################
+###################### declare / set variables #########################
+########################################################################
+
+append-path "$HOME/bin"
+append-path "$HOME/.local/bin"
+append-path "$HOME/.local/share/ansi"
+
+########################################################################
 ################### dot-sourcing / sourcing files ######################
 ########################################################################
 
@@ -85,7 +93,6 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
-    # not in original, but should be
     dotsource-parts "$HOME/.bash_completions"
     dotsource-parts "$HOME/.local/share/bash-completion"
   fi
@@ -93,6 +100,10 @@ fi
 
 if [ -f "$HOME/.bash_aliases" ]; then
   . "$HOME/.bash_aliases"
+fi
+
+if [ -f "$HOME/.bashrc.local" ]; then
+  . "$HOME/.bashrc.local"
 fi
 
 
@@ -103,37 +114,6 @@ if [ -d "$BASHLIBS_DIR" ]; then
   dotsource-parts "$BASHLIBS_DIR"
 fi
 
-########################################################################
-###################### declare / set variables #########################
-########################################################################
-
-EDITOR="/usr/bin/vim"
-if [[ -f "$(which nvim)" ]]; then
-  EDITOR="$(which nvim)"
-fi
-
-if [ -d "$HOME/zig" ]; then
-  append-path "$HOME/zig"
-fi
-
-if [ -d "$HOME/.pulumi/bin" ]; then
-  append-path "$HOME/.pulumi/bin:$PATH"
-fi
-
-append-path "$HOME/bin"
-append-path "$HOME/.local/bin"
-
-# Set env vars for ansible
-gh_token=$(cat ~/.git-credentials | grep -P "ghp_[A-Za-z0-9]*" -o)
-if [ -n "$gh_token" ]; then
-  export GITHUB_TOKEN="${gh_token}"
-fi
-
-gh_username=$(cat ~/.git-credentials | grep -P "(?<=\/\/{1})[a-z\-]*(?=:{1})" -o)
-if [ -n "$gh_username" ]; then
-  export GITHUB_USERNAME="${gh_username}"
-fi
-
 ##################################################################
 ###################### set prompt colors #########################
 ##################################################################
@@ -141,6 +121,7 @@ fi
 function is-git-repo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
+
 
 function set-ps1-prompt {
   # Checks if your PWD is a git repo, and shows the update status in PS1
@@ -170,7 +151,7 @@ function set-ps1-prompt {
   fi
 
   if [ $UID -eq 0 ]; then
-    prompt+="$RED\# $RESET"
+    prompt+="$RED\\$ $RESET"
   else
     prompt+="$GREEN\\$ $RESET"
   fi
@@ -179,10 +160,3 @@ function set-ps1-prompt {
 
 PROMPT_COMMAND='set-ps1-prompt'
 
-##################################################################
-######################### Auto-update ############################
-##################################################################
-
-if [[ -f "$HOME/bin/dotfiles-update" ]]; then
-  $HOME/bin/dotfiles-update
-fi

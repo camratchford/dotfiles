@@ -70,3 +70,10 @@ secrets.yml
 .pypirc
 poetry.toml
 
+# Jetbrains IDEs
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+
