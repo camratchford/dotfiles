@@ -80,7 +80,7 @@ function append-path {
 
 append-path "$HOME/bin"
 append-path "$HOME/.local/bin"
-append-path "$HOME/dotfiles/ansi"
+append-path "$HOME/.local/share/ansi"
 
 ########################################################################
 ################### dot-sourcing / sourcing files ######################

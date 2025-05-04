@@ -35,4 +35,11 @@
   default = simple
 
 [credential]
-    helper = store
+  helper = store
+
+[submodule]
+  fetchJobs = 1
+
+[protocol]
+  version = 2
+

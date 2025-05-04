@@ -1,7 +1,10 @@
 .idea
 .vscode
 .github
-bin/ansi
+backup/
+uninstall.sh
+.vim/.netrwhist
 .vim/autoload/pathogen.vim
 *.bak
 *.tmp
+cron.d/crontab

@@ -34,3 +34,6 @@
 [submodule ".vim/bundle/auto-pairs"]
 	path = .vim/bundle/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs.git
+[submodule ".local/share/ansi"]
+	path = .local/share/ansi
+	url = https://github.com/fidian/ansi.git
