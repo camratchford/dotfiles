@@ -14,7 +14,8 @@ function link-dir {
   local src="$1"
   local target="$2"
   if ! [ -d "$target" ]; then
-    mkdir -p $target
+    mkdir -p "$(dirname $target)"
+    mkdir -p "$target"
   fi
   ln -fs "$src" "$target" 2> /dev/null
   echo "rm -f $target$(basename $src)" >> $UNINSTALL_SCRIPT
@@ -37,19 +38,14 @@ SYMLINK_DIRS=(
   "$THISDIR/.git-templates:$HOME/"
   "$THISDIR/bin:$HOME/"
   "$THISDIR/.vim:$HOME/"
-  "$THISDIR/bash-libs:$HOME/.local/lib/"
 )
-
 for src_target in "${SYMLINK_DIRS[@]}"; do
   IFS=":" read -r src target <<< "$src_target"
   link-dir "$src" "$target"
 done
-
 for dir in $(find $THISDIR/.local -maxdepth 1 -type d -not -wholename "$THISDIR/.local"); do
   for src in $(find $dir -maxdepth 1 -type d -not -wholename "$dir"); do
-    #link-dir $src $dir
-    ln -fs "$src" "$HOME/.local/$(basename $dir)/$(basename $src)"
-    echo "rm $HOME/.local/$(basename $dir)/$(basename $src)" >> $UNINSTALL_SCRIPT
+    link-dir "$src" "$HOME/.local/$(basename $dir)/"
   done
 done
 
