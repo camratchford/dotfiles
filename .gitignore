@@ -7,4 +7,5 @@ uninstall.sh
 .vim/autoload/pathogen.vim
 *.bak
 *.tmp
-cron.d/crontab
+*/crontab
+

@@ -1,1 +1,0 @@
-/home/cam/dotfiles/.local/share/cron.d

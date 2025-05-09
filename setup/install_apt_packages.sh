@@ -3,16 +3,16 @@
 THISDIR="$(realpath $(dirname $0))"
 
 
-LISTS_DIR=""
-
-INSTALL_CLI=1
-INSTALL_GUI=0
-
+LISTS_DIR="$THISDIR/lists"
 APT_PACKAGE_ARRAY=()
 
+function get-package-list {
+  local package_type="${1?"Missing package type"}"
+  local suffix="${2?"Missing package suffix"}"
+}
 
-cat "$THISDIR/lists/apt_packages.cli" | mapfile APT_PACKAGE_ARRAY
-mapfile -t APT_PACKAGE_ARRAY <<< $(cat $THISDIR/lists/apt_packages.cli)
+cat "$LISTS_DIR/apt_packages.cli" | mapfile APT_PACKAGE_ARRAY
+mapfile -t APT_PACKAGE_ARRAY <<< $(cat $LISTS_DIR/apt_packages.cli)
 
 if [ -n "$DISPLAY" ]; then
   mapfile -t -O ${#APT_PACKAGE_ARRAY[@]} APT_PACKAGE_ARRAY <<< $(cat $THISDIR/lists/apt_packages.gui)
