@@ -3,21 +3,29 @@
 THISDIR="$(dirname $(realpath $0))"
 UNINSTALL_SCRIPT="$THISDIR/uninstall.sh"
 
-
 touch $UNINSTALL_SCRIPT
 echo '#!'"/bin/bash" > $UNINSTALL_SCRIPT
 chmod +x $UNINSTALL_SCRIPT
 BACKUP_DIR="$THISDIR/backup"
+if [ -d $BACKUP_DIR ] && ! [ -x $(ls -A "$BACKUP_DIR") ]; then
+  now="$(date +%Y_%m_%d+%H-%M-%S)"
+  archive_name="dotfiles-backup-$now.tar.gz"
+  cd "$BACKUP_DIR" && tar cz ./ > ../$archive_name
+fi
 mkdir -p $BACKUP_DIR
 
 function link-dir {
   local src="$1"
   local target="$2"
-  if ! [ -d "$target" ]; then
-    mkdir -p "$(dirname $target)"
-    mkdir -p "$target"
+
+  if [ -d "$target$(basename $src)" ] && ! [ -L "$target$(basename $src)" ] ;then
+    mv "$target$(basename $src)" "$BACKUP_DIR/$(basename $src)"
   fi
-  ln -fs "$src" "$target" 2> /dev/null
+
+  mkdir -p "$(dirname $target)"
+  mkdir -p "$target"
+
+  ln -s "$src" "$target" 2> /dev/null
   echo "rm -f $target$(basename $src)" >> $UNINSTALL_SCRIPT
 }
 
@@ -25,13 +33,14 @@ function link-dir {
 DOTFILES=$(find $THISDIR -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
 for file in $DOTFILES; do
   home_name="$HOME/$(basename $file)"
-  if [ -f $home_name ]; then
+  if [ -f "$home_name" ] && ! [ -L "$home_name"  ]; then
     mv $home_name $BACKUP_DIR
+  elif [ -L "$home_name" ]; then
+    rm "$home_name"
   fi
-  ln -fs "$file" $home_name
+  ln -s "$file" $home_name
   echo "rm -f $home_name" >> $UNINSTALL_SCRIPT
 done
-
 
 # Specify the exact location of the dotdirs
 SYMLINK_DIRS=(
@@ -48,7 +57,6 @@ for dir in $(find $THISDIR/.local -maxdepth 1 -type d -not -wholename "$THISDIR/
     link-dir "$src" "$HOME/.local/$(basename $dir)/"
   done
 done
-
 
 # User cron directories similar to /etc/cron.${period} directories
 for period in hourly daily weekly monthly; do

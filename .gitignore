@@ -8,4 +8,5 @@ uninstall.sh
 *.bak
 *.tmp
 */crontab
-
+*.tar.gz
+dotfiles-backup*
