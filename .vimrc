@@ -44,7 +44,7 @@ nmap <s-tab> ^i<bs><esc>
 imap <S-Tab> <Esc>^i<BS>
 
 " Tabstops: (Set to 2 spaces unless otherwise stated)
-"set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
+set tabstop=2|set shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal shiftwidth=4 softtabstop=4
 autocmd FileType javascript setlocal shiftwidth=4 softtabstop=4
 
