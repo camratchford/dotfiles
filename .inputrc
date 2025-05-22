@@ -9,6 +9,6 @@ set completion-ignore-case on
 set bell-style none
 set show-all-if-ambiguous on
 $if Bash
-"\C-f":"/home/wizard-pirate/bin/search-history\n"
+"\C-f":"~/bin/search-history\n"
 "\C-e": edit-and-execute-command
 $endif
