@@ -29,4 +29,4 @@ fi
 
 # Read-only vim
 alias svim="vi -M"
-
+[ -f "$(which eza)" ] && alias ls="eza"

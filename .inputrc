@@ -11,4 +11,6 @@ set show-all-if-ambiguous on
 $if Bash
 "\C-f":"~/bin/search-history\n"
 "\C-e": edit-and-execute-command
+"\e[1;2A": ""   # Disable S-Up mapping to page-up
+"\e[1;2B": ""   # Disable S-Down mapping to page-down
 $endif

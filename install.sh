@@ -78,12 +78,14 @@ ln -fs /var/spool/cron/crontabs/$USER $HOME/.local/share/cron.d/crontab
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 if ! [ -f ~/.vim/autoload/pathogen.vim ]; then
   curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-  echo "rm ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim" >> $UNINSTALL_SCRIPT
+  echo "rm ~/.vim/autoload/pathogen.vim" >> $UNINSTALL_SCRIPT
 fi
 
 git submodule init
 git submodule update --init --recursive --depth 1
 git submodule foreach 'echo rm -rf $sm_path >> $toplevel/uninstall.sh > /dev/null' > /dev/null
+
+dconf load /org/gnome/terminal/ < $THISDIR/gnome-terminal.dconf
 
 # Install vim plugin docs
 DOCDIRS="$(find ~/.vim/bundle -path "*/doc")"

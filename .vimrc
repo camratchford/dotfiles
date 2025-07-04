@@ -13,6 +13,8 @@ set spell spelllang=en_us
 
 " Mouse: (Scrolling works, terminal copy and paste work in i mode)
 set mouse=vn
+
+" Navigation
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
@@ -100,6 +102,10 @@ endif
 vnoremap <C-_> :Commentary<CR>
 inoremap <C-_> :Commentary<CR>
 nnoremap <C-_> :Commentary<CR>
+
+" Stolen from GitHub user torbiak
+nn <leader>g :grep <cword><cr>
+
 
 " VimWiki
 let g:vimwiki_markdown_link_ext = 1
