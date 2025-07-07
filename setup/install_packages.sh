@@ -3,6 +3,7 @@
 THISDIR="$(realpath $(dirname $0))"
 
 LISTS_DIR="$THISDIR/lists"
+PACKAGE_TYPES='apt snap git_repo online_bash'
 PACKAGE_ARRAY=()
 
 CLI_PACKAGES=0
@@ -66,27 +67,40 @@ function set-package-list {
   local package_type="${1?"Missing package type"}"
   PACKAGE_ARRAY=()
   if [[ "$CLI_PACKAGES" -eq 1 ]]; then
-     mapfile -t PACKAGE_ARRAY <<< $(cat $LISTS_DIR/${package_type}_packages.cli)
+    CLI_LIST_FILE="$LISTS_DIR/${package_type}_packages.cli"
+    if [ -f "$CLI_LIST_FILE" ]; then
+      mapfile -t PACKAGE_ARRAY <<< $(cat $LISTS_DIR/${package_type}_packages.cli)
+    fi
   fi
   if [[ "$GUI_PACKAGES" -eq 1 ]]; then
     if [ -z "$DISPLAY" ]; then
       echo "DISPLAY env var is missing. Are you sure you wanted to install gui packages?"
       return 1
     fi
-    mapfile -t -O ${#APT_PACKAGE_ARRAY[@]} PACKAGE_ARRAY <<< $(cat $LISTS_DIR/${package_type}_packages.gui)
+    GUI_LIST_FILE="$LISTS_DIR/${package_type}_packages.gui"
+    if [ -f "$GUI_LIST_FILE" ]; then
+      mapfile -t -O ${#APT_PACKAGE_ARRAY[@]} PACKAGE_ARRAY <<< $(cat $LISTS_DIR/${package_type}_packages.gui)
+    fi
   fi
 }
 
 function install-package-list {
-  local package_type="${1?"Missing package type"}"
+  local PACKAGE_TYPE="${1?"Missing package type"}"
   for package_index in $(seq 0 ${#PACKAGE_ARRAY}); do
-    if [ -n "${PACKAGE_ARRAY[$package_index]}" ]; then
-      ${package_type} install ${PACKAGE_ARRAY[$package_index]}
+    PACKAGE_NAME="${PACKAGE_ARRAY[$package_index]}"
+    if [ -n "$PACKAGE_NAME" ]; then
+      if [ "${PACKAGE_TYPE}" == "online_bash" ]; then
+        bash <(curl -s "${PACKAGE_NAME}")
+      elif [ "${PACKAGE_TYPE}" == "git_repo" ]; then
+        git clone ${PACKAGE_NAME}
+      else
+        ${PACKAGE_TYPE} install ${PACKAGE_NAME}
+      fi
     fi
   done
 }
 
-for package_type in apt snap; do
+for package_type in ${PACKAGE_TYPES}; do
   set-package-list $package_type
   if [[ "$LIST_PACKAGES" -eq 1 ]]; then
     echo -e "$package_type packages to be installed:"
