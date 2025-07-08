@@ -118,3 +118,13 @@ let kb_wiki.ext = "md"
 let kb_wiki.nexted_syntaxes = {'python': 'python', 'cpp': 'cpp', 'bash': 'bash', 'shell': 'bash'}
 let g:vimwiki_list = [kb_wiki]
 
+" Ale linter/fixer
+let g:ale_linters = {
+\   'sh': ['shellcheck'],
+\}
+
+let g:ale_fixers = {
+\   'sh': ['shellcheck'],
+\}
+
+let g:ale_fix_on_save = 1
