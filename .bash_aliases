@@ -30,3 +30,12 @@ fi
 # Read-only vim
 alias svim="vi -M"
 [ -f "$(which eza)" ] && alias ls="eza"
+
+if [[ -f "$(which eza)" ]]; then
+  alias ls="eza --long --icons --group-directories-first --no-permissions --octal-permissions --git"
+  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
+  LS_COLORS=$(< ~/.LS_COLORS)
+  export LS_COLORS
+  export EZA_COLORS="$LS_COLORS"
+fi
+
