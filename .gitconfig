@@ -8,7 +8,7 @@
 
 [core]
   filemode = false
-  editor = vi
+  editor = vim
 
 [color]
   ui = auto
@@ -22,7 +22,7 @@
   mergeoptions = --no-ff
 
 [pull]
-  rebase = true
+  rebase = false
 
 [diff]
   tool = vimdiff
