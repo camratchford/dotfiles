@@ -37,3 +37,6 @@
 [submodule ".local/share/ansi"]
 	path = .local/share/ansi
 	url = https://github.com/fidian/ansi.git
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
