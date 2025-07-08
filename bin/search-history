@@ -1,9 +1,0 @@
-#!/bin/bash
-PROMPT="Search history: "
-read -e -p "$PROMPT" QUERY
-
-tput cuu1 && tput el
-HISTORYFILE="$HOME/.bash_history"
-MATCHES="$(grep "$QUERY" "$HISTORYFILE" || /bin/true)"
-echo "$MATCHES"
-
