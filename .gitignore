@@ -10,3 +10,4 @@ uninstall.sh
 */crontab
 *.tar.gz
 dotfiles-backup*
+.local/share/cron.d/crontab
