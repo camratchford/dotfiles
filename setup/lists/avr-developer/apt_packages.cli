@@ -1,0 +1,9 @@
+git
+make
+cmake
+gcc-avr
+gdb-avr
+binutils-avr
+avr-libc
+simavr
+avrdude
