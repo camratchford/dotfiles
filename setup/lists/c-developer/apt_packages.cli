@@ -1,0 +1,20 @@
+git
+cmake
+make
+autoconf
+ninja-build
+gcc
+g++
+llvm
+gawk
+flex
+bison
+binutils
+openssl
+libssl-dev
+dkms
+libelf-dev
+libudev-dev
+libpci-dev
+libiberty-dev
+libncurses-dev                                                                                                                                                                                                                                              libreadline-dev
