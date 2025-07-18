@@ -157,6 +157,6 @@ function set-ps1-prompt {
   fi
   PS1=$prompt
 }
-
+. ~/dotfiles/termprompt.sh
 PROMPT_COMMAND='set-ps1-prompt'
 
