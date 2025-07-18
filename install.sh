@@ -92,8 +92,6 @@ git submodule update --init --recursive --depth 1
 # shellcheck disable=SC2016
 git submodule foreach 'echo rm -rf $sm_path >> $toplevel/uninstall.sh > /dev/null' > /dev/null
 
-dconf load /org/gnome/terminal/ < "$THISDIR/gnome-terminal.dconf"
-
 # Install vim plugin docs
 DOCDIRS="$(find ~/.vim/bundle -path "*/doc")"
 for docdir in $DOCDIRS; do
