@@ -18,7 +18,8 @@ function is-git-repo {
 function get-status-line {
   local STATUS_LINE=""
   local CHECK='\342\234\223'
-  local FILE_STATUS="$(git status --porcelain 2>/dev/null)"
+  local GIT_STATUS=("$(git status --short | col1 2>/dev/null)")
+  local FILE_STATUS="${GIT_STATUS[0]}"
   local BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   local MAIN_AHEAD_BEHIND=($(git rev-list --left-right --count origin/main...HEAD 2>/dev/null))
   local BEHIND_MAIN="${MAIN_AHEAD_BEHIND[0]}"
