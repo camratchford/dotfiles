@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function run-backups {
-  set -euo pipefail
+  set -uo pipefail
 
   dry_run=false
 
@@ -19,7 +19,7 @@ function run-backups {
 
   if [[ $# -ne 2 ]]; then
       echo "Usage: $0 [--dry-run] paths.txt excludes.txt"
-      exit 1
+      return 1
   fi
 
   default_paths_file="$BACKUPS_DEFAULT_PATHFILE"
@@ -30,11 +30,11 @@ function run-backups {
 
   if [[ ! -f "$paths_file" ]]; then
       echo "Error: paths file not found: $paths_file"
-      exit 1
+      return 1
   fi
   if [[ ! -f "$excludes_file" ]]; then
       echo "Error: excludes file not found: $excludes_file"
-      exit 1
+      return 1
   fi
 
   while IFS=$'\t ' read -r src dest; do
@@ -46,8 +46,9 @@ function run-backups {
       fi
 
       rsync_opts=(-avh --delete)
-
-      $dry_run && rsync_opts+=(--dry-run)
+      if $dry_run; then
+        rsync_opts+=(--dry-run)
+      fi
 
       if [[ -f "$src/.gitignore" ]]; then
           rsync_opts+=(--filter=": .gitignore")
