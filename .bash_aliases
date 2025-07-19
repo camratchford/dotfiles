@@ -65,4 +65,6 @@ if [[ -f "$(which most)" ]]; then
   alias less="most"
 fi
 
+BACKUPS_DEFAULT_PATHFILE="~/.backup-paths"
+BACKUPS_DEFAULT_EXCLUDEFILE="~/.backup-exclude"
 
