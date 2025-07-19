@@ -22,11 +22,7 @@ if [[ -f "/usr/bin/python3" ]]; then
 fi
 
 alias vi=vim
-if [[ -f "$(which vim.gtk3)" ]]; then
-  # Has access to system clipboard
-  alias vi=vim.gtk3
-fi
-
+[[ -f "$(which vim.gtk3)" ]] && alias vi=vim.gtk3
 # Read-only vim
 alias svim="vi -M"
 
@@ -52,4 +48,6 @@ elif [[ -f "$(which exa)" ]]; then
   export EXA_COLORS="$LS_COLORS"
 fi
 
+[[ -f "$(which batcat)" ]] && alias cat="batcat"
+[[ -f "$(which most)" ]] && export PAGER="most" && alias less="most"
 

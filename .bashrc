@@ -115,48 +115,16 @@ if [ -d "$BASHLIBS_DIR" ]; then
 fi
 
 ##################################################################
+######################## Export Vars #############################
+##################################################################
+
+export BAT_THEME="TwoDark"
+export EDITOR="vim"
+
+##################################################################
 ###################### set prompt colors #########################
 ##################################################################
 
-function is-git-repo {
-  git rev-parse --is-inside-work-tree &> /dev/null
-}
-
-
-function set-ps1-prompt {
-  # Checks if your PWD is a git repo, and shows the update status in PS1
-  local BLUE='\[$(tput setaf 6)\]'
-  local BEIGE='\[$(tput setaf 222)\]'
-  local GREEN='\[$(tput setaf 35)\]'
-  local RED='\[$(tput setaf 124)\]'
-  local PURPLE='\[$(tput setaf 140)\]'
-  local BROWN='\[$(tput setaf 130)\]'
-  local RESET='\[$(tput sgr0)\]'
-
-  local prompt="$BLUE\u$BEIGE@$GREEN\h $RED: $PURPLE\W "
-
-
-  if is-git-repo; then
-    local BR="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
-    prompt+="$BROWN($BR "
-
-    local ST=$(git status --short 2> /dev/null)
-    local checkmark='\342\234\223'
-
-    if [ -n "$ST" ];then
-      prompt+="$RED+$BROWN) "
-    else
-      prompt+="$GREEN$checkmark$BROWN) "
-    fi
-  fi
-
-  if [ $UID -eq 0 ]; then
-    prompt+="$RED\\$ $RESET"
-  else
-    prompt+="$GREEN\\$ $RESET"
-  fi
-  PS1=$prompt
-}
 . ~/dotfiles/termprompt.sh
 PROMPT_COMMAND='set-ps1-prompt'
 
