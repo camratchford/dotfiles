@@ -84,7 +84,7 @@ function set-package-list {
   if [[ "$CLI_PACKAGES" -eq 1 ]]; then
     CLI_LIST_FILE="$LISTS_DIR/$LIST_SUBDIR/${PACKAGE_TYPE}_packages.cli"
     if [ -f "$CLI_LIST_FILE" ]; then
-      mapfile -t PACKAGE_ARRAY <<< "$(cat "$CLI_LIST_FILE")"
+      mapfile -t PACKAGE_ARRAY < <(grep -Ev '^\s*#|^\s*$' "$CLI_LIST_FILE")
     fi
   fi
   if [[ "$GUI_PACKAGES" -eq 1 ]]; then
@@ -94,7 +94,7 @@ function set-package-list {
     fi
     GUI_LIST_FILE="$LISTS_DIR/$LIST_SUBDIR/${PACKAGE_TYPE}_packages.gui"
     if [ -f "$GUI_LIST_FILE" ]; then
-      mapfile -t -O "${#APT_PACKAGE_ARRAY[@]}" PACKAGE_ARRAY <<< "$(cat "$GUI_LIST_FILE")"
+      mapfile -t -O "${#APT_PACKAGE_ARRAY[@]}" PACKAGE_ARRAY < <(grep -Ev '^\s*#|^\s*$' "$GUI_LIST_FILE")
     fi
   fi
 }
