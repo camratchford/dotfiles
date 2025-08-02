@@ -1,7 +1,7 @@
 [init]
   defaultBranch = main
 
-[includeIf "gitdir:~/samdesk/**"]
+[includeIf "gitdir:~/work/**"]
   path = ~/dotfiles/.gitconfig.work
 
 [includeIf "gitdir:~/**"]
