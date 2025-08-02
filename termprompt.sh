@@ -65,6 +65,11 @@ function get-status-line {
   echo "$BROWN[$BEIGE$BRANCH ${STATUS_LINE}$WHITE$BROWN] "
 }
 
+function set-terminal-title {
+  local TERM_TITLE="${USER} - ${PWD}"
+  echo -en "\033]0;${TERM_TITLE}\a"
+}
+
 function set-ps1-prompt {
   local prompt="$BLUE\u$BEIGE@$GREEN\h$RED : $PURPLE\W ${RESET}"
   if is-git-repo; then
@@ -77,7 +82,7 @@ function set-ps1-prompt {
   else
     prompt+="$GREEN\\$ $RESET"
   fi
-
+  set-terminal-title
   PS1=$prompt
 }
 

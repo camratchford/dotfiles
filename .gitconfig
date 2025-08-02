@@ -1,14 +1,17 @@
 [init]
   defaultBranch = main
-  templatesDir  = ~/.git-templates
 
 [user]
   name = Cam Ratchford
-  email = camratchford@gmail.com
+	email = cameron.ratchford@samdesk.io
+	signingkey = C6BBC8E4BE81E0A2
+
+[commit]
+	gpgsign = true
 
 [core]
   filemode = false
-  editor = vim
+  editor = vi
 
 [color]
   ui = auto
@@ -16,13 +19,6 @@
   status = auto
   branch = auto
   interactive = auto
-
-[branch]
-  autosetuprebase = always
-  mergeoptions = --no-ff
-
-[pull]
-  rebase = false
 
 [diff]
   tool = vimdiff
@@ -35,11 +31,6 @@
   default = simple
 
 [credential]
-  helper = store
-
-[submodule]
-  fetchJobs = 1
-
-[protocol]
-  version = 2
-
+	helper = store
+[pull]
+	rebase = false
