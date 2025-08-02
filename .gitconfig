@@ -1,13 +1,11 @@
 [init]
   defaultBranch = main
 
-[user]
-  name = Cam Ratchford
-	email = cameron.ratchford@samdesk.io
-	signingkey = C6BBC8E4BE81E0A2
+[includeIf "gitdir:~/samdesk/**"]
+  path = ~/dotfiles/.gitconfig.work
 
-[commit]
-	gpgsign = true
+[includeIf "gitdir:~/**"]
+  path = ~/dotfiles/.gitconfig.personal
 
 [core]
   filemode = false

@@ -11,3 +11,4 @@ uninstall.sh
 *.tar.gz
 dotfiles-backup*
 .local/share/cron.d/crontab
+.gitconfig.work
