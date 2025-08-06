@@ -1,11 +1,11 @@
 [init]
   defaultBranch = main
 
-[includeIf "gitdir:~/work/**"]
-  path = ~/dotfiles/.gitconfig.work
-
 [includeIf "gitdir:~/**"]
   path = ~/dotfiles/.gitconfig.personal
+
+[includeIf "gitdir:~/work/**"]
+  path = ~/dotfiles/.gitconfig.work
 
 [core]
   filemode = false

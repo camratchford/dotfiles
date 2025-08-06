@@ -65,6 +65,13 @@ if [[ -f "$(which most)" ]]; then
   alias less="most"
 fi
 
+# Allow pycharm to open in the background when invoked from the shell
+if [[ -f "$(which pycharm)" ]]; then
+  function pycharm {
+    $(which pycharm) $@ &> /dev/null &
+  }
+fi
+
 BACKUPS_DEFAULT_PATHFILE="~/.backup-paths"
 BACKUPS_DEFAULT_EXCLUDEFILE="~/.backup-exclude"
 

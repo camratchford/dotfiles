@@ -21,3 +21,11 @@ function read-file-header {
   test -r "$1" && IFS=$'\r\n' read "$2" <"$1"
 }
 
+function xfce-notify {
+  title="${1? "You must supply a title"}"
+  msg="${2? "You must supply a message"}"
+  export DISPLAY=:0
+  export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$(pgrep -u "$USER" xfce4-session)/environ | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//')
+
+  /usr/bin/notify-send "$title" "$msg"
+}
