@@ -1,11 +1,9 @@
 [init]
   defaultBranch = main
 
-[includeIf "gitdir:~/**"]
-  path = ~/dotfiles/.gitconfig.personal
-
-[includeIf "gitdir:~/work/**"]
-  path = ~/dotfiles/.gitconfig.work
+[user]
+  name = Cam Ratchford
+  email = camratchford@gmail.com
 
 [core]
   filemode = false
@@ -30,5 +28,11 @@
 
 [credential]
 	helper = store
+
 [pull]
-	rebase = false
+  rebase = false
+
+[includeIf "gitdir:~/work/**"]
+  path = ~/dotfiles/.gitconfig.work
+
+
