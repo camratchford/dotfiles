@@ -2,6 +2,34 @@
 
 > Various dotfiles and assorted goodies
 
+## Installing
+
+Clone and install:
+
+```bash
+git clone https://github.com/camratchford/dotfiles ~/dotfiles
+cd ~/dotfiles
+./install.sh
+```
+
+(Optional) Install the suggested Apt and Snap packages:
+
+```bash
+# To list what you're installing
+sudo ./setup/install_packages.sh --list
+
+# For more options
+sudo ./setup_install_packages.sh --help
+
+sudo ./setup/install_packages.sh
+```
+
+Apply changes:
+
+```bash
+souce ~/.bashrc
+```
+
 
 ## Contents
 
@@ -9,9 +37,10 @@
 - `.git-templates`
   - What git copies into every new git repo's `.git` directory, the only custom component here is the `.git-templates/info/exclude` file which contains a list of stuff that should definetly not be included in a git commit.
 - `.local/lib/bash-libs`
-  - A collection of useful bash scripts
+  - A collection of useful bash functions, sorted by category into separate files.
 - `.local/share/cron.d`
-  - A set of directories configured by the `install.sh` script to have their contents executed periodically
+  - A set of directories configured by the `install.sh` script to have their contents executed periodically by `run-parts`.
+  - Same idea as `/etc/cron.{daily,hourly,weekly,yearly}`, including monthly rather than yearly.
   - `.local/share/cron.d/{daily,hourly,monthly,weekly}`
 - `.local/share/logrotate`
   - Contains `logrotate.conf`
@@ -21,9 +50,9 @@
   - Contains submodules for vim plugins
 - `setup`
   - A setup script to install Apt and Snap packages.
-  - sudo `./setup/install_pacakges.sh --help` for more info
+  - Run `sudo ./setup/install_pacakges.sh --help` for more info
 - `tmux`
-  - tmux plugins
+  - Contains submodules ofr tmux plugins
 
 
 ### Files
@@ -36,7 +65,7 @@
   - dot-sources several files
     - `~/.bash_completions`
     - `~/.local/share/bash-completion`
-    - `/.bash_aliases`
+    - `~/.bash_aliases`
     - `~/.bashrc.local` if it exists
     - `~/.local/lib/bash-libs/*`
     - `~/dotfiles/termprompt.sh`
@@ -48,7 +77,7 @@
 - `.inputrc`
   - Default bash settings and hotkey mappings
 - `.lscolors`
-  - Color rules for exa/eza
+  - Color per file format for ls/exa/eza
 - `.tmux.conf`
   - Default tmux settings
 - `.vimrc`
