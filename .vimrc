@@ -1,9 +1,7 @@
 " Leader:
-let mapleader = "\\"
+let mapleader = "C-b-"
 
 " Visual Bell: (No beeping)
-set vb
-
 " Default Settings:
 set incsearch
 set hidden
@@ -103,9 +101,9 @@ vnoremap <C-_> :Commentary<CR>
 inoremap <C-_> :Commentary<CR>
 nnoremap <C-_> :Commentary<CR>
 
-" Stolen from GitHub user torbiak
-nn <leader>g :grep <cword><cr>
-
+" Search for v-selected text
+vnoremap <F2> y/\V<C-R>=escape(@",'/\')<CR><CR>
+nnoremap <F2> :nohlsearch<CR>
 
 " VimWiki
 let g:vimwiki_markdown_link_ext = 1
@@ -120,11 +118,19 @@ let g:vimwiki_list = [kb_wiki]
 
 " Ale linter/fixer
 let g:ale_linters = {
-\   'sh': ['shellcheck'],
+\   'shell': ['shellcheck', 'aspell'],
+\   'markdown': ['aspell'],
+\   'text': ['aspell'],
+\   'gitcommit': ['aspell'],
+\   'python': ['ruff']
 \}
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 0
+nnoremap <F8> :ALELint<CR>
+" let g:ale_fixers = {}
 
-let g:ale_fixers = {
-\   'sh': ['shellcheck'],
-\}
-
-let g:ale_fix_on_save = 1
+" Disable auto-pairs for quotes, leaving only parentheses, brackets, and braces
+let g:AutoPairs = {'(':')', '[':']', '{':'}'}
