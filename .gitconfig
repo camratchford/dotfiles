@@ -35,4 +35,5 @@
 [includeIf "gitdir:~/work/**"]
   path = ~/dotfiles/.gitconfig.work
 
-
+[fetch]
+	auto = 1
