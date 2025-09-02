@@ -1,6 +1,6 @@
+# Basic utilities that should be standard (some are, but we're just being safe)
 jq
 shellcheck
-rclone
 net-tools
 ncdu
 git
@@ -9,11 +9,12 @@ curl
 wget
 unzip
 tmux
-xxd
-at
-bat
-most
-# Required by pyenv to build Python
+# Replace some gnu-coreutils
+eza   # replaces ls, aliased to 'ls'
+delta # replaces diff, set as git-diff pager
+bat   # replaces cat, aliased to 'cat'
+most  # replaces less, set as PAGER
+# Required by pyenv to build Python dists
 make
 build-essential
 libssl-dev

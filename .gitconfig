@@ -8,10 +8,21 @@
 [core]
   filemode = false
   editor = vi
+  pager = delta
 
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  syntax-theme = TwoDark
+  navigate = true
+  light = false
+  side-by-side = true
+  file-style = yellow bold
+  line-numbers-left-style = "#a0a0a0"
+  line-numbers-right-style = "#a0a0a0"
 [color]
   ui = auto
-  diff = auto
   status = auto
   branch = auto
   interactive = auto
