@@ -72,7 +72,11 @@ if [[ -f "$(which pycharm)" ]]; then
   }
 fi
 
+# Re-run the last command in HISTORY
+alias r='fc -s'
+
+
 BACKUPS_DEFAULT_PATHFILE="~/.backup-paths"
 BACKUPS_DEFAULT_EXCLUDEFILE="~/.backup-exclude"
 
-
+alias gh-login="export-gh-creds && gh auth login --hostname github.com"
