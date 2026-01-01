@@ -1,21 +1,31 @@
-# Basic utilities that should be standard (some are, but we're just being safe)
+# Basics
+git
+wget
+curl
+unzip
+make
+
+# Additional Utils
 jq
-shellcheck
+xxd
 net-tools
 ncdu
-git
 gnupg
-curl
-wget
-unzip
+dirmngr
 tmux
-# Replace some gnu-coreutils
+direnv
+
+# Vim stuff
+shellcheck
+aspell
+
+# Alternatives to coreutils programs
 eza   # replaces ls, aliased to 'ls'
 delta # replaces diff, set as git-diff pager
 bat   # replaces cat, aliased to 'cat'
 most  # replaces less, set as PAGER
+
 # Required by pyenv to build Python dists
-make
 build-essential
 libssl-dev
 zlib1g-dev

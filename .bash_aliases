@@ -24,8 +24,7 @@ fi
 alias vi=vim
 # Has clipboard support
 [[ -f "$(which vim.gtk3)" ]] && alias vi=vim.gtk3
-# Read-only vim
-alias svim="vi -M"
+
 export EDITOR="vi"
 
 # ls clone, depending on what's available

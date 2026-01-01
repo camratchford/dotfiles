@@ -25,5 +25,21 @@ function is-installed {
 function get-installed {
   FMT="$(ansi --inverse '${Package}' )\n\n$(ansi --reset-color '${Description}')\n\n"
   dpkg-query -f="$FMT" -W $1 | sed "s/^\s\.//" | sed "s/^\s//"
+}
+
+
+function list-package-sections {
+   FMT='${Package}\t${Section}\n'
+   dpkg-query -f="$FMT" -W $1 | sed "s/^\s\.//" | sed "s/^\s//" | column -t -s $'\t'
+}
+
+
+
+function list-package-last-mod {
+  FMT='${Package}\t${db-fsys:Last-Modified}\n'
+
+  for package in $(apt-mark showmanual); do
+    dpkg-query -f="$FMT" -W $package | column --table --columns 2
+  done
 
 }

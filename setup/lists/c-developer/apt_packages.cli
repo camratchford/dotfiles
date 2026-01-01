@@ -17,4 +17,5 @@ libelf-dev
 libudev-dev
 libpci-dev
 libiberty-dev
-libncurses-dev                                                                                                                                                                                                                                              libreadline-dev
+libncurses-dev
+libreadline-dev

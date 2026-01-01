@@ -55,13 +55,20 @@ function is-shell-script {
   file -i "$1" | grep -q "text/x-shellscript"
 }
 
+function dotsource {
+  local SOURCE_FILE="$1"
+  if [[ -f "$SOURCE_FILE" ]]; then
+    . "$SOURCE_FILE"
+    return
+  fi
+  echo "File '$SOURCE_FILE' does no exist"
+}
+
 function dotsource-parts {
   local SOURCE_DIR="$1"
   if [[ -d "$SOURCE_DIR" ]]; then
     for file in "$SOURCE_DIR"/*; do
-      if [[ -f "$file" ]] && is-shell-script "$file"; then
-        . "$file"
-      fi
+      dotsource "$file"
     done
   fi
 }
@@ -89,23 +96,14 @@ append-path "$HOME/.local/share/ansi"
 
 # enable programmable completion features
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-    dotsource-parts "$HOME/.bash_completions"
-    dotsource-parts "$HOME/.local/share/bash-completion"
-  fi
+  dotsource /usr/share/bash-completion/bash_completion
+  dotsource /etc/bash_completion
+  dotsource-parts "$HOME/.bash_completions"
+  dotsource-parts "$HOME/.local/share/bash-completion"
 fi
 
-if [ -f "$HOME/.bash_aliases" ]; then
-  . "$HOME/.bash_aliases"
-fi
-
-if [ -f "$HOME/.bashrc.local" ]; then
-  . "$HOME/.bashrc.local"
-fi
-
+dotsource "$HOME/.bash_aliases"
+dotsource "$HOME/.bashrc.local"
 
 # Import all files in ~/.local/bash-libs if the dir exists
 BASHLIBS_DIR="$HOME/.local/lib/bash-libs"
@@ -118,11 +116,5 @@ fi
 ###################### set prompt colors #########################
 ##################################################################
 
-. ~/dotfiles/termprompt.sh
+. "$HOME/dotfiles/termprompt.sh"
 PROMPT_COMMAND='set-ps1-prompt'
-
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
