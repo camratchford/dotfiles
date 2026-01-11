@@ -3,10 +3,10 @@
 THISDIR="$(dirname "$(realpath "$0")")"
 UNINSTALL_SCRIPT="$THISDIR/uninstall.sh"
 
-touch "$UNINSTALL_SCRIPT"
 echo '#!/bin/bash' > "$UNINSTALL_SCRIPT"
-chmod +x "$UNINSTALL_SCRIPT"
+chmod 755 "$UNINSTALL_SCRIPT"
 BACKUP_DIR="$THISDIR/backup"
+
 if [ -d "$BACKUP_DIR" ] && ! [ "$(ls -A "$BACKUP_DIR")" ]; then
   now="$(date +%Y_%m_%d+%H-%M-%S)"
   archive_name="dotfiles-backup-$now.tar.gz"
@@ -62,21 +62,24 @@ for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
   done
 done
 
-# User cron directories similar to /etc/cron.${period} directories
+# Create user cron directories similar to /etc/cron.${period} directories
 for period in hourly daily weekly monthly; do
   cron_dir="$HOME/.local/share/cron.d/"
   cron_file="$THISDIR/cronfile"
   if ! [ -d "$cron_dir" ]; then
     mkdir -p "$cron_dir"
   fi
+  # Execute the contents of `$HOME/.local/share/cron.d/$period` every `$period`
   echo "@$period run-parts $HOME/.local/share/cron.d/$period" >> "$cron_file"
-
   crontab -l 2>/dev/null | cat - "$cron_file" | crontab -
+
+  # Allow undoing
   escaped_home=$(printf %s "$HOME" | sed 's:/:\\/:g')
   sed_cmd="/@${period} run-parts ${escaped_home}\/.local\/share\/cron.d\/${period}/d"
   echo "crontab -l 2>/dev/null | sed -e '$sed_cmd' | crontab -" >> "$UNINSTALL_SCRIPT"
   rm "$cron_file"
 done
+
 # Symlink the current user's crontab to the local cron.d dir
 ln -fs "/var/spool/cron/crontabs/$USER" "$HOME/.local/share/cron.d/crontab"
 
@@ -87,12 +90,13 @@ if ! [ -f ~/.vim/autoload/pathogen.vim ]; then
   echo "rm ~/.vim/autoload/pathogen.vim" >> "$UNINSTALL_SCRIPT"
 fi
 
+# Add Vim plugins
 git submodule init
 git submodule update --init --recursive --depth 1
 # shellcheck disable=SC2016
 git submodule foreach 'echo rm -rf $sm_path >> $toplevel/uninstall.sh > /dev/null' > /dev/null
 
-# Install vim plugin docs
+# Install Vim plugin docs
 DOCDIRS="$(find ~/.vim/bundle -path "*/doc")"
 for docdir in $DOCDIRS; do
   vim -es -u NONE -c "helptags $docdir" -c "q"
