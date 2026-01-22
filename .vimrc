@@ -87,13 +87,12 @@ let g:VM_maps["Mouse Column"] = '<C-A-LeftMouse>'
 let g:VM_maps['Find Under'] = '<C-F2>'
 
 " Use The Clipboard: (If vim is capable of using it)
-if exepath(v:progname) =~# '/usr/bin/vim.gtk3'
+if has('gui_gtk2') || has('gui_gtk3')
   inoremap <C-v> <ESC>"+pa
   vnoremap <C-c> "+y
-" Windows Terminal Behaviour:
+  " Windows Terminal Behaviour:
   snoremap <RightMouse> <Esc>
   vnoremap <RightMouse> "+y`]>i
-  inoremap <RightMouse> <ESC>"+pa
 endif
 
 " Commenting Out:  ('_' is actually '/')
