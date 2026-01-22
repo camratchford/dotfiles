@@ -19,9 +19,6 @@
 [submodule ".vim/bundle/vimwiki"]
 	path = .vim/bundle/vimwiki
 	url = https://github.com/vimwiki/vimwiki.git
-[submodule ".vim/bundle/vim-visual-multi"]
-	path = .vim/bundle/vim-visual-multi
-	url = https://github.com/mg979/vim-visual-multi.git
 [submodule ".vim/bundle/everforest"]
 	path = .vim/bundle/everforest
 	url = https://github.com/sainnhe/everforest.git
