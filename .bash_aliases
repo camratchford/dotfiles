@@ -31,7 +31,7 @@ export EDITOR="vi"
 if [[ -f "$(which eza)" ]]; then
   alias ls="eza"
   alias ll="eza --all --long --icons --group-directories-first --no-permissions --octal-permissions --git"
-  alias tree="eza -F --tree"
+  alias tree="eza --all --group-directories-first -F --tree"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export LS_COLORS
@@ -43,7 +43,7 @@ elif [[ -f "$(which exa)" ]]; then
     EXA_ARGS="$EXA_ARGS --git"
   fi
   alias ll="exa $EXA_ARGS"
-  alias tree="exa -F --tree"
+  alias tree="exa --force --group-directories-first -F --tree"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
   LS_COLORS=$(< ~/.LS_COLORS)
   export LS_COLORS
