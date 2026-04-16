@@ -61,7 +61,6 @@ function dotsource {
     . "$SOURCE_FILE"
     return
   fi
-  echo "File '$SOURCE_FILE' does no exist"
 }
 
 function dotsource-parts {
