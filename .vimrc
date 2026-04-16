@@ -113,7 +113,7 @@ let kb_wiki.index = "knowledge_base"
 let kb_wiki.syntax = "markdown"
 let kb_wiki.name = "Knowledge Base"
 let kb_wiki.ext = "md"
-let kb_wiki.nexted_syntaxes = {'python': 'python', 'cpp': 'cpp', 'bash': 'bash', 'shell': 'bash'}
+let kb_wiki.nested_syntaxes = {'python': 'python', 'cpp': 'cpp', 'bash': 'bash', 'shell': 'bash'}
 let g:vimwiki_list = [kb_wiki]
 
 " Ale linter/fixer
@@ -132,5 +132,11 @@ let g:ale_fix_on_save = 0
 nnoremap <F8> :ALELint<CR>
 " let g:ale_fixers = {}
 
-" Disable auto-pairs for quotes, leaving only parentheses, brackets, and braces
-let g:AutoPairs = {'(':')', '[':']', '{':'}'}
+" Disable auto-pairs for quotes, leaving only parentheses, brackets, braces, and template tags
+let g:AutoPairs = {
+\    '(': ')',
+\    '[': ']',
+\    '{': '}',
+\    '{{ ': ' }}',
+\    '{% ': ' %}'
+\}
