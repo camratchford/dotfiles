@@ -48,9 +48,6 @@ souce ~/.bashrc
     - Makes a backup of `~/.history`
 - `.vim`
   - Contains submodules for vim plugins
-- `setup`
-  - A setup script to install Apt and Snap packages.
-  - Run `sudo ./setup/install_pacakges.sh --help` for more info
 - `tmux`
   - Contains submodules for tmux plugins
 
