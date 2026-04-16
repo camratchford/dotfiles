@@ -52,7 +52,7 @@ souce ~/.bashrc
   - A setup script to install Apt and Snap packages.
   - Run `sudo ./setup/install_pacakges.sh --help` for more info
 - `tmux`
-  - Contains submodules ofr tmux plugins
+  - Contains submodules for tmux plugins
 
 
 ### Files
