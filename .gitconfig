@@ -21,6 +21,7 @@
   file-style = yellow bold
   line-numbers-left-style = "#a0a0a0"
   line-numbers-right-style = "#a0a0a0"
+
 [color]
   ui = auto
   status = auto
@@ -38,7 +39,7 @@
   default = simple
 
 [credential]
-	helper = store
+  helper = store
 
 [pull]
   rebase = false
@@ -47,4 +48,4 @@
   path = ~/dotfiles/.gitconfig.work
 
 [fetch]
-	auto = 1
+  auto = 1
