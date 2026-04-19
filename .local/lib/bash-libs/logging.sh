@@ -3,26 +3,25 @@
 # Logs the text to STDERR in red, formatted with the date.
 # Args:
 #   $* = Error Message
-#
-
 function err {
   err_format="[$(date +'%Y-%m-%dT%H:%M:%S%z')]:"
   ansi --red "${err_format} $*" >&2
 }
 
-function logcmdexec() {
+function logcmdexec {
   set -euo pipefail
 
   local HELP=$(cat <<EOF
   Usage: logcmdexec CMD
 
-  Executes the given command and logs to syslog
-   - Logs the successful execution of a command to syslog with the severity INFO if RC = 0
-   - Logs the contents of STDERR with severity ERROR if RC != 0
+  Executes the given command and emits syslog messages via '/usr/bin/logger':
+   - Emits a syslog message with the content '<SCRIPT_PATH>:<SCRIPT_NAME>:<LINE_NO> - Completed successfully' with severity INFO if RC = 0
+   - Emits a syslog message with the content '<SCRIPT_PATH>:<SCRIPT_NAME>:<LINE_NO> - <STDERR_OUTPUT>' with severity ERROR if RC != 0
 
   Example:
     # Single-quoted string, allowing variable expansion on execution (otherwise, escape variables)
     logcmdexec 'rsync -avh /home/cam cam@storage:/backups/\$HOSTNAME/'
+
 EOF
 )
   while [[ $# -gt 0 ]]; do
