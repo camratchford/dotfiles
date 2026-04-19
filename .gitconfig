@@ -10,8 +10,11 @@
   editor = vi
   pager = delta
 
-[interactive]
-  diffFilter = delta --color-only
+#[interactive]
+#  diffFilter = delta --color-only
+
+[diff]
+  tool = delta --color-only
 
 [delta]
   syntax-theme = TwoDark
@@ -28,12 +31,12 @@
   branch = auto
   interactive = auto
 
-[diff]
-  tool = vimdiff
-
 [merge]
   log = true
   tool = vimdiff
+
+[vimdiff]
+  layout = "@LOCAL,REMOTE"
 
 [push]
   default = simple
@@ -46,6 +49,3 @@
 
 [includeIf "gitdir:~/work/**"]
   path = ~/dotfiles/.gitconfig.work
-
-[fetch]
-  auto = 1

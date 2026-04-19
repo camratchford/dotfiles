@@ -8,20 +8,9 @@ Clone and install:
 
 ```bash
 git clone https://github.com/camratchford/dotfiles ~/dotfiles
+
 cd ~/dotfiles
 ./install.sh
-```
-
-(Optional) Install the suggested Apt and Snap packages:
-
-```bash
-# To list what you're installing
-sudo ./setup/install_packages.sh --list
-
-# For more options
-sudo ./setup_install_packages.sh --help
-
-sudo ./setup/install_packages.sh
 ```
 
 Apply changes:
