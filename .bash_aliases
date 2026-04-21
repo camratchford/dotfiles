@@ -53,6 +53,7 @@ fi
 # cat clone
 if [[ -f "$(which batcat)" ]]; then
    alias cat="batcat"
+   alias gcat="/usr/bin/cat"
    export BAT_THEME="TwoDark"
    # No line numbers, easy copy & paste
    export BAT_STYLE="plain"
