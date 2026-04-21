@@ -1,0 +1,71 @@
+#!/bin/bash
+
+THISDIR="$(dirname "$(realpath "$0")")"
+#set -uoe pipefail
+source $HOME/.local/lib/bash-libs/logging.sh
+
+function _run-backups {
+  extra_opts=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --*)
+        extra_opts+=("$1")
+        shift
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [[ $# -ne 2 ]]; then
+      echo "Usage: $0 [--dry-run] paths.txt excludes.txt"
+      return 1
+  fi
+
+  default_paths_file="${BACKUPS_DEFAULT_PATH_FILE:-"$THISDIR/rsyncignore"}"
+  default_excludes_file="${BACKUPS_DEFAULT_EXCLUDE_FILE:-"$THISDIR/paths"}"
+
+  paths_file="${1:-$default_paths_file}"
+  excludes_file="${2:-$default_excludes_file}"
+
+  if [ ! -e $paths_file ]; then
+      echo "Error: paths file not found: $paths_file"
+      return 1
+  fi
+  if [ ! -e $excludes_file ]; then
+      echo "Error: excludes file not found: $excludes_file"
+      return 1
+  fi
+
+  export HOSTNAME=$(hostname)
+
+  while IFS=$'\t ' read -r src dest; do
+      [[ -z "$src" || -z "$dest" || "$src" =~ ^# ]] && continue
+      src=$(envsubst <<< "$src")
+      dest=$(envsubst <<< "$dest")
+      mkdir -p $dest
+
+      if [[ ! -d $src ]]; then
+          echo "Warning: Source directory not found: $src"
+          continue
+      fi
+
+      rsync_opts=(-avh --delete --filter=": .rsyncignore" --exclude-from="$excludes_file")
+      if [[ ${#extra_opts[@]} -gt 0 ]]; then
+        rsync_opts+=("${extra_opts[@]}")
+      fi
+
+      echo -e "\nSyncing: $src -> $dest"
+      rsync "${rsync_opts[@]}" "$src" "$dest"
+
+  done < "$paths_file"
+}
+
+function run-backups {
+  case $- in
+    *i*) _run-backups "$@" ;;
+    *) _run-backups "$@" 2>&1 | /usr/bin/logger -t run-backups; exit "${PIPESTATUS[0]}" ;;
+  esac
+}
+
