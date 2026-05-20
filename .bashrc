@@ -117,3 +117,19 @@ fi
 
 . "$HOME/dotfiles/termprompt.sh"
 PROMPT_COMMAND='set-ps1-prompt'
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+source '/home/cam/.bash_completions/new-project.sh'
+
+
+
+source '/home/cam/.bash_completions/boilerplater.sh'
+
+
+
+
+
+
+source '/home/cam/.bash_completions/index-files.sh'

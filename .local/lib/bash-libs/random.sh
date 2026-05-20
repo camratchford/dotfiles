@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function rand-b64 {
-
-  local HELP=$(cat <<EOF
+  local HELP
+  HELP=$(cat <<EOF
 Prints a random integer between a min and max integer
 
 Usage:
@@ -50,7 +50,9 @@ EOF
   if [[ -z "$1" ]]; then
     NUM_LEN=16
   fi
-  local RESULT="$(head -c "$NUM_LEN" /dev/urandom | base64 -w 0 | tr -d '=')"
+  local RESULT
+
+  RESULT="$(head -c "$NUM_LEN" /dev/urandom | base64 -w 0 | tr -d '=')"
   echo "$RESULT"
 }
 
@@ -131,8 +133,11 @@ EOF
   fi
 
   # Generate random 64-bit integer
-  local B64_NUM="$(rand-b64 8)"
-  local INT_NUM=$(( 0x$(echo "$B64_NUM" | hexdump -v -e '/8 "%016x"') ))
+  local B64_NUM
+  local INT_NUM
+
+  B64_NUM="$(rand-b64 8)"
+  INT_NUM=$(( 0x$(echo "$B64_NUM" | hexdump -v -e '/8 "%016x"') ))
 
   echo $(( MIN_NUM + INT_NUM % (MAX_NUM - MIN_NUM) ))
 }

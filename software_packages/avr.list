@@ -1,0 +1,7 @@
+# AVR Microcontroller Development
+avrdude
+binutils-avr
+gcc-avr
+gdb-avr
+avr-libc
+simavr

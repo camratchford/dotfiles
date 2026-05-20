@@ -1,0 +1,18 @@
+# C/C++ Development
+gcc
+g++
+gdb
+gdbserver
+llvm
+clang-format
+exuberant-ctags
+bison
+flex
+m4
+build-essential
+binutils
+cmake
+cmake-extras
+make
+autoconf
+exuberant-ctags

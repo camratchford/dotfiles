@@ -1,0 +1,9 @@
+# Linux Kernel Development
+dkms
+libssl-dev
+libelf-dev
+libudev-dev
+libpci-dev
+libiberty-dev
+libncurses-dev
+libreadline-dev

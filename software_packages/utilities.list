@@ -1,0 +1,25 @@
+# CLI Utilities
+ssh-import-id
+nfs-common
+zfsutils-linux
+git-delta
+jq
+xxd
+detox
+tmux
+shellcheck
+aspell
+aspell-en
+rclone
+ncdu
+bat
+most
+eza
+ugrep
+fzf
+tldr-py
+retry
+mdp
+detox
+iat
+shfmt

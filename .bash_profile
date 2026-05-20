@@ -1,4 +1,13 @@
 
+
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+  export PATH
+}
+
 BASHRC_LOCAL="$HOME/.bashrc.local"
 
 if [ -f "$BASHRC_LOCAL" ]; then

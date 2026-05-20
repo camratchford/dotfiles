@@ -44,8 +44,6 @@ done
 
 # Specify the exact location of the dotdirs
 SYMLINK_DIRS=(
-  "$THISDIR/.git-templates:$HOME/"
-  "$THISDIR/bin:$HOME/"
   "$THISDIR/.vim:$HOME/"
 )
 for src_target in "${SYMLINK_DIRS[@]}"; do

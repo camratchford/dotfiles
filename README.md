@@ -23,8 +23,7 @@ souce ~/.bashrc
 ## Contents
 
 ### Dirs
-- `.git-templates`
-  - What git copies into every new git repo's `.git` directory, the only custom component here is the `.git-templates/info/exclude` file which contains a list of stuff that should definetly not be included in a git commit.
+
 - `.local/lib/bash-libs`
   - A collection of useful bash functions, sorted by category into separate files.
 - `.local/share/cron.d`
