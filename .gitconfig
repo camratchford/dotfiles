@@ -10,9 +10,6 @@
   editor = vi
   pager = delta
 
-#[interactive]
-#  diffFilter = delta --color-only
-
 [diff]
   tool = delta --color-only
 
@@ -48,4 +45,4 @@
   rebase = false
 
 [includeIf "gitdir:~/work/**"]
-  path = ~/dotfiles/.gitconfig.work
+  path = ~/work/.gitconfig
