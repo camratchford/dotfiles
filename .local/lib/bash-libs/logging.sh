@@ -11,7 +11,8 @@ function err {
 function logcmdexec {
   set -euo pipefail
 
-  local HELP=$(cat <<EOF
+  local HELP
+  HELP=$(cat <<EOF
   Usage: logcmdexec CMD
 
   Executes the given command and emits syslog messages via '/usr/bin/logger':

@@ -1,3 +1,9 @@
+# Source common functions
+export BASH_ENV="$HOME/.bash_env"
+if [[ -f "$BASH_ENV" ]]; then
+  . "$BASH_ENV"
+fi
+
 #############################################################################
 ###################### Standard Ubuntu bashrc stuff #########################
 #############################################################################
@@ -7,6 +13,7 @@ case $- in
     *i*) ;;
       *) return;;
 esac
+
 export TERM="xterm-256color"
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -47,50 +54,12 @@ if [ -x /usr/bin/dircolors ]; then
   alias egrep='egrep --color=auto'
 fi
 
-########################################################################
-################### Functions required in .bashrc ######################
-########################################################################
 
-function is-shell-script {
-  file -i "$1" | grep -q "text/x-shellscript"
-}
-
-function dotsource {
-  local SOURCE_FILE="$1"
-  if [[ -f "$SOURCE_FILE" ]]; then
-    . "$SOURCE_FILE"
-    return
-  fi
-}
-
-function dotsource-parts {
-  local SOURCE_DIR="$1"
-  if [[ -d "$SOURCE_DIR" ]]; then
-    for file in "$SOURCE_DIR"/*; do
-      dotsource "$file"
-    done
-  fi
-}
-
-function append-path {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) PATH="$PATH:$1" ;;
-  esac
-  export PATH
-}
-
-########################################################################
-###################### declare / set variables #########################
-########################################################################
-
-append-path "$HOME/bin"
-append-path "$HOME/.local/bin"
-append-path "$HOME/.local/share/ansi"
 
 ########################################################################
 ################### dot-sourcing / sourcing files ######################
 ########################################################################
+
 
 
 # enable programmable completion features
@@ -105,11 +74,7 @@ dotsource "$HOME/.bash_aliases"
 dotsource "$HOME/.bashrc.local"
 
 # Import all files in ~/.local/bash-libs if the dir exists
-BASHLIBS_DIR="$HOME/.local/lib/bash-libs"
-if [ -d "$BASHLIBS_DIR" ]; then
-  shopt -s nullglob
-  dotsource-parts "$BASHLIBS_DIR"
-fi
+
 
 ##################################################################
 ###################### set prompt colors #########################
@@ -117,19 +82,3 @@ fi
 
 . "$HOME/dotfiles/termprompt.sh"
 PROMPT_COMMAND='set-ps1-prompt'
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-source '/home/cam/.bash_completions/new-project.sh'
-
-
-
-source '/home/cam/.bash_completions/boilerplater.sh'
-
-
-
-
-
-
-source '/home/cam/.bash_completions/index-files.sh'

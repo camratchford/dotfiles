@@ -10,19 +10,21 @@ PURPLE='\[$(tput setaf 140)\]'
 BROWN='\[$(tput setaf 248)\]'
 RESET='\[$(tput sgr0)\]'
 
+
 function is-git-repo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-# Build git status line
 function get-status-line {
+  local FILE_STATUS BRANCH MAIN_AHEAD_BEHIND BRANCH_AHEAD_BEHIND
   local STATUS_LINE=""
   local CHECK='\342\234\223'
-  local FILE_STATUS="$(git status --short 2>/dev/null)"
-  local BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+
+  FILE_STATUS="$(git status --short 2>/dev/null)"
+  BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
   if git show-ref --quiet refs/remotes/origin/main; then
-    local MAIN_AHEAD_BEHIND=($(git rev-list --left-right --count origin/main...HEAD 2>/dev/null))
+    readarray MAIN_AHEAD_BEHIND <<< git rev-list --left-right --count origin/main...HEAD 2>/dev/null
     local BEHIND_MAIN="${MAIN_AHEAD_BEHIND[0]}"
     local AHEAD_MAIN="${MAIN_AHEAD_BEHIND[1]}"
 
@@ -30,8 +32,8 @@ function get-status-line {
     (( BEHIND_MAIN > 0 )) && STATUS_LINE+="${PURPLE}⇓${BEHIND_MAIN}${RESET} "
   fi
 
-  if git rev-parse --abbrev-ref --symbolic-full-name @{u} &>/dev/null; then
-    local BRANCH_AHEAD_BEHIND=($(git rev-list --left-right --count @{u}...HEAD 2>/dev/null))
+  if git rev-parse --abbrev-ref --symbolic-full-name "@{u}" &>/dev/null; then
+    readarray BRANCH_AHEAD_BEHIND <<< git rev-list --left-right --count "@{u}"...HEAD 2>/dev/null
     local BEHIND_BRANCH="${BRANCH_AHEAD_BEHIND[0]}"
     local AHEAD_BRANCH="${BRANCH_AHEAD_BEHIND[1]}"
 
@@ -45,7 +47,7 @@ function get-status-line {
   local UNTRACKED=0
 
   while IFS= read -r line; do
-    status="${line:0:2}"  # first two chars
+    status="${line:0:2}"
 
     case "$status" in
       \?\?) ((UNTRACKED++)) ;;
@@ -61,8 +63,8 @@ function get-status-line {
   (( UNTRACKED > 0 )) && STATUS_LINE+="${LIGHT_RED}?${UNTRACKED}${RESET}"
 
   [[ -z "$FILE_STATUS" ]] && STATUS_LINE+="${GREEN}${CHECK}${RESET}"
+  echo "${BROWN}[${BEIGE}${BRANCH} ${STATUS_LINE}${WHITE}${BROWN}] "
 
-  echo "$BROWN[$BEIGE$BRANCH ${STATUS_LINE}$WHITE$BROWN] "
 }
 
 function set-terminal-title {
@@ -71,20 +73,23 @@ function set-terminal-title {
 }
 
 function set-ps1-prompt {
-  local prompt="$BLUE\u$BEIGE@$GREEN\h$RED : $PURPLE\W ${RESET}"
+  local PROMPT
+
+  PROMPT="$BLUE\u$BEIGE@$GREEN\h$RED : $PURPLE\W ${RESET}"
+
   if is-git-repo; then
-    local STATUS_LINE="$(get-status-line)"
-    prompt+="$STATUS_LINE"
+    PROMPT+="$(get-status-line)"
   fi
 
   if [[ $UID -eq 0 ]]; then
-    prompt+="$RED\\$ $RESET"
+    PROMPT+="$RED\\$ $RESET"
   else
-    prompt+="$GREEN\\$ $RESET"
+    PROMPT+="$GREEN\\$ $RESET"
   fi
+
   set-terminal-title
-  PS1=$prompt
+  PS1=$PROMPT
 }
 
-PROMPT_COMMAND='set-ps1-prompt'
+export PROMPT_COMMAND='set-ps1-prompt'
 

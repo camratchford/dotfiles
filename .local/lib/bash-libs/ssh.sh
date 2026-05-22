@@ -1,23 +1,31 @@
 #!/bin/bash
 
-# Scrubs the ~/.ssh/known_hosts file of any fingerprints assoicated to the hostname provided
+# Scrubs the ~/.ssh/known_hosts file of any fingerprints associated to the hostname provided
 # Will check DNS hostname, IPv4, IPv6 for associated known_host entries
 # Args:
 #   $1 = hostname (or IP)
 function newsshhost() {
-  ssh-keygen -f ~/.ssh/known_hosts -R $1
-  local ip=$(grep $1 /etc/hosts | awk '{print $1}')
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
+  local HOSTNAME IP_ADDRESS
+  HOSTNAME="${1?'No hostname provided'}"
+  ssh-keygen -f ~/.ssh/known_hosts -R "$HOSTNAME"
+
+  # v4/v6 - from hosts
+  IP_ADDRESS=$(grep "$HOSTNAME" /etc/hosts | awk '{print $1}')
+  if [[ -n $IP_ADDRESS ]]; then
+    ssh-keygen -f ~/.ssh/known_hosts -R "$IP_ADDRESS"
   fi
-  ip=$(dig -t a +short $1)
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
+
+  # v4 - from DNS
+  IP_ADDRESS=$(dig -t a +short "$HOSTNAME")
+  if [[ -n $IP_ADDRESS ]]; then
+    ssh-keygen -f ~/.ssh/known_hosts -R "$IP_ADDRESS"
   fi
-  ip=$(dig -t aaaa +short $1)
-  if [[ -n $ip ]]; then
-    ssh-keygen -f ~/.ssh/known_hosts -R $ip
+
+  # v6 - from DNS
+  IP_ADDRESS=$(dig -t aaaa +short "$HOSTNAME")
+  if [[ -n $IP_ADDRESS ]]; then
+    ssh-keygen -f ~/.ssh/known_hosts -R "$IP_ADDRESS"
   fi
-  ssh-keyscan -t ecdsa $1 >> ~/.ssh/known_hosts
+  ssh-keyscan -t ecdsa "$HOSTNAME" >> ~/.ssh/known_hosts
 }
 
