@@ -13,22 +13,19 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # Various handy python commands
-if [[ -f "/usr/bin/python3" ]]; then
-  alias python="/usr/bin/python3"
-  alias http="python -m http.server"
-  alias json="python -m json.tool"
-  alias venv="python -m venv"
-fi
+alias http="python3 -m http.server"
+alias json="python3 -m json.tool"
+alias venv="python3 -m venv"
 
 # vi is shorter than vim
 alias vi=vim
 # Has clipboard support
-[[ -f "$(which vim.gtk3)" ]] && alias vi=vim.gtk3
+which vim.gtk3 &> /dev/null && alias vi=vim.gtk3
 
 export EDITOR="vi"
 
 # ls clone, depending on what's available
-if [[ -f "$(which eza)" ]]; then
+if which eza &> /dev/null ; then
   alias ls="eza"
   alias ll="eza --all --long --icons --group-directories-first --no-permissions --octal-permissions --git"
   alias tree="eza --all --group-directories-first -F --tree"
@@ -36,7 +33,7 @@ if [[ -f "$(which eza)" ]]; then
   LS_COLORS=$(< ~/.LS_COLORS)
   export LS_COLORS
   export EZA_COLORS="$LS_COLORS"
-elif [[ -f "$(which exa)" ]]; then
+elif which exa &> /dev/null ; then
   alias ls="exa"
   EXA_ARGS="--long --all --icons --group-directories-first --no-permissions --octal-permissions"
   if [[ "$(exa --version | grep -c "\[-git\]")" == "0" ]]; then
@@ -51,7 +48,7 @@ elif [[ -f "$(which exa)" ]]; then
 fi
 
 # cat clone
-if [[ -f "$(which batcat)" ]]; then
+if which batcat &> /dev/null ; then
    alias cat="batcat"
    alias gcat="/usr/bin/cat"
    export BAT_THEME="TwoDark"
@@ -60,17 +57,18 @@ if [[ -f "$(which batcat)" ]]; then
 fi
 
 # less clone
-if [[ -f "$(which most)" ]]; then
+if which most &>/dev/null; then
   export PAGER="most"
   alias less="most"
 fi
 
-# Allow pycharm to open in the background when invoked from the shell
-if [[ -f "$(which pycharm)" ]]; then
-  function pycharm {
-    $(which pycharm) $@ &> /dev/null &
-  }
-fi
+function vim-sh {
+  vim -c 'setfiletype sh' $@
+}
+export FCEDIT="vim-sh"
 
+# Edit the last command in HISTORY, then execute
+alias e='fc -nr 0'
 # Re-run the last command in HISTORY
 alias r='fc -s'
+
