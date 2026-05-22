@@ -1,0 +1,43 @@
+# Defines and sources common functions between interactive, non-interactive login, and non-interactive non-login shells.
+# Ran in .bashrc, .bash_profile
+# Is set as BASH_ENV for cron and within .bashrc, .bash_profile
+
+function dotsource {
+  local SOURCE_FILE="${1?"No source file provided"}"
+  if [ -f "$SOURCE_FILE" ]; then
+    . "$SOURCE_FILE"
+  fi
+}
+
+function dotsource-parts {
+  local SOURCE_DIR="$1"
+  if [ -d "$SOURCE_DIR" ]; then
+    for file in "$SOURCE_DIR"/*; do
+      dotsource "$file"
+    done
+  fi
+}
+
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+  export PATH
+}
+
+append-path "$HOME/bin"
+append-path "$HOME/.local/bin"
+append-path "$HOME/.local/share/ansi"
+
+alias gh-login="export-gh-creds && gh auth login --hostname github.com"
+alias gh-new-repo="gh repo create --private --source=. --remote=upstream "
+alias int-sum="xargs awk -v \"i=$\{1\}\" '{s+=i} END {print s}'"
+
+export BASHLIBS="$HOME/.local/lib/bash-libs"
+if [ -d "$BASHLIBS" ]; then
+  shopt -s nullglob
+  dotsource-parts "$BASHLIBS"
+fi
+
+dotsource "$HOME/.bashrc.local"

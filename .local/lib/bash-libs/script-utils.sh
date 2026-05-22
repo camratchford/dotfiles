@@ -4,7 +4,7 @@
 # Args:
 #   $1 = URL
 function execurl {
-  bash <(curl -s $1)
+  bash <(curl -s "$1")
 }
 
 # Executes tput commands to remove the previous row of terminal text
@@ -25,5 +25,27 @@ function read-file-header {
 #   $1 = The text containing backslashes that need escaping
 function clean-text {
   local TEXT="${1?"Missing argument 'TEXT'"}"
-  echo $(printf '%s\n' "$TEXT" | sed 's/[][\/.^$*~|()]/\\&/g')
+  printf '%s\n' "$TEXT" | sed 's/[][\/.^$*~|()]/\\&/g'
+}
+
+
+function is-shell-script {
+  file -i "$1" | grep -q "text/x-shellscript"
+}
+
+function append-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$PATH:$1" ;;
+  esac
+  export PATH
+}
+
+# wall won't let you send yourself a message without the banner unless your EUID is 0
+# fortunately, there is a way around this.
+function sketchy-wall {
+  readarray PTS_LIST <<< "$(find /dev/pts -uid $UID)"
+  for user_pts in "${PTS_LIST[@]}"; do
+    "%s %s\n" "To $user_pts" "$1" > $user_pts
+  done
 }
