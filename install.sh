@@ -1,11 +1,11 @@
 #!/bin/bash -i
 
-THISDIR="$(dirname "$(realpath "$0")")"
-UNINSTALL_SCRIPT="$THISDIR/uninstall.sh"
+THIS_DIR="$(dirname "$(realpath "$0")")"
+UNINSTALL_SCRIPT="$THIS_DIR/uninstall.sh"
 
 echo '#!/bin/bash' > "$UNINSTALL_SCRIPT"
 chmod 755 "$UNINSTALL_SCRIPT"
-BACKUP_DIR="$THISDIR/backup"
+BACKUP_DIR="$THIS_DIR/backup"
 
 if [ -d "$BACKUP_DIR" ] && ! [ "$(ls -A "$BACKUP_DIR")" ]; then
   now="$(date +%Y_%m_%d+%H-%M-%S)"
@@ -18,19 +18,18 @@ function link-dir {
   local src="$1"
   local target="$2"
 
-  if [ -d "$target$(basename "$src")" ] && ! [ -L "$target$(basename "$src")" ] ;then
-    mv "$target$(basename "$src")" "$BACKUP_DIR/$(basename "$src")"
+  if [ -d "$target/$(basename "$src")" ] && ! [ -L "$target/$(basename "$src")" ] ;then
+    mv "$target/$(basename "$src")" "$BACKUP_DIR/$(basename "$src")"
   fi
 
-  mkdir -p "$(dirname "$target")"
   mkdir -p "$target"
 
-  ln -s "$src" "$target" 2> /dev/null
-  echo "rm -f $target$(basename "$src")" >> "$UNINSTALL_SCRIPT"
+  ln -s "$src" "$target/" 2> /dev/null
+  echo "rm -f $target/$(basename "$src")" >> "$UNINSTALL_SCRIPT"
 }
 
-# Deal with symlinking files
-DOTFILES=$(find "$THISDIR" -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
+# Deal with sym-linking files
+DOTFILES=$(find "$THIS_DIR" -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
 for file in $DOTFILES; do
   home_name="$HOME/$(basename "$file")"
   if [ -f "$home_name" ] && ! [ -L "$home_name"  ]; then
@@ -44,7 +43,7 @@ done
 
 # Specify the exact location of the dotdirs
 SYMLINK_DIRS=(
-  "$THISDIR/.vim:$HOME/"
+  "$THIS_DIR/.vim:$HOME"
 )
 for src_target in "${SYMLINK_DIRS[@]}"; do
   IFS=":" read -r src target <<< "$src_target"
@@ -52,34 +51,49 @@ for src_target in "${SYMLINK_DIRS[@]}"; do
 done
 
 # Symlink dirs 'dotfiles/.local/*' to '$HOME/.local/'
-readarray -d '' CONTENTS_OF_DOT_LOCAL < <(find "$THISDIR/.local" -mindepth 1 -maxdepth 1 -type d -print0)
+readarray -d '' CONTENTS_OF_DOT_LOCAL < <(find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0)
 for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
   readarray -d '' DOT_LOCAL_SUBDIRS < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -print0)
   for src in "${DOT_LOCAL_SUBDIRS[@]}"; do
-    link-dir "$src" "$HOME/.local/$(basename "$dir")/"
+    link-dir "$src" "$HOME/.local/$(basename "$dir")"
   done
 done
 
+
 # Create user cron directories similar to /etc/cron.${period} directories
+readarray CRONTAB_CONTENTS <<< "$(crontab -l 2>/dev/null)"
+CRON_PARENT_DIR=".local/etc"
+mkdir -p "$HOME/$CRON_PARENT_DIR/cron.d"
 for period in hourly daily weekly monthly; do
-  cron_dir="$HOME/.local/share/cron.d/"
-  cron_file="$THISDIR/cronfile"
-  if ! [ -d "$cron_dir" ]; then
-    mkdir -p "$cron_dir"
+  PERIOD_DIR="$CRON_PARENT_DIR/cron.$period"
+  link-dir "$THIS_DIR/$CRON_PARENT_DIR/cron.$period" "$HOME/$CRON_PARENT_DIR"
+
+  # Execute the contents of `$HOME/.local/etc/cron.$period` every `$period`
+  CRON_JOB="@$period run-parts $PERIOD_DIR"
+
+  if ! [[ ${CRONTAB_CONTENTS[*]} =~ $CRON_JOB ]]; then
+    CRONTAB_CONTENTS+=("$CRON_JOB")
   fi
-  # Execute the contents of `$HOME/.local/share/cron.d/$period` every `$period`
-  echo "@$period run-parts $HOME/.local/share/cron.d/$period" >> "$cron_file"
-  crontab -l 2>/dev/null | cat - "$cron_file" | crontab -
 
   # Allow undoing
-  escaped_home=$(printf %s "$HOME" | sed 's:/:\\/:g')
-  sed_cmd="/@${period} run-parts ${escaped_home}\/.local\/share\/cron.d\/${period}/d"
+  CLEAN_CRON_JOB=$(printf %s "$CRON_JOB" | sed 's:/:\\/:g')
+  sed_cmd="/${CLEAN_CRON_JOB}/d"
   echo "crontab -l 2>/dev/null | sed -e '$sed_cmd' | crontab -" >> "$UNINSTALL_SCRIPT"
-  rm "$cron_file"
 done
 
-# Symlink the current user's crontab to the local cron.d dir
-ln -fs "/var/spool/cron/crontabs/$USER" "$HOME/.local/share/cron.d/crontab"
+(printf "%s\n" "${CRONTAB_CONTENTS[@]}") | crontab -
+
+
+CRONTAB_ENV=(
+  "BASH_ENV=$HOME/.bash_env" # to ensure common functions are available to scripts run with non-login and/or non-interactive shells
+)
+
+# Make sure each variable is prepended to the crontab,
+for env_item in "${CRONTAB_ENV[@]}"; do
+  if ! crontab -l 2>/dev/null | grep -q "$env_item"; then
+    (crontab -l 2>/dev/null; echo "$env_item") | crontab -
+  fi
+done
 
 # Vim plugin manager
 mkdir -p ~/.vim/autoload ~/.vim/bundle
@@ -95,8 +109,8 @@ git submodule update --init --recursive --depth 1
 git submodule foreach 'echo rm -rf $sm_path >> $toplevel/uninstall.sh > /dev/null' > /dev/null
 
 # Install Vim plugin docs
-DOCDIRS="$(find ~/.vim/bundle -path "*/doc")"
-for docdir in $DOCDIRS; do
+DOCS_DIRS="$(find ~/.vim/bundle -path "*/doc")"
+for docdir in $DOCS_DIRS; do
   vim -es -u NONE -c "helptags $docdir" -c "q"
 done
 
