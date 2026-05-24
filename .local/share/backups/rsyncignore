@@ -10,6 +10,12 @@
 .python_history
 .bash_logout
 
+# Don't need it backing up git submodules
+/dotfiles/.vim/bundle/
+/dotfiles/.local/share/ansi
+/.vim/bundle/
+/.local/share/ansi
+
 # Windows / XOrg / NFS
 .DS_Store
 .DS_Store?

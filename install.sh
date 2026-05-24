@@ -51,14 +51,13 @@ for src_target in "${SYMLINK_DIRS[@]}"; do
 done
 
 # Symlink dirs 'dotfiles/.local/*' to '$HOME/.local/'
-readarray -d '' CONTENTS_OF_DOT_LOCAL < <(find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0)
+readarray -d '' CONTENTS_OF_DOT_LOCAL <<< find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0
 for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
-  readarray -d '' DOT_LOCAL_SUBDIRS < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -print0)
+  readarray -d '' DOT_LOCAL_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
   for src in "${DOT_LOCAL_SUBDIRS[@]}"; do
     link-dir "$src" "$HOME/.local/$(basename "$dir")"
   done
 done
-
 
 # Create user cron directories similar to /etc/cron.${period} directories
 readarray CRONTAB_CONTENTS <<< "$(crontab -l 2>/dev/null)"
@@ -78,24 +77,28 @@ for period in hourly daily weekly monthly; do
   # Allow undoing
   CLEAN_CRON_JOB=$(printf %s "$CRON_JOB" | sed 's:/:\\/:g')
   sed_cmd="/${CLEAN_CRON_JOB}/d"
-  echo "crontab -l 2>/dev/null | sed -e '$sed_cmd' | crontab -" >> "$UNINSTALL_SCRIPT"
+  echo "crontab -l 2> /dev/null | sed -e '$sed_cmd' | crontab -" >> "$UNINSTALL_SCRIPT"
 done
 
-(printf "%s\n" "${CRONTAB_CONTENTS[@]}") | crontab -
-
-
 CRONTAB_ENV=(
-  "BASH_ENV=$HOME/.bash_env" # to ensure common functions are available to scripts run with non-login and/or non-interactive shells
+  "BASH_ENV=$HOME/.bash_env"
 )
-
-# Make sure each variable is prepended to the crontab,
+# Make sure each variable is prepended to the crontab
 for env_item in "${CRONTAB_ENV[@]}"; do
-  if ! crontab -l 2>/dev/null | grep -q "$env_item"; then
-    (crontab -l 2>/dev/null; echo "$env_item") | crontab -
+  if ! crontab -l 2> /dev/null | grep -q "$env_item"; then
+    CRONTAB_CONTENTS=("$env_item" "${CRONTAB_CONTENTS[@]}")
   fi
 done
 
-# Vim plugin manager
+# Finally, write the crontab
+(printf "%s\n" "${CRONTAB_CONTENTS[@]}") | crontab -
+
+# Make sure my Konsole profile is set as default
+if which konsole &> /dev/null; then
+  kwriteconfig5 --file konsolerc --group "Desktop Entry" --key DefaultProfile "Custom.profile"
+fi
+
+# Install my Vim plugin manager
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 if ! [ -f ~/.vim/autoload/pathogen.vim ]; then
   curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim

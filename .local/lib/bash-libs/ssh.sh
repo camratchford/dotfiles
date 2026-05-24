@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Scrubs the ~/.ssh/known_hosts file of any fingerprints associated to the hostname provided
-# Will check DNS hostname, IPv4, IPv6 for associated known_host entries
-# Args:
-#   $1 = hostname (or IP)
-function newsshhost() {
+
+
+function newsshhost {
+  # Scrubs the ~/.ssh/known_hosts file of any fingerprints associated to the hostname provided
+  # Will check DNS hostname, IPv4, IPv6 for associated known_host entries
+  # Args:
+  #   $1 = hostname (or IP)
   local HOSTNAME IP_ADDRESS
   HOSTNAME="${1?'No hostname provided'}"
   ssh-keygen -f ~/.ssh/known_hosts -R "$HOSTNAME"

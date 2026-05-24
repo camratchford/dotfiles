@@ -4,10 +4,14 @@ set editing-mode vi
 set input-meta on
 set convert-meta off
 set output-meta on
-set completion-query-items 150
+set completion-query-items 25
 set completion-ignore-case on
 set bell-style none
 set show-all-if-ambiguous on
+set menu-complete-display-prefix on
+set match-hidden-files on
+set blink-matching-paren on
+
 $if Bash
 "\C-e": edit-and-execute-command
 "\e[1;2A": ""   # Disable S-Up mapping to page-up

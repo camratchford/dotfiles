@@ -54,13 +54,9 @@ if [ -x /usr/bin/dircolors ]; then
   alias egrep='egrep --color=auto'
 fi
 
-
-
 ########################################################################
 ################### dot-sourcing / sourcing files ######################
 ########################################################################
-
-
 
 # enable programmable completion features
 if ! shopt -oq posix; then
@@ -73,7 +69,12 @@ fi
 dotsource "$HOME/.bash_aliases"
 dotsource "$HOME/.bashrc.local"
 
-# Import all files in ~/.local/bash-libs if the dir exists
+#######################################################################
+########################### Bash Macros ###############################
+#######################################################################
+
+# Launches EDITOR which writes to a temp file then has python execute it when EDITOR exits
+bind -x '"\C-p": "run-in-env editor-to-cmd --file python3"'
 
 
 ##################################################################

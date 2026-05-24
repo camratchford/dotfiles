@@ -1,11 +1,7 @@
 #!/bin/bash
 
-THISDIR="$(dirname "$(realpath "$0")")"
-#set -uoe pipefail
-source $HOME/.local/lib/bash-libs/logging.sh
-
 function _run-backups {
-  extra_opts=()
+  local extra_opts=()
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --*)
@@ -18,33 +14,31 @@ function _run-backups {
     esac
   done
 
-  if [[ $# -ne 2 ]]; then
-      echo "Usage: $0 [--dry-run] paths.txt excludes.txt"
-      return 1
-  fi
+  local paths_file excludes_file
 
-  default_paths_file="${BACKUPS_DEFAULT_PATH_FILE:-"$THISDIR/rsyncignore"}"
-  default_excludes_file="${BACKUPS_DEFAULT_EXCLUDE_FILE:-"$THISDIR/paths"}"
+  paths_file="${1:-"$HOME/.local/share/backups/rsyncignore"}"
+  excludes_file="${2:-"$HOME/.local/share/backups/paths"}"
 
-  paths_file="${1:-$default_paths_file}"
-  excludes_file="${2:-$default_excludes_file}"
-
-  if [ ! -e $paths_file ]; then
+  if [ ! -e "$paths_file" ]; then
       echo "Error: paths file not found: $paths_file"
       return 1
   fi
-  if [ ! -e $excludes_file ]; then
+  if [ ! -e "$excludes_file" ]; then
       echo "Error: excludes file not found: $excludes_file"
       return 1
   fi
 
-  export HOSTNAME=$(hostname)
+  HOSTNAME=$(hostname)
+  export HOSTNAME
 
   while IFS=$'\t ' read -r src dest; do
+      # Continue if it has fewer than 2 items in a row or the row starts with #
       [[ -z "$src" || -z "$dest" || "$src" =~ ^# ]] && continue
+
+      # Expand shell variables
       src=$(envsubst <<< "$src")
       dest=$(envsubst <<< "$dest")
-      mkdir -p $dest
+      mkdir -p "$dest"
 
       if [[ ! -d $src ]]; then
           echo "Warning: Source directory not found: $src"
@@ -62,6 +56,10 @@ function _run-backups {
   done < "$paths_file"
 }
 
+# Script to run rsync on $src\t$dest defined in a text file, ignoring patterns in a pattern file
+# Usage: run-backups [--dry-run] [SRC_DEST_ROW_FILE RSYNC_IGNORE_FILE]
+#   - default SRC_DEST_PATHS_FILE is $HOME/.local/share/backups/paths
+#   - default RSYNC_IGNORE_FILE is $HOME/.local/share/backups/rsyncignore
 function run-backups {
   case $- in
     *i*) _run-backups "$@" ;;

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Run any function / alias sourced sourced within .bash_profile, .bash_env, .bashrc, .bashrc.local, .bash_aliases
+source "$HOME/.bash_profile"
+
+"$@"
+del-prev-line

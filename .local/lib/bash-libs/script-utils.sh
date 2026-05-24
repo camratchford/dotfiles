@@ -49,3 +49,83 @@ function sketchy-wall {
     "%s %s\n" "To $user_pts" "$1" > $user_pts
   done
 }
+
+function editor-to-cmd {
+  local AS_FILE TMP_FILE TO_CMD
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -f|--file)
+        AS_FILE="true"
+        shift
+        ;;
+      *)
+        TO_CMD="${1?'No command to pipe editor input from'}"
+        shift
+        break
+        ;;
+    esac
+  done
+
+
+  TMP_FILE=$(mktemp -q) && {
+    tput smcup
+    $EDITOR "$TMP_FILE"
+    if [[ ! -s "$TMP_FILE" ]]; then
+      rm "$TMP_FILE"
+      return 1
+    fi
+    if [ -n "$AS_FILE" ]; then
+      $TO_CMD "$TMP_FILE"
+    else
+      $TO_CMD < "$TMP_FILE"
+    fi
+  }
+  rm "$TMP_FILE"
+  tput rmcup
+}
+
+# Parses the caller function's script file for leading comments, printing them out.
+function get-help {
+  local file="${1:-${BASH_SOURCE[0]}}"
+  local func_name="${FUNCNAME[1]}"
+
+  # Require a function name (must be called from inside another function)
+  if [[ -z "${func_name}" || "${func_name}" == "main" ]]; then
+    echo "help: must be called from within a function" >&2
+    return 1
+  fi
+
+  if [[ ! -r "${file}" ]]; then
+    echo "help: cannot read file: ${file}" >&2
+    return 1
+  fi
+
+  local func_line
+  func_line=$(grep -n "^[[:space:]]*\(function[[:space:]]\+\)\?${func_name}[[:space:]]*(" "${file}" \
+    | head -1 | cut -d: -f1)
+
+  if [[ -z "${func_line}" ]]; then
+    echo "help: function '${func_name}' not found in ${file}" >&2
+    return 1
+  fi
+
+  local comments=()
+  local i=$(( func_line - 1 ))
+  while [[ ${i} -gt 0 ]]; do
+    local line
+    line=$(sed -n "${i}p" "${file}")
+    if [[ "${line}" =~ ^[[:space:]]*#(.*) ]]; then
+      comments=("${BASH_REMATCH[1]# }" "${comments[@]}")
+    else
+      break
+    fi
+    i=$(( i - 1 ))
+  done
+
+  if [[ ${#comments[@]} -eq 0 ]]; then
+    echo "(no help comments found for '${func_name}')"
+    return 0
+  fi
+
+  printf '%s\n' "${comments[@]}"
+}

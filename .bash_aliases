@@ -30,8 +30,7 @@ if which eza &> /dev/null ; then
   alias ll="eza --all --long --icons --group-directories-first --no-permissions --octal-permissions --git"
   alias tree="eza --all --group-directories-first -F --tree"
   tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
-  LS_COLORS=$(< ~/.LS_COLORS)
-  export LS_COLORS
+  export LS_COLORS=$( < ~/.LS_COLORS)
   export EZA_COLORS="$LS_COLORS"
 elif which exa &> /dev/null ; then
   alias ls="exa"
@@ -57,7 +56,7 @@ if which batcat &> /dev/null ; then
 fi
 
 # less clone
-if which most &>/dev/null; then
+if which most &> /dev/null; then
   export PAGER="most"
   alias less="most"
 fi
@@ -71,4 +70,6 @@ export FCEDIT="vim-sh"
 alias e='fc -nr 0'
 # Re-run the last command in HISTORY
 alias r='fc -s'
+
+alias p=""
 
