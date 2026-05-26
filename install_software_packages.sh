@@ -5,7 +5,6 @@ if [[ $EUID -ne 0  ]]; then
   exit 0
 fi
 
-
 THIS_DIR="$(dirname "$(realpath "$0")")"
 
 LINES=$(tput lines)
