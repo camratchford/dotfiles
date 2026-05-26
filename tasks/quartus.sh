@@ -1,5 +1,4 @@
 # Download and install Quartus II 13 and pre-requisite packages
-SCRATCH_DIR="$HOME/Downloads/"
 INSTALL_DIR="$HOME/.local/share/altera/13.0sp1"
 
 # 32 bit glibc must be installed
