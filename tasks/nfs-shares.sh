@@ -5,19 +5,22 @@ if ! which nfsstat &> /dev/null ; then
 fi
 
 SHARES=(
-  "10.0.14.13:/storage /mnt/storage"
-  "10.0.14.13:/backups /mnt/backups"
-  "10.0.14.13:/cdn     /mnt/cdn"
+  "10.0.14.13:/storage  /mnt/storage"
+  "10.0.14.13:/backups  /mnt/backups"
+  "10.0.14.13:/cdn      /mnt/cdn"
 )
 
 FSTAB=$( < /etc/fstab)
 for item in "${SHARES[@]}"; do
+  PADDING_LEN=$(echo "$item" | tr -d -c ' ' | wc -c)
+  printf -v result "%${PADDING_LEN}s" ""
   read -r remote mount_point <<< "$item"
+
   if [[ $FSTAB =~ ${remote} ]]; then
     continue
   fi
   sudo mkdir "$mount_point"
-  echo -e "$remote \t$mount_point \tnfs \tdefaults \t0 \t0" | sudo tee -a /etc/fstab
+  echo -e "$remote${result}$mount_point${result}nfs defaults 0 0" | sudo tee -a /etc/fstab
 done
 
 sudo mount -a
