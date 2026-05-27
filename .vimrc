@@ -140,10 +140,3 @@ let g:AutoPairs = {
 \    '{{ ': ' }}',
 \    '{% ': ' %}'
 \}
-
-" Supertab - tab-completion, but I don't wanna use <tab>
-let g:SuperTabMappingForward = '<c-space>'
-let g:SuperTabMappingBackward = '<s-c-space>'
-let g:SuperTabMappingTabLiteral = '<tab>'
-let g:SuperTabDefaultCompletionType = 'context'
-
