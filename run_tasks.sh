@@ -32,6 +32,9 @@ SELECTED_LISTS=$(whiptail --notags --title "Task Selection" \
 
 SELECTED_LISTS="$(echo $SELECTED_LISTS | tr -d '"')"
 
+echo "Running: sudo apt-get update"
+sudo apt-get update &> /dev/null
+echo "Running task(s)"
 for task in $SELECTED_LISTS; do
   . "$LIST_DIR/$task"
 done
