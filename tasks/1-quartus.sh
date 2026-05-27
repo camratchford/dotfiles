@@ -4,7 +4,7 @@ INSTALL_DIR="$HOME/.local/share/altera/13.0sp1"
 # 32 bit glibc must be installed
 if [[ ! -f /lib/ld-linux.so.2 ]]; then
   sudo dpkg --add-architecture i386
-  sudo apt update && sudo apt install -y libc6:i386
+  sudo apt-get update && sudo apt-get install -y libc6:i386
 fi
 SCRATCH_DIR=$(mktemp -qd) && {
   cd "$SCRATCH_DIR" || exit

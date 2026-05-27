@@ -59,7 +59,7 @@ POOL_DEVICES=$(echo "$POOL_DEVICES" | tr -d '"')
 
 for dev in $POOL_DEVICES; do
   echo "Wiping $dev"
-  parted -s $dev mklabel gpt
+  parted -s "$dev" mklabel gpt
 done
 
 if ! [[ $(zpool list) =~ $ZFS_POOL_NAME ]]; then

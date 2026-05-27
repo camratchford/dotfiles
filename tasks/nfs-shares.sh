@@ -20,7 +20,7 @@ for item in "${SHARES[@]}"; do
     continue
   fi
   sudo mkdir "$mount_point"
-  echo -e "$remote${result}$mount_point${result}nfs defaults 0 0" | sudo tee -a /etc/fstab
+  echo -e "$remote${result}$mount_point${result}nfs defaults 0 0" | sudo tee -a /etc/fstab > /dev/null
 done
 
 sudo mount -a
