@@ -4,7 +4,6 @@
 backup/
 uninstall.sh
 .vim/.netrwhist
-.vim/bundle/*
 .vim/autoload/pathogen.vim
 *.bak
 *.tmp

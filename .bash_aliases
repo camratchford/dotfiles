@@ -55,6 +55,18 @@ if which batcat &> /dev/null ; then
    export BAT_STYLE="plain"
 fi
 
+# log file viewer / tail -f replacement
+if which lnav &> /dev/null ; then
+   function tail {
+    if [[ "$1" == "-f" ]]; then
+        lnav "$@"
+    else
+        /usr/bin/tail "$@"
+    fi
+   }
+   export -f tail
+fi
+
 # less clone
 if which most &> /dev/null; then
   export PAGER="most"
