@@ -16,6 +16,7 @@ for item in "${SHARES[@]}"; do
   if [[ $FSTAB =~ ${remote} ]]; then
     continue
   fi
+  sudo mkdir "$mount_point"
   echo -e "$remote \t$mount_point \tnfs \tdefaults \t0 \t0" | sudo tee -a /etc/fstab
 done
 
