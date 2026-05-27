@@ -1,5 +1,4 @@
 # Required Packages
-
 curl
 wget
 git
@@ -7,5 +6,4 @@ git-lfs
 xz-utils
 net-tools
 unzip
-
-
+ca-certificates

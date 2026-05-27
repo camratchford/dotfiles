@@ -1,7 +1,5 @@
 # CLI Utilities
 ssh-import-id
-nfs-common
-zfsutils-linux
 git-delta
 jq
 xxd
