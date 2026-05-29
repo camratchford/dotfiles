@@ -91,5 +91,3 @@ function set-ps1-prompt {
   PS1=$PROMPT
 }
 
-export PROMPT_COMMAND='set-ps1-prompt'
-

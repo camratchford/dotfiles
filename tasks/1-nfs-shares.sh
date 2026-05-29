@@ -13,14 +13,14 @@ SHARES=(
 FSTAB=$( < /etc/fstab)
 for item in "${SHARES[@]}"; do
   PADDING_LEN=$(echo "$item" | tr -d -c ' ' | wc -c)
-  printf -v result "%${PADDING_LEN}s" ""
+  printf -v padding "%${PADDING_LEN}s" ""
   read -r remote mount_point <<< "$item"
 
   if [[ $FSTAB =~ ${remote} ]]; then
     continue
   fi
   sudo mkdir "$mount_point"
-  echo -e "$remote${result}$mount_point${result}nfs defaults 0 0" | sudo tee -a /etc/fstab > /dev/null
+  echo -e "$remote${padding}$mount_point${padding}nfs defaults 0 0" | sudo tee -a /etc/fstab > /dev/null
 done
 
 sudo mount -a

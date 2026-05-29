@@ -1,12 +1,10 @@
 # Source common functions
 export BASH_ENV="$HOME/.bash_env"
-if [[ -f "$BASH_ENV" ]]; then
-  . "$BASH_ENV"
-fi
+[[ -f "$BASH_ENV" ]] && . "$BASH_ENV"
 
-#############################################################################
-###################### Standard Ubuntu bashrc stuff #########################
-#############################################################################
+##############################################################################
+#################### Standard Ubuntu/Debian bashrc stuff #####################
+##############################################################################
 
 # If not running interactively, don't do anything
 case $- in
@@ -69,17 +67,23 @@ fi
 dotsource "$HOME/.bash_aliases"
 dotsource "$HOME/.bashrc.local"
 
+if [[ -d "$HOME/.pyenv" ]]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  prepend-path "$PYENV_ROOT/bin"
+  eval "$(pyenv init -)"
+fi
+
+
 #######################################################################
 ########################### Bash Macros ###############################
 #######################################################################
 
-# Launches EDITOR which writes to a temp file then has python execute it when EDITOR exits
+# Launches EDITOR, Python executes EDITOR's output
 bind -x '"\C-p": "run-in-env editor-to-cmd --file python3"'
-
 
 ##################################################################
 ###################### set prompt colors #########################
 ##################################################################
 
 . "$HOME/dotfiles/termprompt.sh"
-PROMPT_COMMAND='set-ps1-prompt'
+export PROMPT_COMMAND='set-ps1-prompt'

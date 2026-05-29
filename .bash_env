@@ -26,6 +26,15 @@ function append-path {
   export PATH
 }
 
+function prepend-path {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$1:$PATH" ;;
+  esac
+  export PATH
+}
+
+
 append-path "$HOME/bin"
 append-path "$HOME/.local/bin"
 append-path "$HOME/.local/share/ansi"
