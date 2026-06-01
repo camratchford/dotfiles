@@ -71,5 +71,25 @@ alias e='fc -nr 0'
 # Re-run the last command in HISTORY
 alias r='fc -s'
 
-alias p=""
+# Remap every Jetbrains IDE script to a function that opens it detatched from the terminal
+function export-jetbrains-launchers {
+    local ide ide_name
+    local eval_array=()
 
+    for ide in "$HOME/.local/share/JetBrains/Toolbox/scripts/"*; do
+        ide_name=$(basename "$ide")
+        eval_array+=( "
+        $ide_name() {
+            if pgrep -x $ide_name &> /dev/null; then
+                $HOME/.local/share/JetBrains/Toolbox/scripts/$ide_name \"\$@\"
+            else
+              ( setsid $HOME/.local/share/JetBrains/Toolbox/scripts/$ide_name \"\$@\" > /dev/null 2>&1 & )
+            fi
+        }
+        ")
+    done
+
+    echo "${eval_array[@]}"
+}
+
+eval "$(export-jetbrains-launchers)"
