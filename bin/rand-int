@@ -1,0 +1,81 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Prints a random integer between a min and max integer
+
+USAGE:
+    rand-int MIN_INT MAX_INT
+    rand-int MAX_INT
+    rand-int -h
+
+FLAGS:
+    -h       Print this message and exits
+
+PARAMETERS:
+    MIN_INT  The lowest possible value that the random number can be (inclusive)
+             (Defaults to 0 if only 1 arg (MAX_INT) is passed)
+
+    MAX_INT  The highest possible value plus one that the random number can be (exclusive)
+             (Is the 2nd argument if 2 args are passed, is the 1st argument if only 1 arg is passed)
+
+EXAMPLES:
+    # Produces a random integer in the range of 10 to 100
+    rand-int 10 101
+    > 28
+    # Produces a random integer in the range of 0 to 9
+    rand-int 10
+    > 9
+
+EOF
+)
+
+while getopts ":h-:" opt; do
+  case "$opt" in
+    h)
+      printf "%s\n" "$HELP"
+      return 0
+      ;;
+    -)
+      case "${OPTARG}" in
+        help)
+          printf "%s\n" "$HELP"
+          return 0
+          ;;
+        *)
+          echo "Invalid option: --${OPTARG}" >&2
+          return 1
+          ;;
+      esac
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      return 1
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+MIN_NUM=0
+if [[ $# -ge 2 ]]; then
+  MIN_NUM="${1:-0}"
+  MAX_NUM="${2:-10}"
+else
+  MAX_NUM="${1:-10}"
+fi
+
+# Ensure valid numeric inputs
+if ! [[ "$MIN_NUM" =~ ^[0-9]+$ ]] || ! [[ "$MAX_NUM" =~ ^[0-9]+$ ]]; then
+  echo "Error: Arguments must be integers." >&2
+  return 1
+fi
+if (( MIN_NUM >= MAX_NUM )); then
+  echo "Error: MIN_INT must be less than MAX_INT." >&2
+  return 1
+fi
+
+# Generate random 64-bit integer
+B64_NUM="$(rand-b64 8)"
+INT_NUM=$(( 0x$(echo "$B64_NUM" | hexdump -v -e '/8 "%016x"') ))
+
+echo $(( MIN_NUM + INT_NUM % (MAX_NUM - MIN_NUM) ))

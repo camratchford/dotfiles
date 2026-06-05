@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Executes the shell script at URL
+
+USAGE:
+    execurl [FLAGS] URL
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+bash <(curl -s "$1")

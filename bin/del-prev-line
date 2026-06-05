@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Deletes the previous line of terminal text, moving the cursor upward by 1 line
+
+USAGE:
+    del-prev-line [FLAGS] TEXT
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+tput cuu1 && tput el

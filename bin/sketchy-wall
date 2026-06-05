@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -euo pipefail
+
+readarray PTS_LIST <<< "$(find /dev/pts -uid $UID)"
+for user_pts in "${PTS_LIST[@]}"; do
+    printf "%s\n" "${@[*]}" > $user_pts
+done

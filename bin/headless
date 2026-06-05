@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Executes CMD with ARGS in a background subshell, freeing the terminal session for use
+
+USAGE:
+    headless [FLAGS] CMD [ARGS]
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+(setsid ${1?"Missing parameter: program"} "$@"  &> /dev/null &)

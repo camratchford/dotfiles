@@ -1,24 +1,28 @@
 #!/bin/bash
 
-WHITE='\[$(tput setaf 15)\]'
-BLUE='\[$(tput setaf 6)\]'
-BEIGE='\[$(tput setaf 221)\]'
-GREEN='\[$(tput setaf 35)\]'
-RED='\[$(tput setaf 124)\]'
-LIGHT_RED='\[$(tput setaf 203)\]'
-PURPLE='\[$(tput setaf 140)\]'
-BROWN='\[$(tput setaf 248)\]'
-RESET='\[$(tput sgr0)\]'
-
+_COLORS=$(cat <<EOF
+  local WHITE='\[$(tput setaf 15)\]'
+  local BLUE='\[$(tput setaf 6)\]'
+  local BEIGE='\[$(tput setaf 221)\]'
+  local GREEN='\[$(tput setaf 35)\]'
+  local RED='\[$(tput setaf 124)\]'
+  local LIGHT_RED='\[$(tput setaf 203)\]'
+  local PURPLE='\[$(tput setaf 140)\]'
+  local BROWN='\[$(tput setaf 248)\]'
+  local RESET='\[$(tput sgr0)\]'
+EOF
+)
 
 function is-git-repo {
   git rev-parse --is-inside-work-tree &> /dev/null
 }
 
 function get-status-line {
+
   local FILE_STATUS BRANCH MAIN_AHEAD_BEHIND BRANCH_AHEAD_BEHIND
   local STATUS_LINE=""
   local CHECK='\342\234\223'
+  eval "$_COLORS"
 
   FILE_STATUS="$(git status --short 2>/dev/null)"
   BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
@@ -74,6 +78,7 @@ function set-terminal-title {
 
 function set-ps1-prompt {
   local PROMPT
+  eval "$_COLORS"
 
   PROMPT="$BLUE\u$BEIGE@$GREEN\h$RED : $PURPLE\W ${RESET}"
 

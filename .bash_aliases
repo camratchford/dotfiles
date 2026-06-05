@@ -17,6 +17,9 @@ alias http="python3 -m http.server"
 alias json="python3 -m json.tool"
 alias venv="python3 -m venv"
 
+# grep -Po "[0-9]*" file/with/numbers/to/sum | int-sum
+alias int-sum="xargs awk -v \"i=$\{1\}\" '{s+=i} END {print s}'"
+
 # vi is shorter than vim
 alias vi=vim
 # Has clipboard support
@@ -79,17 +82,19 @@ function export-jetbrains-launchers {
     for ide in "$HOME/.local/share/JetBrains/Toolbox/scripts/"*; do
         ide_name=$(basename "$ide")
         eval_array+=( "
-        $ide_name() {
-            if pgrep -x $ide_name &> /dev/null; then
-                $HOME/.local/share/JetBrains/Toolbox/scripts/$ide_name \"\$@\"
-            else
-              ( setsid $HOME/.local/share/JetBrains/Toolbox/scripts/$ide_name \"\$@\" > /dev/null 2>&1 & )
-            fi
-        }
+        alias $ide_name=\"$HOME/dotfiles/bin/headless $ide\"
         ")
     done
 
     echo "${eval_array[@]}"
 }
+if [[ -d $HOME/.local/share/JetBrains/Toolbox/scripts ]]; then
+  append-path "$HOME/.local/share/JetBrains/Toolbox/scripts"
+  eval "$(export-jetbrains-launchers)"
+fi
 
-eval "$(export-jetbrains-launchers)"
+if [[ -f /home/cam/.local/share/altera/13.0sp1/quartus/bin ]]; then
+  append-path "/home/cam/.local/share/altera/13.0sp1/quartus/bin"
+  export QUARTUS_64BIT=1
+  alias quartus="headless quartus"
+fi

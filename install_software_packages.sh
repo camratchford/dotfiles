@@ -14,10 +14,9 @@ WIDTH=$(( COLUMNS / 2 ))
 
 LIST_DIR="$THIS_DIR/software_packages"
 SOFTWARE_PACKAGES=()
-PACKAGE_LISTS=""
 CHECKLIST_ITEMS=()
 
-for list_file in $LIST_DIR/*.list; do
+for list_file in "$LIST_DIR"/*.list; do
   name="$(basename "$list_file")"
   description="$(head -1 "$list_file")"
   checked="off"
@@ -33,7 +32,7 @@ SELECTED_LISTS=$(whiptail --notags --title "Package Selection" \
   "${CHECKLIST_ITEMS[@]}" 3>&1 1>&2 2>&3
 )
 
-SELECTED_LISTS="$(echo $SELECTED_LISTS | tr -d '"')"
+SELECTED_LISTS="$(echo "$SELECTED_LISTS" | tr -d '"')"
 
 for package_list in $SELECTED_LISTS; do
   while IFS= read -r package; do

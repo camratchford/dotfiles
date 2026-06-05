@@ -1,0 +1,52 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Executes the value of EDITOR, redirecting the text from the saved file to CMD upon closing the editor.
+
+USAGE:
+    editor-to-cmd [FLAGS] CMD
+
+PARAMETERS:
+    CMD        The command to execute after closing the editor, using the text from the tempfile as $$1
+
+FLAGS:
+    --file,-f  Rather than using the text from the tempfile, the tempfile path is used as $$1 instead
+    --help,-h  Print this message and exits
+
+EOF
+)
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit
+      ;;
+    -f|--file)
+      AS_FILE="true"
+      shift
+      ;;
+    *)
+      TO_CMD="${1?'No command to redirect editor output to'}"
+      shift
+      break
+      ;;
+  esac
+done
+
+TMP_FILE=$(mktemp -q) && {
+  tput smcup
+  $EDITOR "$TMP_FILE"
+  if [[ ! -s "$TMP_FILE" ]]; then
+    rm "$TMP_FILE"
+    return 1
+  fi
+  if [ -n "$AS_FILE" ]; then
+    $TO_CMD "$TMP_FILE"
+  else
+    $TO_CMD < "$TMP_FILE"
+  fi
+}
+rm "$TMP_FILE"
+tput rmcup

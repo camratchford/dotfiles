@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Prints a random integer between a min and max integer
+
+USAGE:
+    rand-b64 SIZE_INT
+    rand-b64 -h
+
+FLAGS:
+    -h       Print this message and exit
+
+PARAMETERS:
+    SIZE_INT The byte length of the b64-encoded integer you wish to generate
+             (Defaults to 16 if no arguments are passed)
+
+EXAMPLES:
+    rand-b64
+    > buyL55f4qGne+XqpqsnaUA
+
+    rand-b64 64
+    > 81YJCeyUYQthGARxX5EJFoNIs+pZUgvQimmyeMS5mCCqGkXZBkF38sdfsn88OtUtmev2pCcpuVrlx6J48bdi3Q
+EOF
+)
+
+while getopts ":h-:" opt; do
+  case "$opt" in
+    h)
+      printf "%s\n" "$HELP" && return 0
+      ;;
+    -)
+      case "${OPTARG}" in
+        help)
+          printf "%s\n" "$HELP" && return 0
+          ;;
+        *)
+          echo "Invalid option: --${OPTARG}" >&2 && return 1
+          ;;
+      esac
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2 && return 1
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+head -c "${1:-16}" /dev/urandom | base64 -w 0 | tr -d '='
+echo

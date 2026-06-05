@@ -1,7 +1,7 @@
 # Source common functions
 export BASH_ENV="$HOME/.bash_env"
 [[ -f "$BASH_ENV" ]] && . "$BASH_ENV"
-
+dotsource "$BASHLIBS/script-"
 ##############################################################################
 #################### Standard Ubuntu/Debian bashrc stuff #####################
 ##############################################################################
@@ -62,6 +62,9 @@ if ! shopt -oq posix; then
   dotsource /etc/bash_completion
   dotsource-parts "$HOME/.bash_completions"
   dotsource-parts "$HOME/.local/share/bash-completion"
+  which kubectl &> /dev/null && source <(kubectl completion bash)
+  which argocd &> /dev/null && source <(argocd completion bash)
+  which helm &> /dev/null && source <(helm completion bash)
 fi
 
 dotsource "$HOME/.bash_aliases"
@@ -73,12 +76,15 @@ if [[ -d "$HOME/.pyenv" ]]; then
   eval "$(pyenv init -)"
 fi
 
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
 
 #######################################################################
 ########################### Bash Macros ###############################
 #######################################################################
 
 # Launches EDITOR, Python executes EDITOR's output
+
 bind -x '"\C-p": "run-in-env editor-to-cmd --file python3"'
 
 ##################################################################

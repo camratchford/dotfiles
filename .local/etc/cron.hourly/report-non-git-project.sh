@@ -1,9 +1,9 @@
 #!/bin/bash
 for project_dir in /projects/*/; do
   if [ "$(git -C "$project_dir" rev-parse --show-toplevel 2> /dev/null)/" != "$project_dir" ]; then
-    MSG="Message from '$(basename $0)': \"Project '$project_dir' is not being tracked in Git\""
+    MSG="Message from '$(basename "$0")': \"Project '$project_dir' is not being tracked in Git\""
     # wall won't let me send myself a message without the banner unless my EUID is 0
-    sketchy-wall "$MSG"
+    "$HOME/dotfiles/bin/sketchy-wall" "$MSG"
   else
     continue
   fi

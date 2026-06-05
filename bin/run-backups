@@ -1,0 +1,106 @@
+#!/bin/bash
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+
+Executes rsync to backup paths from the first column of PATHS_FILE to the 2nd colum of PATHS_FILE, ignoring paths that match any pattern in EXCLUDES_FILE
+
+
+USAGE:
+    run-backups [FLAGS] PATHS_FILE EXCLUDES_FILE
+
+PARAMETERS:
+    EXCLUDES_FILE     Rsyncignore formatted list of exclude patterns. Rsync will ignore paths which match these patterns.
+                      default is "$HOME/.local/share/backups/rsyncignore"
+
+    PATHS_FILE        Rows of quoted, tab separated paths. The first path is the source, the second path is the destination.
+                      default is "$HOME/.local/share/backups/paths"
+
+FLAGS:
+    --b,--background  Useful for cron jobs or any non-interactive shell. STDOUT and STDERR are redirected to '/usr/bin/logger' using the journalctl topic 'run-backups'.
+                      To view this output, run: 'journalctl -t run-backups'
+    --help,-h         Print this message and exits
+    --*               Extra arguments to pass to the rsync process
+
+EXAMPLES:
+    # runs the equivalent of 'run-backups "$HOME/.local/share/backups/paths" "$HOME/.local/share/backups/rsyncignore"'
+    run-backups
+
+    # Lists the paths rsync would try to copy from the paths in ~/my-backups-paths, ignoring any paths that match the patterns in ~/.rsyncignore
+    run-backups --dry-run ~/my-backup-paths ~/.rsyncignore
+
+EOF
+)
+
+function _run-backups {
+  local extra_opts=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --*)
+        extra_opts+=("$1")
+        shift
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  local paths_file excludes_file
+
+  paths_file="${1:-"$HOME/.local/share/backups/rsyncignore"}"
+  excludes_file="${2:-"$HOME/.local/share/backups/paths"}"
+
+  if [ ! -e "$paths_file" ]; then
+      echo "Error: paths file not found: $paths_file"
+      return 1
+  fi
+  if [ ! -e "$excludes_file" ]; then
+      echo "Error: excludes file not found: $excludes_file"
+      return 1
+  fi
+
+  HOSTNAME=$(hostname)
+  export HOSTNAME
+
+  while IFS=$'\t ' read -r src dest; do
+      # Continue if it has fewer than 2 items in a row or the row starts with #
+      [[ -z "$src" || -z "$dest" || "$src" =~ ^# ]] && continue
+
+      # Expand shell variables
+      src=$(envsubst <<< "$src")
+      dest=$(envsubst <<< "$dest")
+      mkdir -p "$dest"
+
+      if [[ ! -d $src ]]; then
+          echo "Warning: Source directory not found: $src"
+          continue
+      fi
+
+      rsync_opts=(-avh --delete --filter=": .rsyncignore" --exclude-from="$excludes_file")
+      if [[ ${#extra_opts[@]} -gt 0 ]]; then
+        rsync_opts+=("${extra_opts[@]}")
+      fi
+
+      echo -e "\nSyncing: $src -> $dest"
+      rsync "${rsync_opts[@]}" "$src" "$dest"
+
+  done < "$paths_file"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+        echo "$HELP"
+        exit
+        ;;
+    -b|--background)
+        (setsid _run-backups "$@" 2>&1 | /usr/bin/logger -t run-backups &)
+        exit "${PIPESTATUS[0]}"
+        ;;
+    *)
+        _run-backups "$@"
+        ;;
+  esac
+done

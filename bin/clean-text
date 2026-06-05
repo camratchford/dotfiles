@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Escapes forward slashes
+
+USAGE:
+    clean-text [FLAGS] TEXT
+
+PARAMETERS:
+    TEXT       Text with forward slashes
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+TEXT="${1?"Missing argument 'TEXT'"}"
+printf '%s\n' "$TEXT" | sed 's/[][\/.^$*~|()]/\\&/g'

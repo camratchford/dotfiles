@@ -1,0 +1,20 @@
+#!/bin/bash
+set -eu
+
+HELP=$(cat <<EOF
+Reads the first row of FILE, storing it in a variable called VAR
+
+USAGE:
+    read-file-header [FLAGS] VAR FILE
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+test -r "$1" && IFS=$'\r\n' read "$2" <"$1"
