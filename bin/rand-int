@@ -10,23 +10,26 @@ USAGE:
     rand-int -h
 
 FLAGS:
-    -h       Print this message and exits
+    -h,--help  Print this message and exits
 
 PARAMETERS:
-    MIN_INT  The lowest possible value that the random number can be (inclusive)
-             (Defaults to 0 if only 1 arg (MAX_INT) is passed)
+    MIN_INT    The lowest possible value that the random number can be (inclusive)
+               (Defaults to 0 if no arguments or only 1 argument (MAX_INT) is passed)
 
-    MAX_INT  The highest possible value plus one that the random number can be (exclusive)
-             (Is the 2nd argument if 2 args are passed, is the 1st argument if only 1 arg is passed)
+    MAX_INT    The highest possible value plus one that the random number can be (exclusive)
+               (Defaults to 10 if no arguments are passed)
+               (Is the 2nd argument if 2 args are passed, is the 1st argument if only 1 arg is passed)
 
 EXAMPLES:
     # Produces a random integer in the range of 10 to 100
     rand-int 10 101
     > 28
-    # Produces a random integer in the range of 0 to 9
-    rand-int 10
-    > 9
-
+    # Equivalent to 'rand-int 0 20', producing a random integer in the range of 0 to 19
+    rand-int 20
+    > 13
+    # Equivalent to 'rand-int 0 10', producing a random integer in the range of 0 to 9
+    rand-int
+    > 3
 EOF
 )
 

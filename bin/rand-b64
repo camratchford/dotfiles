@@ -9,11 +9,11 @@ USAGE:
     rand-b64 -h
 
 FLAGS:
-    -h       Print this message and exit
+    -h,--help  Print this message and exit
 
 PARAMETERS:
-    SIZE_INT The byte length of the b64-encoded integer you wish to generate
-             (Defaults to 16 if no arguments are passed)
+    SIZE_INT   The byte length of the b64-encoded integer you wish to generate
+               (Defaults to 16 if no arguments are passed)
 
 EXAMPLES:
     rand-b64
