@@ -32,6 +32,6 @@ _kicad_complete() {
     done
 }
 
-if which kicad &> /dev/null ; then
-  complete -o nospace -F _kicad_complete kicad
-fi
+
+complete -o nospace -F _kicad_complete kicad
+

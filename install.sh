@@ -44,6 +44,7 @@ done
 # Specify the exact location of the dotdirs
 SYMLINK_DIRS=(
   "$THIS_DIR/.vim:$HOME"
+  "$THIS_DIR/.bash_completions:$HOME"
 )
 for src_target in "${SYMLINK_DIRS[@]}"; do
   IFS=":" read -r src target <<< "$src_target"

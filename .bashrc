@@ -59,9 +59,10 @@ fi
 # enable programmable completion features
 if ! shopt -oq posix; then
   dotsource /usr/share/bash-completion/bash_completion
+
   dotsource /etc/bash_completion
   dotsource-parts "$HOME/.bash_completions"
-  dotsource-parts "$HOME/.local/share/bash-completion"
+  dotsource-parts "$HOME/.local/share/bash-completion/completion"
   which kubectl &> /dev/null && source <(kubectl completion bash)
   which argocd &> /dev/null && source <(argocd completion bash)
   which helm &> /dev/null && source <(helm completion bash)
