@@ -82,7 +82,7 @@ function export-jetbrains-launchers {
     for ide in "$HOME/.local/share/JetBrains/Toolbox/scripts/"*; do
         ide_name=$(basename "$ide")
         eval_array+=( "
-        alias $ide_name=\"$HOME/dotfiles/bin/headless $ide\"
+        alias $ide_name=\"headless $ide\"
         ")
     done
 
@@ -93,8 +93,12 @@ if [[ -d $HOME/.local/share/JetBrains/Toolbox/scripts ]]; then
   eval "$(export-jetbrains-launchers)"
 fi
 
-if [[ -f /home/cam/.local/share/altera/13.0sp1/quartus/bin ]]; then
+if [[ -d /home/cam/.local/share/altera/13.0sp1/quartus/bin ]]; then
   append-path "/home/cam/.local/share/altera/13.0sp1/quartus/bin"
   export QUARTUS_64BIT=1
   alias quartus="headless quartus"
+fi
+
+if [[ -x /usr/bin/kicad  ]]; then
+  alias kicad="headless /usr/bin/kicad"
 fi
