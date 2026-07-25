@@ -2,7 +2,7 @@
 set -euo pipefail
 
 HELP=$(cat <<EOF
-Executes CMD with ARGS in a background subshell, freeing the terminal session for use
+Executes CMD with ARGS in a separate process as a background subshell, freeing the terminal session for use.
 
 USAGE:
     headless [FLAGS] CMD [ARGS]
@@ -17,4 +17,4 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
     exit
 fi
 
-(setsid ${1?"Missing parameter: program"} "$@"  &> /dev/null &)
+(setsid "$@"  &> /dev/null &)

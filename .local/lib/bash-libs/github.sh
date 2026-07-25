@@ -50,5 +50,6 @@ function gh-new-repo {
     git init "$SOURCE"
   fi
 
-  gh repo create --private --source="$SOURCE" --remote=upstream "$@"
+  gh repo create --private --source="$SOURCE" --remote=origin "$@"
+  git
 }

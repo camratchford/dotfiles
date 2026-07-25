@@ -94,3 +94,4 @@ bind -x '"\C-p": "run-in-env editor-to-cmd --file python3"'
 
 . "$HOME/dotfiles/termprompt.sh"
 export PROMPT_COMMAND='set-ps1-prompt'
+

@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -euo pipefail
+
+rc_file="${HOME}/.bashrc.local"
+
+help=$(cat <<EOF
+
+Idempotently add or update \`export KEY=VALUE\` lines in an rc file.
+
+USAGE:
+    append-rc-env-var [-f FILE] KEY=VALUE [KEY2=VALUE2 ...]
+
+PARAMETERS:
+   KEY       The environment variable being declared/modified.
+   VALUE     The value of KEY
+
+
+FLAGS:
+    FILE    The rc file that will be modified.
+            (default is $rc_file)
+
+BEHAVIOUR:
+  - If \`export KEY=\` does not exist in FILE, it is appended.
+  - If it already exists, the existing line is replaced with the new value
+    (so re-running with a different value updates it instead of duplicating it).
+  - Re-running with the same value is a no-op (file content unchanged).
+
+
+EOF
+)
+
+while getopts ":f:h" opt; do
+    case "$opt" in
+        f) rc_file="$OPTARG" ;;
+        h|-h) echo "$help" ;;
+        \?) echo "Unknown option: -$OPTARG" >&2; echo "$help" >&2 && exit 1;;
+        :) echo "Option -$OPTARG requires an argument" >&2; echo "$help" >&2 && exit 1 ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -eq 0 ]]; then
+    echo "$help"
+fi
+
+if [[ ! -f "$rc_file" ]]; then
+  echo "$0: Cannot append to rc file '$rc_file': No such file" >&2
+  exit 1
+fi
+
+for pair in "$@"; do
+    if [[ "$pair" != *=* ]]; then
+        echo "Skipping invalid argument (expected KEY=VALUE): $pair" >&2
+        continue
+    fi
+
+    key="${pair%%=*}"
+    value="${pair#*=}"
+
+    if ! [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+        echo "Skipping invalid variable name: $key" >&2
+        continue
+    fi
+
+    new_line="export ${key}=${value}"
+    escaped_key=$(printf '%s' "$key" | sed 's/[.[\*^$/]/\\&/g')
+
+    if grep -qE "^export ${escaped_key}=" "$rc_file"; then
+        current_line=$(grep -E "^export ${escaped_key}=" "$rc_file" | tail -n1)
+        if [[ "$current_line" == "$new_line" ]]; then
+            echo "Already set: $key"
+            continue
+        fi
+        # Replace the line in place, preserving position.
+        tmp_file=$(mktemp)
+        sed -E "s/^export ${escaped_key}=.*/${new_line//\//\\/}/" "$rc_file" > "$tmp_file"
+        mv "$tmp_file" "$rc_file"
+        echo "Updated: $key"
+    else
+        printf '%s\n' "$new_line" >> "$rc_file"
+        echo "Added: $key"
+    fi
+done

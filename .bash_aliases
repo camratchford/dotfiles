@@ -88,6 +88,7 @@ function export-jetbrains-launchers {
 
     echo "${eval_array[@]}"
 }
+
 if [[ -d $HOME/.local/share/JetBrains/Toolbox/scripts ]]; then
   append-path "$HOME/.local/share/JetBrains/Toolbox/scripts"
   eval "$(export-jetbrains-launchers)"
@@ -95,6 +96,8 @@ fi
 
 if [[ -d /home/cam/.local/share/altera/13.0sp1/quartus/bin ]]; then
   append-path "/home/cam/.local/share/altera/13.0sp1/quartus/bin"
+  append-path "/home/cam/.local/share/altera/13.0sp1/modelsim_ase/bin"
+  append-path "/home/cam/.local/share/altera/13.0sp1/modelsim_ae/bin"
   export QUARTUS_64BIT=1
   alias quartus="headless quartus"
 fi
