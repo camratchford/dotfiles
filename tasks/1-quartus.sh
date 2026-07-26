@@ -10,7 +10,7 @@ SCRATCH_DIR=$(mktemp -qd) && {
   cd "$SCRATCH_DIR" || exit
   mkdir quartus_installer
   wget https://downloads.intel.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar
-  wget /tmp/ http://security.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
+  wget http://security.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
   wget http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tbb/libtbb2_4.1~20130613-1.2_amd64.deb
 
   tar -C quartus_installer -xvf Quartus-web-13.0.1.232-linux.tar

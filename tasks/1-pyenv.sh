@@ -11,5 +11,11 @@ sudo apt-get install -y \
   libffi-dev \
   liblzma-dev
 
+install_instructions=$(cat <<EOF
+Now run:
+exec bash
 pyenv install 3.14 3.12 3.11
 pyenv global 3.14
+EOF
+)
+print "$install_instructions"
