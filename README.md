@@ -4,76 +4,42 @@
 
 ## Installing
 
-Clone and install:
+### Clone
 
 ```bash
 git clone https://github.com/camratchford/dotfiles ~/dotfiles
+```
 
+### Install
+
+```bash
 cd ~/dotfiles
 ./install.sh
 ```
 
-Apply changes:
+After the initial setup is complete, the scripts below are run (only if `install.sh` is run interactively). Select each item you wish to install/run, and confirm to apply the changes or cancel to continue without making any changes.
+
+- *dotfiles-install-software-packages* - Install collections of packages based on category. The categories are listed in the `software_packages` directory.
+- *dotfiles-run-tasks* - Run post-install tasks (like installing packages from PPA repos, configuring ZFS, downloading and installing JetBrains Toolbox). The task scripts are located in the `tasks` directory.
+
+### Restart Shell
 
 ```bash
-souce ~/.bashrc
+exec bash
 ```
 
+## Features
 
-## Contents
+In addition to supplying dotfiles, this repo:
 
-### Dirs
-
-- `.local/lib/bash-libs`
-  - A collection of useful bash functions, sorted by category into separate files.
-- `.local/share/cron.d`
-  - A set of directories configured by the `install.sh` script to have their contents executed periodically by `run-parts`.
-  - Same idea as `/etc/cron.{daily,hourly,weekly,yearly}`, including monthly rather than yearly.
-  - `.local/share/cron.d/{daily,hourly,monthly,weekly}`
-- `.local/share/logrotate`
-  - Contains `logrotate.conf`
-    - The configuration file for the `.local/share/cron.d/daily/logrotate.sh` script that is executed daily
-    - Makes a backup of `~/.history`
-- `.vim`
-  - Contains submodules for vim plugins
-- `tmux`
-  - Contains submodules for tmux plugins
-
-
-### Files
-
-- `.bashrc`
-  - Appends several directories to PATH
-    - `~/bin`
-    - `~/.local/bin`
-    - `~/.local/share/ansi/bin`
-  - dot-sources several files
-    - `~/.bash_completions`
-    - `~/.local/share/bash-completion`
-    - `~/.bash_aliases`
-    - `~/.bashrc.local` if it exists
-    - `~/.local/lib/bash-libs/*`
-    - `~/dotfiles/termprompt.sh`
-- `.bash_aliases`
-  - Sets aliases and env vars (like `PAGER` and `EDITOR`)
-- `.gitconfig`
-  - Default git config settings
-  - Includes `.gitconfig.work` if it exists.
-- `.inputrc`
-  - Default bash settings and hotkey mappings
-- `.lscolors`
-  - Color per file format for ls/exa/eza
-- `.tmux.conf`
-  - Default tmux settings
-- `.vimrc`
-  - Default vim settings
-- `install.sh`
-  - Backups up the files it would overwrite, placing it in `backups`, then archiving it with the day's date.
-  - Symlinks the dotfiles and dotdirs
-  - Generates cron jobs for the new directories `.local/share/cron.d/{daily,hourly,monthly,weekly}`
-  - Runs `git submodule init && git submodule update`
-  - Generates vim help documents for vim plugins imported via git submodules
-  - Creates an `uninstall.sh` script to put everything back how it was found
-- `termprompt.sh`
-  - Sets the `PS1` and `PROMPT_COMMAND` variables, similar to gitstatus
+- Installs Vim plugins via `git submodule`
+- Installs help for any Vim plugins
+- Sets up the user crontab with jobs to execute `run-parts` on a local set of the very common `cron.{hourly,daily,weekly,monthly}` directories.
+  - Ships with some scripts in the `./.local/etc/cron.{houry,daily,weekly,monthly}`
+- Defines aliases (`./.bash_aliases`)
+- Sources functions (`./.local/lib/bash-libs/*`)
+- Adds scripts to `PATH` (`./bin/*`, `./.local/bin/*`)
+- Sets a Git-aware PS1 prompt `./termprompt.sh`
+- Facilities for installing commonly installed Apt packges (`./bin/dotfiles-install-software-packages`)
+- Facilities for running commonly executed system customization tasks (`./bin/dotfiles/run-tasks`)
 
