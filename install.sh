@@ -39,7 +39,7 @@ for src_target in "${SYMLINK_DIRS[@]}"; do
   link-dir "$src" "$target"
 done
 
-# Symlink dirs 'dotfiles/.local/*' to '$HOME/.local/'
+# Symlink dirs 'dotfiles/.local/*' to '$HOME/.local/', similar to gnu stash
 readarray -d '' CONTENTS_OF_DOT_LOCAL <<< find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0
 for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
   readarray -d '' DOT_LOCAL_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
@@ -53,11 +53,11 @@ readarray CRONTAB_CONTENTS <<< "$(crontab -l 2>/dev/null)"
 CRON_PARENT_DIR=".local/etc"
 mkdir -p "$HOME/$CRON_PARENT_DIR/cron.d"
 for period in hourly daily weekly monthly; do
-  PERIOD_DIR="$CRON_PARENT_DIR/cron.$period"
+  PERIOD_DIR="$HOME/$CRON_PARENT_DIR/cron.$period"
   link-dir "$THIS_DIR/$CRON_PARENT_DIR/cron.$period" "$HOME/$CRON_PARENT_DIR"
 
   # Execute the contents of `$HOME/.local/etc/cron.$period` every `$period`
-  CRON_JOB="@$period run-parts $PERIOD_DIR"
+  CRON_JOB="@$period run-parts --verbose $PERIOD_DIR"
 
   if ! [[ ${CRONTAB_CONTENTS[*]} =~ $CRON_JOB ]]; then
     CRONTAB_CONTENTS+=("$CRON_JOB")
@@ -97,4 +97,14 @@ DOCS_DIRS="$(find ~/.vim/bundle -path "*/doc")"
 for docdir in $DOCS_DIRS; do
   vim -es -u NONE -c "helptags $docdir" -c "q"
 done
+
+
+# Exit if not being run interactively
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+sudo "$THIS_DIR/bin/dotfiles-install-software-packages"
+"$THIS_DIR/bin/dotfiles-run-tasks"
 

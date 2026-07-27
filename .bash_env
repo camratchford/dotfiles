@@ -47,5 +47,4 @@ if [ -d "$BASHLIBS" ]; then
   dotsource-parts "$BASHLIBS"
 fi
 
-
 dotsource "$HOME/.bashrc.local"
