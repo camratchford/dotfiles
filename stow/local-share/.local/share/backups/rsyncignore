@@ -11,8 +11,8 @@
 .bash_logout
 
 # Don't need it backing up git submodules
-/dotfiles/.vim/bundle/
-/dotfiles/.local/share/ansi
+/dotfiles/stow/vim/.vim/bundle/
+/dotfiles/stow/local-share/.local/share/ansi
 /.vim/bundle/
 /.local/share/ansi
 

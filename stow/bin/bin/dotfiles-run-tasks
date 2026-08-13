@@ -7,13 +7,14 @@ fi
 
 
 THIS_DIR="$(dirname "$(realpath "$0")")"
+REPO_DIR="$(git -C "$THIS_DIR" rev-parse --show-toplevel)"
 
 LINES=$(tput lines)
 HEIGHT=$(( LINES / 2  ))
 COLUMNS=$(tput cols)
 WIDTH=$(( COLUMNS / 2 ))
 
-LIST_DIR="$THIS_DIR/../tasks"
+LIST_DIR="$REPO_DIR/tasks"
 SOFTWARE_PACKAGES=()
 CHECKLIST_ITEMS=()
 

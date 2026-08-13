@@ -3,9 +3,9 @@
 .github
 backup/
 uninstall.sh
-.vim/.netrwhist
-.vim/bundle/*
-.vim/autoload/pathogen.vim
+stow/vim/.vim/.netrwhist
+stow/vim/.vim/bundle/*
+stow/vim/.vim/autoload/pathogen.vim
 *.bak
 *.tmp
 */crontab
@@ -14,4 +14,4 @@ dotfiles-backup*
 .local/share/cron.d/crontab
 .local/share/cron.d/daily/backup_profile.sh
 .gitconfig.work
-/.config/lnav/configs/default/
+/stow/lnav/.config/lnav/configs/default/

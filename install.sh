@@ -2,68 +2,62 @@
 
 THIS_DIR="$(dirname "$(realpath "$0")")"
 
+STOW_DIR="$THIS_DIR/stow"
 BACKUP_DIR="$THIS_DIR/backup"
 mkdir -p "$BACKUP_DIR"
 
-function link-dir {
-  local src="$1"
-  local target="$2"
+if ! command -v stow &> /dev/null; then
+  echo "GNU Stow is required but not installed. Install it with 'sudo apt install stow'." >&2
+  exit 1
+fi
 
-  if [ -d "$target/$(basename "$src")" ] && ! [ -L "$target/$(basename "$src")" ]; then
-    mv "$target/$(basename "$src")" "$BACKUP_DIR/$(basename "$src")"
-  fi
+STOW_PACKAGES=(
+  bash
+  vim
+  git
+  kitty
+  lnav
+  tmux
+  bin
+  local-lib
+  local-share
+  local-etc
+  misc
+)
 
-  mkdir -p "$target"
-  ln -s "$src" "$target/" 2> /dev/null
+# Stow refuses to link over anything it doesn't already own. Move real files/dirs
+# out of the way into $BACKUP_DIR, and drop any stale (e.g. pre-stow) symlinks,
+# then let stow do the linking.
+function stow-package {
+  local package="$1"
+  local relative_path
+
+  while IFS= read -r relative_path; do
+    [ -z "$relative_path" ] && continue
+    local target="$HOME/$relative_path"
+    if [ -L "$target" ]; then
+      rm "$target"
+    elif [ -e "$target" ]; then
+      mkdir -p "$BACKUP_DIR/$(dirname "$relative_path")"
+      mv "$target" "$BACKUP_DIR/$relative_path"
+    fi
+  done < <(stow -n -d "$STOW_DIR" -t "$HOME" "$package" 2>&1 | sed -n \
+    -e 's/^  \* existing target is not owned by stow: //p' \
+    -e 's/^  \* cannot stow .* over existing target \(.*\) since neither a link nor a directory and --adopt not specified/\1/p')
+
+  stow -d "$STOW_DIR" -t "$HOME" "$package"
 }
 
-# Deal with sym-linking files
-DOTFILES=$(find "$THIS_DIR" -maxdepth 1 -type f -name ".*" -not -name "*.gitmodules" -not -name "*.gitignore")
-for file in $DOTFILES; do
-  home_name="$HOME/$(basename "$file")"
-  if [ -f "$home_name" ] && ! [ -L "$home_name"  ]; then
-    mv "$home_name" "$BACKUP_DIR"
-  elif [ -L "$home_name" ]; then
-    rm "$home_name"
-  fi
-  ln -s "$file" "$home_name"
-done
-
-# Specify the exact location of the dotdirs
-SYMLINK_DIRS=(
-  "$THIS_DIR/.vim:$HOME"
-  "$THIS_DIR/.bash_completions:$HOME"
-)
-for src_target in "${SYMLINK_DIRS[@]}"; do
-  IFS=":" read -r src target <<< "$src_target"
-  link-dir "$src" "$target"
-done
-
-# Symlink dirs 'dotfiles/.local/*' to '$HOME/.local'
-readarray -d '' CONTENTS_OF_DOT_LOCAL <<< find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0
-for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
-  readarray -d '' DOT_LOCAL_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
-  for src in "${DOT_LOCAL_SUBDIRS[@]}"; do
-    link-dir "$src" "$HOME/.local/$(basename "$dir")"
-  done
-done
-
-# Symlink dirs 'dotfiles/.config/*' to '$HOME/.config'
-readarray -d '' CONTENTS_OF_DOT_CONFIG <<< find "$THIS_DIR/.config" -mindepth 1 -maxdepth 1 -type d -print0
-for dir in "${CONTENTS_OF_DOT_CONFIG[@]}"; do
-  readarray -d '' DOT_CONFIG_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
-  for src in "${DOT_CONFIG_SUBDIRS[@]}"; do
-    link-dir "$src" "$HOME/.config/$(basename "$dir")"
-  done
+for package in "${STOW_PACKAGES[@]}"; do
+  stow-package "$package"
 done
 
 # Create user cron directories similar to /etc/cron.${period} directories
-readarray CRONTAB_CONTENTS <<< "$(crontab -l 2>/dev/null)"
 CRON_PARENT_DIR=".local/etc"
 mkdir -p "$HOME/$CRON_PARENT_DIR/cron.d"
+readarray CRONTAB_CONTENTS <<< "$(crontab -l 2>/dev/null)"
 for period in hourly daily weekly monthly; do
   PERIOD_DIR="$HOME/$CRON_PARENT_DIR/cron.$period"
-  link-dir "$THIS_DIR/$CRON_PARENT_DIR/cron.$period" "$HOME/$CRON_PARENT_DIR"
 
   # Execute the contents of `$HOME/.local/etc/cron.$period` every `$period`
   CRON_JOB="@$period run-parts --verbose $PERIOD_DIR"
@@ -114,6 +108,5 @@ case $- in
       *) return;;
 esac
 
-sudo "$THIS_DIR/bin/dotfiles-install-software-packages"
-"$THIS_DIR/bin/dotfiles-run-tasks"
-
+sudo "$THIS_DIR/stow/bin/bin/dotfiles-install-software-packages"
+"$THIS_DIR/stow/bin/bin/dotfiles-run-tasks"

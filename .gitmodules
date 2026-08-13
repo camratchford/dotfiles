@@ -1,45 +1,45 @@
 [submodule ".vim/bundle/nerdtree"]
-	path = .vim/bundle/nerdtree
+	path = stow/vim/.vim/bundle/nerdtree
 	url = https://github.com/preservim/nerdtree.git
 [submodule ".vim/bundle/syntastic"]
-	path = .vim/bundle/syntastic
+	path = stow/vim/.vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
 [submodule ".vim/bundle/vim-markdown"]
-	path = .vim/bundle/vim-markdown
+	path = stow/vim/.vim/bundle/vim-markdown
 	url = https://github.com/hallison/vim-markdown.git
 [submodule ".vim/bundle/vim-hashicorp-tools"]
-	path = .vim/bundle/vim-hashicorp-tools
+	path = stow/vim/.vim/bundle/vim-hashicorp-tools
 	url = https://github.com/hashivim/vim-hashicorp-tools.git
 [submodule ".vim/bundle/tabular"]
-	path = .vim/bundle/tabular
+	path = stow/vim/.vim/bundle/tabular
 	url = https://github.com/godlygeek/tabular.git
 [submodule ".vim/bundle/delimitMate"]
-	path = .vim/bundle/delimitMate
+	path = stow/vim/.vim/bundle/delimitMate
 	url = https://github.com/Raimondi/delimitMate.git
 [submodule ".vim/bundle/vimwiki"]
-	path = .vim/bundle/vimwiki
+	path = stow/vim/.vim/bundle/vimwiki
 	url = https://github.com/vimwiki/vimwiki.git
 [submodule ".vim/bundle/vim-visual-multi"]
-	path = .vim/bundle/vim-visual-multi
+	path = stow/vim/.vim/bundle/vim-visual-multi
 	url = https://github.com/mg979/vim-visual-multi.git
 [submodule ".vim/bundle/everforest"]
-	path = .vim/bundle/everforest
+	path = stow/vim/.vim/bundle/everforest
 	url = https://github.com/sainnhe/everforest.git
 [submodule ".vim/bundle/vim-commentary"]
-	path = .vim/bundle/vim-commentary
+	path = stow/vim/.vim/bundle/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
 [submodule ".vim/bundle/bundle/vim-tcpdump"]
-	path = .vim/bundle/bundle/vim-tcpdump
+	path = stow/vim/.vim/bundle/bundle/vim-tcpdump
 	url = https://github.com/1995parham/vim-tcpdump.git
 [submodule ".vim/bundle/auto-pairs"]
-	path = .vim/bundle/auto-pairs
+	path = stow/vim/.vim/bundle/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs.git
 [submodule ".local/share/ansi"]
-	path = .local/share/ansi
+	path = stow/local-share/.local/share/ansi
 	url = https://github.com/fidian/ansi.git
 [submodule "tmux/plugins/tpm"]
-	path = tmux/plugins/tpm
+	path = stow/tmux/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
 [submodule ".vim/bundle/ale"]
-	path = .vim/bundle/ale
+	path = stow/vim/.vim/bundle/ale
 	url = https://github.com/dense-analysis/ale.git
