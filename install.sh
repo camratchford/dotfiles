@@ -39,12 +39,21 @@ for src_target in "${SYMLINK_DIRS[@]}"; do
   link-dir "$src" "$target"
 done
 
-# Symlink dirs 'dotfiles/.local/*' to '$HOME/.local/', similar to gnu stash
+# Symlink dirs 'dotfiles/.local/*' to '$HOME/.local'
 readarray -d '' CONTENTS_OF_DOT_LOCAL <<< find "$THIS_DIR/.local" -mindepth 1 -maxdepth 1 -type d -print0
 for dir in "${CONTENTS_OF_DOT_LOCAL[@]}"; do
   readarray -d '' DOT_LOCAL_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
   for src in "${DOT_LOCAL_SUBDIRS[@]}"; do
     link-dir "$src" "$HOME/.local/$(basename "$dir")"
+  done
+done
+
+# Symlink dirs 'dotfiles/.config/*' to '$HOME/.config'
+readarray -d '' CONTENTS_OF_DOT_CONFIG <<< find "$THIS_DIR/.config" -mindepth 1 -maxdepth 1 -type d -print0
+for dir in "${CONTENTS_OF_DOT_CONFIG[@]}"; do
+  readarray -d '' DOT_CONFIG_SUBDIRS <<< find "$dir" -mindepth 1 -maxdepth 1 -type d -print0
+  for src in "${DOT_CONFIG_SUBDIRS[@]}"; do
+    link-dir "$src" "$HOME/.config/$(basename "$dir")"
   done
 done
 
