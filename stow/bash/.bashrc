@@ -86,7 +86,7 @@ fi
 
 # Launches EDITOR, Python executes EDITOR's output
 
-bind -x '"\C-p": "run-in-env editor-to-cmd --file python3"'
+bind -x '"\C-p": "BASH_ENV=~/.bash_env editor-to-cmd --file python3"'
 
 ##################################################################
 ###################### set prompt colors #########################

@@ -2,7 +2,29 @@
 
 set -euo pipefail
 
-readarray PTS_LIST <<< "$(find /dev/pts -uid $UID)"
+HELP=$(cat <<EOF
+Writes a message directly to every pty owned by your UID, mimicking 'wall --no-banner'.
+
+'wall --no-banner' requires root, since it needs to open other users' ptys. This works around
+that by only ever writing to ptys you already own, no privilege escalation needed.
+
+USAGE:
+    sketchy-wall [FLAGS] MESSAGE
+
+PARAMETERS:
+    MESSAGE    The text to write to each of your ptys
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+readarray -t PTS_LIST <<< "$(find /dev/pts -uid "$UID")"
 for user_pts in "${PTS_LIST[@]}"; do
-    printf "%s\n" "${@[*]}" > $user_pts
+    printf "%s\n" "$*" > "$user_pts"
 done

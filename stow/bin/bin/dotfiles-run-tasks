@@ -1,5 +1,22 @@
 #!/bin/bash
 
+HELP=$(cat <<EOF
+Presents a checklist of the task scripts in tasks/, and sources whichever ones you select.
+Must not be run as root.
+
+USAGE:
+    dotfiles-run-tasks [FLAGS]
+
+FLAGS:
+    --help,-h  Print this message and exits
+
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
 if [[ $EUID -eq 0  ]]; then
   echo "This script must not be run as root"
   exit 0
