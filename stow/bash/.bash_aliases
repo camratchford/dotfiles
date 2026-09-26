@@ -6,6 +6,7 @@ alias l='ls -CF'
 
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
+  # shellcheck disable=SC2015
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias grep='grep --color=auto'
   alias fgrep='fgrep --color=auto'
@@ -40,6 +41,7 @@ elif which exa &> /dev/null ; then
   if [[ "$(exa --version | grep -c "\[-git\]")" == "0" ]]; then
     EXA_ARGS="$EXA_ARGS --git"
   fi
+  # shellcheck disable=SC2139
   alias ll="exa $EXA_ARGS"
   alias tree="exa --force --group-directories-first -F --tree"
   test -r ~/.ezacolors && EXA_COLORS=$(tr '\n' ':' < ~/.ezacolors) && export EXA_COLORS
@@ -61,7 +63,7 @@ if which most &> /dev/null; then
 fi
 
 function vim-sh {
-  vim -c 'setfiletype sh' $@
+  vim -c 'setfiletype sh' "$@"
 }
 export FCEDIT="vim-sh"
 
