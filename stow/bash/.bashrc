@@ -95,3 +95,5 @@ bind -x '"\C-p": "BASH_ENV=~/.bash_env editor-to-cmd --file python3"'
 . "$HOME/dotfiles/termprompt.sh"
 export PROMPT_COMMAND='set-ps1-prompt'
 
+
+source '/home/cam/.bash_completions/resume-generator.sh'

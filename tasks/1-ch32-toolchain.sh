@@ -1,0 +1,13 @@
+# Install wchisp, wlink, and riscv-none-elf-gcc
+
+sudo apt-get install -y rustup npm
+rustup default stable
+cargo install wchisp wlink
+sudo npm install --global xpm
+xpm install --global @xpack-dev-tools/riscv-none-elf-gcc@latest
+ADD_TO_PATH="$(find "$HOME/.local/xPacks/@xpack-dev-tools/riscv-none-elf-gcc/" -type d -path '**/.content/bin' -print)"
+
+echo
+ansi --green "Make sure this directory is added to PATH:"
+ansi --yellow "${ADD_TO_PATH}"
+

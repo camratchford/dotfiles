@@ -11,6 +11,7 @@ if [ -x /usr/bin/dircolors ]; then
   alias fgrep='fgrep --color=auto'
   alias egrep='egrep --color=auto'
 fi
+test -r ~/.lscolors && LS_COLORS=$(tr '\n' ':' < ~/.lscolors) && export LS_COLORS
 
 # Various handy python commands
 alias http="python3 -m http.server"
@@ -32,9 +33,7 @@ if which eza &> /dev/null ; then
   alias ls="eza"
   alias ll="eza --all --long --icons --group-directories-first --no-permissions --octal-permissions --git"
   alias tree="eza --all --group-directories-first -F --tree"
-  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
-  export LS_COLORS=$( < ~/.LS_COLORS)
-  export EZA_COLORS="$LS_COLORS"
+  test -r ~/.ezacolors && EZA_COLORS=$(tr '\n' ':' < ~/.ezacolors) && export EZA_COLORS
 elif which exa &> /dev/null ; then
   alias ls="exa"
   EXA_ARGS="--long --all --icons --group-directories-first --no-permissions --octal-permissions"
@@ -43,10 +42,7 @@ elif which exa &> /dev/null ; then
   fi
   alias ll="exa $EXA_ARGS"
   alias tree="exa --force --group-directories-first -F --tree"
-  tr '\n' ':' < ~/.lscolors > ~/.LS_COLORS
-  LS_COLORS=$(< ~/.LS_COLORS)
-  export LS_COLORS
-  export EXA_COLORS="$LS_COLORS"
+  test -r ~/.ezacolors && EXA_COLORS=$(tr '\n' ':' < ~/.ezacolors) && export EXA_COLORS
 fi
 
 # cat clone
