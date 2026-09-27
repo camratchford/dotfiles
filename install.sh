@@ -15,6 +15,7 @@ STOW_PACKAGES=(
   bash
   vim
   git
+  eza
   kitty
   lnav
   tmux
