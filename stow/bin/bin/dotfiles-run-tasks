@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -i
+
+set -eou pipefail
 
 HELP=$(cat <<EOF
 Presents a checklist of the task scripts in tasks/, and sources whichever ones you select.
@@ -18,10 +20,18 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
 fi
 
 if [[ $EUID -eq 0  ]]; then
-  echo "This script must not be run as root"
-  exit 0
+  echo "This script must not be run as root" >&2
+  exit 1
 fi
 
+case $- in
+    *i*)
+      ;;
+      *)
+      echo "This script must be run interactively" >&2
+      exit 1
+      ;;
+esac
 
 THIS_DIR="$(dirname "$(realpath "$0")")"
 REPO_DIR="$(git -C "$THIS_DIR" rev-parse --show-toplevel)"
@@ -32,27 +42,34 @@ COLUMNS=$(tput cols)
 WIDTH=$(( COLUMNS / 2 ))
 
 LIST_DIR="$REPO_DIR/tasks"
-SOFTWARE_PACKAGES=()
 CHECKLIST_ITEMS=()
 
-for list_file in "$LIST_DIR"/*.sh; do
+for list_file in "$LIST_DIR"/*; do
   name="$(basename "$list_file")"
-  description="$(head -1 "$list_file")"
+  description="$(head -2 "$list_file" | cut -d$'\n' -f 2)"
   checked="off"
   CHECKLIST_ITEMS+=("$name" "${description:2}" "$checked")
 done
 
-SELECTED_LISTS=$(whiptail --notags --title "Task Selection" \
+SELECTED_LISTS=$(whiptail --title "Task Selection" \
   --checklist "Select which tasks to run" \
   "$HEIGHT" "$WIDTH" "$CHECKLIST_ITEM_COUNT" \
   "${CHECKLIST_ITEMS[@]}" 3>&1 1>&2 2>&3
 )
 
 SELECTED_LISTS="$(echo $SELECTED_LISTS | tr -d '"')"
+if [[ -z "$SELECTED_LISTS" ]]; then
+  echo "No tasks selected"
+  exit
+fi
 
 echo "Running: sudo apt-get update"
-sudo apt-get update &> /dev/null
+if ! sudo apt-get update > /dev/null; then
+  exit $?
+fi
 echo "Running task(s)"
 for task in $SELECTED_LISTS; do
-  . "$LIST_DIR/$task"
+  if ! bash -i "$LIST_DIR/$task"; then
+    echo "Task '$task' failed" >&2
+  fi
 done
