@@ -1,3 +1,4 @@
+#!/bin/bash -i
 # Install and configure docker to use `/docker` (run zfs task first)
 
 sudo install -m 0755 -d /etc/apt/keyrings

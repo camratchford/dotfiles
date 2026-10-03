@@ -1,3 +1,4 @@
+#!/bin/bash -i
 # Install and configure Discord
 
 SCRATCH_DIR=$(mktemp -qd) && {

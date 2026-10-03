@@ -1,11 +1,10 @@
-# Install zfs, select disks to use as a zpool, then configure the zpool with vvols
+#!/bin/bash -i
+# Install and configure ZFS (NAS)
 
-if ! which zfs &> /dev/null ; then
-    sudo apt-get install -y zfsutils-linux
-fi
+sudo apt-get install -y zfsutils-linux nfs-common samba
 
-ZFS_POOL_NAME="storage"
-ZFS_PARTS="docker virsh projects"
+ZFS_POOL_NAME="ssdnas"
+ZFS_PARTS="backups media cdn san"
 ZFS_PARTS_PARENT="" # "" is root
 
 LINES=$(tput lines)

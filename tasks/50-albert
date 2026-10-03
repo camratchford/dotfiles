@@ -1,3 +1,4 @@
+#!/bin/bash -i
 # Install Albert
 
 echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_26.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list > /dev/null

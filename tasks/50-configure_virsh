@@ -1,3 +1,4 @@
+#!/bin/bash -i
 # Install and configure virt-manager / virsh to use a storage pool at `/virsh` (run zfs task first)
 
 if ! which zfs &> /dev/null ; then

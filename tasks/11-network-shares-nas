@@ -1,0 +1,44 @@
+#!/bin/bash -i
+# Share ZFS volumes on SMB and NFS (requires 10-zfs-nas)
+
+ZFS_POOL_NAME="ssdnas"
+ZFS_DATASETS=(backups media cdn san)
+NFS_SHARE_OPTS="rw=@10.0.0.0/8,no_subtree_check"
+SMB_CONF=/etc/samba/smb.conf
+
+user=$(id -un)
+
+if ! sudo pdbedit -L | cut -d: -f1 | grep -qxF "$user"; then
+  sudo smbpasswd -a "$user"
+fi
+
+for ds in "${ZFS_DATASETS[@]}"; do
+  dataset="$ZFS_POOL_NAME/$ds"
+
+  if [[ $(zfs get -H -o value type "$dataset") != filesystem ]]; then
+    continue
+  fi
+
+  mountpoint=$(zfs get -H -o value mountpoint "$dataset")
+  if [[ $mountpoint != /* ]]; then
+    continue
+  fi
+
+  sudo zfs set xattr=sa sharenfs="$NFS_SHARE_OPTS" "$dataset"
+
+  if grep -qxF "[$ds]" "$SMB_CONF"; then
+    continue
+  fi
+
+  sudo tee -a "$SMB_CONF" > /dev/null <<EOF
+
+[$ds]
+   path        = $mountpoint
+   read only   = no
+   valid users = $user
+   ea support  = yes
+EOF
+done
+
+testparm -s > /dev/null
+sudo systemctl reload smbd
