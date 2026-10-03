@@ -68,12 +68,11 @@ TEMPLATE_REGEX='(\{%\s?\"(\s|\w+?)\",\s?\"(\s|\w+?)\"\s?%}+?)'
 eval "$(op signin)"
 while IFS='\n' read -r line; do
   while [[ $line =~ $TEMPLATE_REGEX ]]; do
-    line_original="$line"
     template_tag=${BASH_REMATCH[1]}
     asset="${BASH_REMATCH[2]}"
     field="${BASH_REMATCH[3]}"
     value=$(op read "op://$OP_VAULT_ID/$asset/$field")
-    line="${line_original/$template_tag/$value}"
+    line="${line/$template_tag/$value}"
   done
   echo "$line" >> "$ENV_FILE"
 done < "$TEMPLATE_FILE"
