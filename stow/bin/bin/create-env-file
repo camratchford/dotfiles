@@ -1,0 +1,76 @@
+#!/bin/bash
+# Pattern for template: myapp_username={% "My App", "username" %}
+
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Generates an env file from variables stored in 1password
+
+USAGE:
+    ${BASH_SOURCE[0]} [FLAGS] TEMPLATE_FILE ENV_FILE
+
+PARAMETERS:
+    TEMPLATE_FILE        The source template, with each line formatted like:
+                           var_name={% "asset_name", "field_name" %}
+
+                         (You must use double-quotes, as the regex does not match single-quotes.)
+
+    ENV_FILE             The output env file. Parent directory must exist, file will be created if it does not exist.
+
+ENVIRONMENT_VARIABLES:
+    OP_VAULT_ID          The 1password vault that the variables are stored in.
+
+FLAGS:
+    --help,-h            Print this message and exit
+EOF
+)
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit
+      ;;
+    *)
+      TEMPLATE_FILE="${1?"Missing param: TEMPLATE_FILE"}"
+      shift
+      ENV_FILE="${1?"Missing param: ENV_FILE"}"
+      shift
+      break
+      ;;
+  esac
+done
+
+if [[ ! -f $TEMPLATE_FILE ]]; then
+  echo "TEMPLATE_FILE $TEMPLATE_FILE does not exist" 1>&2
+  exit 1
+fi
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  env_file_parent="$(dirname "$(realpath "$ENV_FILE")")"
+  if [[ ! -d "$env_file_parent" ]]; then
+    echo "ENV_FILE parent $env_file_parent does not exist" 1>&2
+    exit 1
+  fi
+  touch "$ENV_FILE"
+fi
+
+OP_VAULT_ID="${OP_VAULT_ID:-"hruuwawkvap753c4v3wv26qifm"}"
+
+TEMPLATE_REGEX='(^.+)=\{%\s?\"(.+?)\",\s?\"(.+?)\"\s?%}'
+eval "$(op signin)"
+while IFS='\n' read -r line; do
+  if [[ $line =~ $TEMPLATE_REGEX ]]; then
+    var_name="${BASH_REMATCH[1]}"
+    asset="${BASH_REMATCH[2]}"
+    field="${BASH_REMATCH[3]}"
+    value=$(op read "op://$OP_VAULT_ID/$asset/$field")
+    env_line=$(cat <<EOF
+export $var_name="$value"
+EOF
+)
+    echo "$env_line" >> "$ENV_FILE"
+  fi
+done < "$TEMPLATE_FILE"
+
