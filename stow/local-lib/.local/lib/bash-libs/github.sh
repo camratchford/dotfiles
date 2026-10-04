@@ -36,6 +36,9 @@ function gh-login {
 function gh-new-repo {
   local SOURCE
   SOURCE="${1:-"$PWD"}"
+  if [[ "$SOURCE" != "$PWD" ]]; then
+    SOURCE="$(realpath "$SOURCE")"
+  fi
 
   if [[ $# -gt 1 ]]; then
     shift
@@ -50,6 +53,9 @@ function gh-new-repo {
     git init "$SOURCE"
   fi
 
+  # gh repo create adds origin to remotes, no need to do that here
   gh repo create --private --source="$SOURCE" --remote=origin "$@"
-  git
+  if [[ ! -f "$SOURCE/.gitignore" ]]; then
+    echo "Don't forget a .gitignore file before your first commit."
+  fi
 }

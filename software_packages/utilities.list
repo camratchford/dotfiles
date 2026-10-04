@@ -18,7 +18,6 @@ retry
 shellcheck
 shfmt
 ssh-import-id
-tldr-py
 tmux
 ugrep
 xxd

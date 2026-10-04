@@ -20,8 +20,7 @@ alias json="python3 -m json.tool"
 alias venv="python3 -m venv"
 
 # grep -Po "[0-9]*" file/with/numbers/to/sum | int-sum
-alias int-sum="xargs awk -v \"i=$\{1\}\" '{s+=i} END {print s}'"
-
+alias int-sum="awk '{ sum += \$1 } END { print sum }'"
 # vi is shorter than vim
 alias vi=vim
 # Has clipboard support

@@ -2,7 +2,7 @@
 # Share ZFS volumes on SMB and NFS (requires 10-zfs-nas)
 
 ZFS_POOL_NAME="ssdnas"
-ZFS_DATASETS=(backups media cdn san)
+ZFS_DATASETS=(backups storage cdn san)
 NFS_SHARE_OPTS="rw=@10.0.0.0/8,no_subtree_check"
 SMB_CONF=/etc/samba/smb.conf
 

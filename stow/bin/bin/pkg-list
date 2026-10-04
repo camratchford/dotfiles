@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+List installed deb packages. Formatted as a list.
+
+USAGE:
+    ${BASH_SOURCE[0]} [FLAGS]
+
+FLAGS:
+    -d         Print package descriptions with package listing
+    --help,-h  Print this message and exits
+EOF
+)
+PRINT_DESCRIPTIONS=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit
+      ;;
+    -d)
+      PRINT_DESCRIPTIONS="true"
+      shift
+      ;;
+  esac
+done
+
+FMT='${Package}\n'
+if [[ "$PRINT_DESCRIPTIONS" == "true" ]]; then
+    FMT="$(ansi --inverse '${Package}' )\n$(ansi --reset-color '${Description}')\n\n"
+fi

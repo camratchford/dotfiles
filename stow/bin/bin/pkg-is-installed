@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Returns 0 if the deb package is installed, returns 1 if it is not installed
+
+USAGE:
+    ${BASH_SOURCE[0]} [FLAGS] PACKAGE
+
+PARAMETERS:
+    PACKAGE        The name of a debian package which you would like to check the installation status of.
+
+FLAGS:
+    --help,-h  Print this message and exits
+EOF
+)
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "$HELP"
+    exit
+fi
+
+PACKAGE="${1?"Missing parameter: PACKAGE"}"
+
+(dpkg-query --show "$PACKAGE" &> /dev/null)
+

@@ -4,6 +4,7 @@ curl
 git
 git-lfs
 net-tools
+pipx
 unzip
 wget
 xz-utils

@@ -14,10 +14,12 @@ FLAGS:
 
 EOF
 )
-if [[ $1 == "-h" || $1 == "--help" ]]; then
+while [[ $# -ne 0 ]]; do
+  if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "$HELP"
     exit
-fi
+  fi
+done
 
 if [[ $EUID -eq 0  ]]; then
   echo "This script must not be run as root" >&2
@@ -42,6 +44,7 @@ COLUMNS=$(tput cols)
 WIDTH=$(( COLUMNS / 2 ))
 
 LIST_DIR="$REPO_DIR/tasks"
+CHECKLIST_ITEM_COUNT=0
 CHECKLIST_ITEMS=()
 
 for list_file in "$LIST_DIR"/*; do
