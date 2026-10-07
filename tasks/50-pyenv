@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Install pyenv
+# Install pyenv and Python versions
 
 curl https://pyenv.run | bash
 

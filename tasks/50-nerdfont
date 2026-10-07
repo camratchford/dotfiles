@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Download and Install JetbrainsMono NerdFont
+# Install JetbrainsMono NerdFont
 
 LOCAL_FONTS="$HOME/.local/share/fonts"
 mkdir -p "$LOCAL_FONTS"

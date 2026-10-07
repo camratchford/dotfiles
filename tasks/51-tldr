@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install and configure tldr-py
+# Install tldr
 
 pipx install tldr
 tldr update

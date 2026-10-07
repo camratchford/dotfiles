@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Install and configure docker to use `/docker` (run zfs task first)
+# Install Docker and configure it to use zfs storage pool (requires 10-zfs-client)
 
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc

@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Install wchisp, wlink, and riscv-none-elf-gcc
+# Install wchisp, wlink, and riscv-none-elf-gcc toolchain
 
 sudo apt-get install -y rustup npm
 rustup default stable

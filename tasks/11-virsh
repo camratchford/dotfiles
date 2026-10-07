@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Install and configure virt-manager / virsh to use a storage pool at `/virsh` (run zfs task first)
+# Install virt-manager and configure it to use zfs storage pool (requires 10-zfs-client)
 
 if ! which zfs &> /dev/null ; then
     sudo apt-get install -y virt-manager

@@ -1,5 +1,5 @@
 #!/bin/bash -i
-# Share ZFS volumes on SMB and NFS (requires 10-zfs-nas)
+# Share ZFS volumes with SMB and NFS (requires 10-zfs-nas)
 
 ZFS_POOL_NAME="ssdnas"
 ZFS_DATASETS=(backups storage cdn san)
