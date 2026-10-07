@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -euo pipefail
+set +u -eo pipefail
 
-HELP=$(cat <<EOF
-Writes a message directly to every pty owned by your UID, mimicking 'wall --no-banner'.
+HELP=$(cat <<'EOF'
+Writes a message directly to every pty owned by your UID, mimicking "wall --no-banner".
 
-'wall --no-banner' requires root, since it needs to open other users' ptys. This works around
+"wall --no-banner" requires root, since it needs to open other users\' ptys. This works around
 that by only ever writing to ptys you already own, no privilege escalation needed.
 
 USAGE:
@@ -19,6 +19,7 @@ FLAGS:
 
 EOF
 )
+
 if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "$HELP"
     exit
@@ -28,3 +29,10 @@ readarray -t PTS_LIST <<< "$(find /dev/pts -uid "$UID")"
 for user_pts in "${PTS_LIST[@]}"; do
     printf "%s\n" "$*" > "$user_pts"
 done
+
+if which "kdialog" &> /dev/null && [[ -n "${DISPLAY+x}" ]]; then
+  title="Message from ${BASH_SOURCE[0]}:"
+  offset=$(( 100 - $(wc -c <<< "$*")))
+  msg="$(printf "%*s%s%*s" $offset "" "$*" 100 "")"
+  kdialog --title "$title" --msgbox "$msg"
+fi

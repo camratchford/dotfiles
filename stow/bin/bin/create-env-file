@@ -11,24 +11,23 @@ USAGE:
     ${BASH_SOURCE[0]} [FLAGS] TEMPLATE_FILE ENV_FILE
 
 PARAMETERS:
-    TEMPLATE_FILE        The source template.
-                         - Double-quotes only for enclosing asset_name and field_name
-                         - Only the template tag is replaced, any surrounding text will be left as-is
-                         Example lines:
-                            # Literal string (reccomended)
-                            export my_var='{% "asset_name", "my_var" %}'
+    TEMPLATE_FILE  The source template.
+                   - Double-quotes only for enclosing asset_name and field_name
+                   - Only the template tag is replaced, any surrounding text will be left as-is
+                   Example lines:
+                      # Literal string (reccomended)
+                      export my_var='{% "asset_name", "my_var" %}'
+                      # Variable-embedded values (since 'source' will expand variables not enclosed in single-quotes)
+                      export my_embedded_var="$$(hostname):{% "asset_name", "my_env_var" %}"
 
-                            # Variable-embedded values (since 'source' will expand variables not enclosed in single-quotes)
-                            export my_embedded_var="$$(hostname):{% "asset_name", "my_env_var" %}"
 
-
-    ENV_FILE             The output env file. Parent directory must exist, file will be created if it does not exist.
+    ENV_FILE       The output env file. Parent directory must exist, file will be created if it does not exist.
 
 ENVIRONMENT_VARIABLES:
-    OP_VAULT_ID          The 1password vault that the variables are stored in.
+    OP_VAULT_ID    The 1password vault that the variables are stored in.
 
 FLAGS:
-    --help,-h            Print this message and exit
+    --help,-h      Print this message and exit
 EOF
 )
 

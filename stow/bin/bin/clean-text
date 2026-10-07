@@ -19,6 +19,5 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "$HELP"
     exit
 fi
-
 TEXT="${1?"Missing argument 'TEXT'"}"
 printf '%s\n' "$TEXT" | sed 's/[][\/.^$*~|()]/\\&/g'

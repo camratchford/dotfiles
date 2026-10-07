@@ -4,7 +4,7 @@ set -euo pipefail
 
 rc_file="${HOME}/.bashrc.local"
 
-help=$(cat <<EOF
+HELP=$(cat <<EOF
 
 Idempotently add or update \`export KEY=VALUE\` lines in an rc file.
 
@@ -25,23 +25,34 @@ BEHAVIOUR:
   - If it already exists, the existing line is replaced with the new value
     (so re-running with a different value updates it instead of duplicating it).
   - Re-running with the same value is a no-op (file content unchanged).
-
-
 EOF
 )
 
 while getopts ":f:h" opt; do
     case "$opt" in
-        f) rc_file="$OPTARG" ;;
-        h|-h) echo "$help" ;;
-        \?) echo "Unknown option: -$OPTARG" >&2; echo "$help" >&2 && exit 1;;
-        :) echo "Option -$OPTARG requires an argument" >&2; echo "$help" >&2 && exit 1 ;;
+        f)
+          rc_file="$OPTARG"
+          ;;
+        h|-h)
+          echo "$HELP"
+          exit 0
+        ;;
+        \?)
+          echo "Unknown option: -$OPTARG" >&2;
+          echo "$HELP" >&2
+          exit 1
+          ;;
+        :)
+          echo "Option -$OPTARG requires an argument" >&2
+          echo "$HELP" >&2
+          exit 1
+          ;;
     esac
 done
 shift $((OPTIND - 1))
 
 if [[ $# -eq 0 ]]; then
-    echo "$help"
+    echo "$HELP"
 fi
 
 if [[ ! -f "$rc_file" ]]; then

@@ -1,6 +1,6 @@
 #!/bin/bash -i
 
-set -eou pipefail
+set -euo pipefail
 
 HELP=$(cat <<EOF
 Presents a checklist of the task scripts in tasks/, and sources whichever ones you select.

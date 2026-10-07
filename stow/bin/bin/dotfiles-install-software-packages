@@ -1,29 +1,30 @@
 #!/bin/bash
 
+THIS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+REPO_DIR="$(git -C "$THIS_DIR" rev-parse --show-toplevel)"
+
 HELP=$(cat <<EOF
-Presents a checklist of the package lists in software_packages/, and apt installs the packages
+Presents a checklist of the package lists in ${REPO_DIR}/software_packages/, and apt installs the packages
 from whichever lists you select. Must be run as root.
 
 USAGE:
-    dotfiles-install-software-packages [FLAGS]
+   sudo dotfiles-install-software-packages [FLAGS]
 
 FLAGS:
-    --help,-h  Print this message and exits
-
+    --help,-h  Print this message and exit
 EOF
 )
+
 if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "$HELP"
     exit
 fi
 
 if [[ $EUID -ne 0  ]]; then
-  echo "This script must be run as root"
+  echo "This script must be run as root" >&2
   exit 0
 fi
 
-THIS_DIR="$(dirname "$(realpath "$0")")"
-REPO_DIR="$(git -C "$THIS_DIR" rev-parse --show-toplevel)"
 
 LINES=$(tput lines)
 HEIGHT=$(( LINES / 2  ))

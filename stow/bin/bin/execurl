@@ -16,5 +16,4 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "$HELP"
     exit
 fi
-
 bash <(curl -s "$1")
