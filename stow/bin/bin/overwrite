@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Overwrite a file with new text content.
+
+USAGE:
+   overwrite [FLAGS] TEXT TARGET
+
+PARAMETERS:
+  TEXT    The text that TARGET will contain
+
+  TARGET  The path to a text file, which will contain TEXT
+
+FLAGS:
+    --help,-h      Print this message and exit
+    --append,-a    Append TEXT to TARGET
+    --prepend,-p   Prepend TARGET with TEXT
+EOF
+)
+
+OPT_FLAGS=0
+
+if [[ $# -eq 0 ]]; then
+    echo "$HELP" >&2
+    exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit
+      ;;
+    --append|-a)
+      OPT_FLAGS=$(( OPT_FLAGS+1 ))
+      shift
+      ;;
+    --prepend|-p)
+      OPT_FLAGS=$(( OPT_FLAGS+2 ))
+      shift
+      ;;
+    *)
+      TEXT="$1"
+      shift
+      TARGET="${1?"Missing parameter: TARGET"}"
+      shift
+      break
+      ;;
+  esac
+done
+
+rc=0
+TMP_FILE=$(mktemp -q) && {
+  case $OPT_FLAGS in
+    0)
+      echo "$TEXT" > "$TMP_FILE" && mv "$TMP_FILE" "$TARGET"
+      ;;
+    1)
+      echo "$TEXT" >> "$TARGET"
+      ;;
+    2)
+      echo -e "$TEXT\n$(cat "$TARGET")" > "$TMP_FILE" &&  mv "$TMP_FILE" "$TARGET"
+      ;;
+    3)
+      echo "--prepend and --append options are mutually exclusive" >&2
+      rc=1
+      ;;
+  esac
+}
+rm "$TMP_FILE"
+exit $rc

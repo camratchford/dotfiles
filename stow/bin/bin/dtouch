@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -euo pipefail
+
+HELP=$(cat <<EOF
+Touch a file, creating it\'s parent directory if it does not exist.
+
+USAGE:
+    ${BASH_SOURCE[0]} [FLAGS] TOUCH_PATH
+
+PARAMETERS:
+    TOUCH_PATH           Path of the file you want to touch
+
+FLAGS/OPTIONS:
+    --help,-h            Print this message and exit
+    -*                   Extra options to pass to /usr/bin/touch
+
+EOF
+)
+
+EXTRA_OPTS=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "$HELP"
+      exit
+      ;;
+    -*)
+      EXTRA_OPTS+=("$1")
+      shift
+      ;;
+    *)
+      TOUCH_PATH="$1"
+      shift
+      break
+      ;;
+  esac
+done
+
+if ! [[ ${EXTRA_OPTS[*]} =~ -c|--no-create ]]; then
+  mkdir -p "$(dirname "$TOUCH_PATH")/"
+fi
+
+/usr/bin/touch "${EXTRA_OPTS[@]}" "$TOUCH_PATH"
