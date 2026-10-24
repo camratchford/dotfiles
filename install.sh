@@ -1,7 +1,6 @@
 #!/bin/bash -i
 
 THIS_DIR="$(dirname "$(realpath "$0")")"
-
 STOW_DIR="$THIS_DIR/stow"
 BACKUP_DIR="$THIS_DIR/backup"
 mkdir -p "$BACKUP_DIR"
@@ -11,20 +10,8 @@ if ! command -v stow &> /dev/null; then
   exit 1
 fi
 
-STOW_PACKAGES=(
-  bash
-  vim
-  git
-  eza
-  kitty
-  lnav
-  tmux
-  bin
-  local-lib
-  local-share
-  local-etc
-  misc
-)
+STOW_PACKAGES=("$STOW_DIR"/*)
+STOW_PACKAGES=("${STOW_PACKAGES[@]##*/}")
 
 # Stow refuses to link over anything it doesn't already own. Move real files/dirs
 # out of the way into $BACKUP_DIR, and drop any stale (e.g. pre-stow) symlinks,
@@ -80,11 +67,6 @@ done
 
 # Finally, write the crontab
 (printf "%s\n" "${CRONTAB_CONTENTS[@]}") | crontab -
-
-# Make sure my Konsole profile is set as default
-if which konsole &> /dev/null; then
-  kwriteconfig5 --file konsolerc --group "Desktop Entry" --key DefaultProfile "Custom.profile"
-fi
 
 # Install Pathogen, a Vim plugin manager
 mkdir -p ~/.vim/autoload ~/.vim/bundle
