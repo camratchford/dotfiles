@@ -1,0 +1,30 @@
+#!/bin/bash
+# Configure apt unattended-upgrade policy
+
+APT_CONF_PERIODIC_PATH="/etc/apt/apt.conf.d/10periodic"
+sudo tee "$APT_CONF_PERIODIC_PATH" > /dev/null <<EOF
+APT::Periodic::Enable "1";
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+EOF
+
+APT_CONF_AUTO_UPGRADES_PATH="/etc/apt/apt.conf.d/20auto-upgrades"
+sudo tee "$APT_CONF_AUTO_UPGRADES_PATH" > /dev/null <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
+
+LOGROTATE_CONF_PATH="/etc/logrotate.d/unattended-upgrades"
+sudo tee "$LOGROTATE_CONF_PATH" > /dev/null <<EOF
+/var/log/unattended-upgrades/unattended-upgrades.log
+/var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+{
+  rotate 6
+  monthly
+  compress
+  missingok
+  notifempty
+  delaycompress
+}
+EOF
