@@ -43,3 +43,6 @@
 [submodule ".vim/bundle/ale"]
 	path = stow/vim/.vim/bundle/ale
 	url = https://github.com/dense-analysis/ale.git
+[submodule "stow/autoenv/.autoenv"]
+	path = stow/autoenv/.autoenv
+	url = https://github.com/hyperupcall/autoenv

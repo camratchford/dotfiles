@@ -93,6 +93,9 @@ function set-ps1-prompt {
   fi
 
   set-terminal-title
+
+  # Record each line as it gets issued
+  history -a
   PS1=$PROMPT
 }
 

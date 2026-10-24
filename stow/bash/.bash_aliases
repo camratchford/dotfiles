@@ -2,7 +2,7 @@
 # Standard ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
-alias l='ls -CF'
+alias l='/usr/bin/ls --color=always --group-directories-first'
 
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

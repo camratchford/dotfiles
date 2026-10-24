@@ -5,22 +5,27 @@
 # Is set as BASH_ENV for cron and within .bashrc, .bash_profile
 
 function dotsource {
-  local SOURCE_FILE="${1?"No source file provided"}"
-  if [ -f "$SOURCE_FILE" ]; then
-    . "$SOURCE_FILE"
+  local SOURCE_FILE="${1?"Missing param: SOURCE_FILE"}"
+  if [[ ! -f "$SOURCE_FILE" ]]; then
+    return
   fi
+  . "$SOURCE_FILE"
 }
 
 function dotsource-parts {
-  local SOURCE_DIR="$1"
-  if [ -d "$SOURCE_DIR" ]; then
-    for file in "$SOURCE_DIR"/*; do
-      dotsource "$file"
-    done
+  local SOURCE_DIR="${1:?"Missing param: SOURCE_DIR"}"
+  if [[ ! -d "$SOURCE_DIR" ]]; then
+    return
   fi
+  for file in "$SOURCE_DIR"/*; do
+    dotsource "$file"
+  done
 }
 
 function append-path {
+  if [[ ! -d "$1" ]]; then
+    return
+  fi
   case ":$PATH:" in
     *":$1:"*) ;;
     *) PATH="$PATH:$1" ;;
@@ -29,6 +34,9 @@ function append-path {
 }
 
 function prepend-path {
+  if [[ ! -d "$1" ]]; then
+    return
+  fi
   case ":$PATH:" in
     *":$1:"*) ;;
     *) PATH="$1:$PATH" ;;
@@ -39,9 +47,9 @@ function prepend-path {
 append-path "$HOME/bin"
 append-path "$HOME/.local/bin"
 append-path "$HOME/.local/share/ansi"
+append-path "$HOME/.cargo/bin"
 
 export BASHLIBS="$HOME/.local/lib/bash-libs"
-
 if [ -d "$BASHLIBS" ]; then
   shopt -s nullglob
   dotsource-parts "$BASHLIBS"

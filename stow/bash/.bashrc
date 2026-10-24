@@ -1,7 +1,7 @@
 # Source common functions
 export BASH_ENV="$HOME/.bash_env"
 [[ -f "$BASH_ENV" ]] && . "$BASH_ENV"
-dotsource "$BASHLIBS/script-"
+dotsource-parts "${BASHLIBS:-}"
 ##############################################################################
 #################### Standard Ubuntu/Debian bashrc stuff #####################
 ##############################################################################
@@ -13,12 +13,12 @@ case $- in
 esac
 
 export TERM="xterm-256color"
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+# Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
+# Works great with autoenv for per-project vars
+shopt -s cdable_vars
+
+CDPATH=".:/projects"
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
@@ -31,9 +31,25 @@ shopt -s checkwinsize
 # Disable XOFF being triggered by Ctrl+S
 stty -ixon
 
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# Store multi-line commands as 1 entry
+shopt -s cmdhist
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL="erasedups:ignoreboth"
+
+# Ignores navigation and control commands
+export HISTIGNORE="&:[ ]*:exit:ls:ll:bg:fg:history:clear"
+
+# Use standard ISO 8601 timestamp
+HISTTIMEFORMAT='%F %T '
+
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=2000
-HISTFILESIZE=5000
+HISTSIZE=500000
+HISTFILESIZE=100000
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -59,7 +75,6 @@ fi
 # enable programmable completion features
 if ! shopt -oq posix; then
   dotsource /usr/share/bash-completion/bash_completion
-
   dotsource /etc/bash_completion
   dotsource-parts "$HOME/.bash_completions"
   dotsource-parts "$HOME/.local/share/bash-completion/completion"
@@ -70,6 +85,7 @@ fi
 
 dotsource "$HOME/.bash_aliases"
 dotsource "$HOME/.bashrc.local"
+dotsource "$HOME/.autoenv/activate.sh"
 
 if [[ -d "$HOME/.pyenv" ]]; then
   export PYENV_ROOT="$HOME/.pyenv"
@@ -77,15 +93,11 @@ if [[ -d "$HOME/.pyenv" ]]; then
   eval "$(pyenv init -)"
 fi
 
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-
 #######################################################################
 ########################### Bash Macros ###############################
 #######################################################################
 
 # Launches EDITOR, Python executes EDITOR's output
-
 bind -x '"\C-p": "BASH_ENV=~/.bash_env editor-to-cmd --file python3"'
 
 ##################################################################
@@ -94,6 +106,3 @@ bind -x '"\C-p": "BASH_ENV=~/.bash_env editor-to-cmd --file python3"'
 
 . "$HOME/dotfiles/termprompt.sh"
 export PROMPT_COMMAND='set-ps1-prompt'
-
-
-source '/home/cam/.bash_completions/resume-generator.sh'
